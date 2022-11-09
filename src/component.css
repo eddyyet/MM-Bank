@@ -1,0 +1,28 @@
+heading {
+    font-weight:100;
+    font-size:0.5rem;
+}
+
+balance-box {
+    padding:1rem;
+}
+
+currency {
+    text-align: right;
+    font-size: 0.5rem;
+    font-weight: bold;
+}
+
+balance {
+    text-align: right;
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+.MMD-color{
+    color: #FFFF99;
+}
+
+.CMMD-color{
+    color: #AAFFAA;
+}
