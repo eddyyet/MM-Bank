@@ -9,6 +9,8 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <Wallet />
+    <div className = 'root'>
+      <Wallet />
+    </div>
   </React.StrictMode>
 );
