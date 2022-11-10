@@ -2,6 +2,10 @@
     vertical-align:middle;
 }
 
+.icon_small {
+    vertical-align:middle;
+}
+
 .BalanceHeading {
     font-weight:bold;
     font-size: 1.5rem;
@@ -42,5 +46,6 @@
 
 .note {
     text-align: right;
+    line-height: 1rem;
     font-size: 0.8rem;
 }
