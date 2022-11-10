@@ -1,9 +1,13 @@
+.icon {
+    vertical-align:middle;
+}
+
 .BalanceHeading {
     font-weight:bold;
     font-size: 1.5rem;
 }
 
-.BalanceContent {
+.BalanceBoxContent {
     margin-top: 1rem;
     margin-bottom: 1rem;
 }
@@ -28,14 +32,15 @@
     font-weight: 100;
 }
 
-.MMD-color{
+.MMD-color {
     color: #FFFF99;
 }
 
-.CMMD-color{
+.CMMD-color {
     color: #AAFFAA;
 }
 
-.icon {
-    vertical-align:middle;
+.note {
+    text-align: right;
+    font-size: 0.8rem;
 }
