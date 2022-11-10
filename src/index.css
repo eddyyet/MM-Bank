@@ -14,3 +14,7 @@ root {
   align-items: center;
   justify-content: center;
 }
+
+.main {
+  padding:2rem;
+}
