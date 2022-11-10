@@ -1,7 +1,8 @@
-import {Stack, Grid} from '@mui/material';
 import './component.css';
+import { Stack, Grid } from '@mui/material';
+import { Wallet, Lock } from '@mui/icons-material';
 import { NumericFormat } from 'react-number-format';
-import "@fontsource/news-cycle"
+// import "@fontsource/news-cycle"
 
 interface Props {
   CurrencyClass: string;
@@ -11,7 +12,6 @@ interface Props {
 }
 
 export function BalanceBox (props: Props): JSX.Element {
-  // const style = { 'margin-top': '50pt', 'margin-bottom': '0.5rem'};
   var {
     CurrencyClass, 
     currency, 
@@ -31,40 +31,44 @@ export function BalanceBox (props: Props): JSX.Element {
   );
 }
 
-export function Wallet() {
+export function WalletDisplay() {
   var test_balance = 321.123;
   var test_balance_large = 654321.123456;
 
   return (
     <Stack>
-      <div className='BalanceHeading'>Wallet</div>
+      <div className='BalanceHeading'>
+      <span className='icon'><Wallet /></span> Wallet
+      </div>
       <Grid container className ='BalanceContent'>
         <Grid item xs={5}>
-          <BalanceBox CurrencyClass='CurrencyFormat' currency='MMD' BalanceClass='BalanceFormat MMD-color' balance={test_balance} />
+          <BalanceBox CurrencyClass='CurrencyFormat' currency='MMD' BalanceClass='BalanceFormat BalancePrimary MMD-color' balance={test_balance} />
         </Grid>
         <Grid item xs={2} />
         <Grid item xs={5}>
-          <BalanceBox CurrencyClass='CurrencyFormat' currency='CMMD' BalanceClass='BalanceFormat CMMD-color' balance={test_balance_large} />
+          <BalanceBox CurrencyClass='CurrencyFormat' currency='CMMD' BalanceClass='BalanceFormat BalancePrimary CMMD-color' balance={test_balance_large} />
         </Grid>
       </Grid>
     </Stack>
   );
 }
 
-export function Vault() {
+export function VaultDisplay() {
   var test_balance_vault = 21;
   var test_balance_vault_large = -321.1;
 
   return (
     <Stack>
-      <div className='BalanceHeading'>Vault</div>
+      <div className='BalanceHeading'>
+        <span className='icon'><Lock /></span> Vault
+      </div>
       <Grid container className ='BalanceContent'>
         <Grid item xs={5}>
-          <BalanceBox CurrencyClass='CurrencyFormat' currency='MMD Colleteral' BalanceClass='BalanceFormat MMD-color' balance={test_balance_vault} />
+          <BalanceBox CurrencyClass='CurrencyFormat' currency='MMD Colleteral' BalanceClass='BalanceFormat BalanceSecondary MMD-color' balance={test_balance_vault} />
         </Grid>
         <Grid item xs={2} />
         <Grid item xs={5}>
-          <BalanceBox CurrencyClass='CurrencyFormat' currency='CMMD Credited' BalanceClass='BalanceFormat CMMD-color' balance={test_balance_vault_large} />
+          <BalanceBox CurrencyClass='CurrencyFormat' currency='CMMD Credited' BalanceClass='BalanceFormat BalanceSecondary CMMD-color' balance={test_balance_vault_large} />
         </Grid>
       </Grid>
     </Stack>

@@ -16,9 +16,16 @@
 
 .BalanceFormat {
     text-align: right;
-    font-size: 36pt;
-    font-weight: bold;
+    font-size: 3rem;
     /* font-family: "News Cycle", sans-serif; */
+}
+
+.BalancePrimary {
+    font-weight: 700;
+}
+
+.BalanceSecondary {
+    font-weight: 100;
 }
 
 .MMD-color{
@@ -27,4 +34,8 @@
 
 .CMMD-color{
     color: #AAFFAA;
+}
+
+.icon {
+    vertical-align:middle;
 }
