@@ -16,6 +16,7 @@ root.render(
         <div>Transfer CMMD</div>
         <div>Borrow CMMD</div>
         <div>Repay CMMD</div>
+        <div>Top up MMD</div>
         <div>Deposit MMD</div>
         <div>Withdraw MMD</div>
       </Stack>
