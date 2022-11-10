@@ -27,7 +27,7 @@ function BalanceBox (props: Props): JSX.Element {
 function MMDEquivalent (props: {CMMD: number, ExRate:number}): JSX.Element {
   var MMD = props.CMMD / props.ExRate;
   return (
-    <span className='note'>≈ MMD <NumericFormat displayType="text" value={MMD} thousandSeparator="," decimalScale={2} /></span>
+    <span>≈ MMD <NumericFormat displayType="text" value={MMD} thousandSeparator="," decimalScale={2} /></span>
   );
 }
 
@@ -41,7 +41,7 @@ function CollateralRatio (props: {MMD:number, CMMD: number, ExRate:number}): JSX
   }
 
   return (
-    <span className='note'>Collateral ratio: <NumericFormat displayType="text" value={CollateralRatio} thousandSeparator="," decimalScale={0} />%</span>
+    <span>Collateral ratio: <NumericFormat displayType="text" value={CollateralRatio} thousandSeparator="," decimalScale={0} />%</span>
   );
 }
 
@@ -65,7 +65,7 @@ export function WalletDisplay() {
         <Grid item xs={5}>
           <BalanceBox CurrencyClass='CurrencyFormat' currency='CMMD' BalanceClass='BalanceFormat BalancePrimary CMMD-color' balance={CMMD} />
         </Grid>
-        <Grid item xs={12} className='note'><MMDEquivalent CMMD={CMMD} ExRate={ExRate} /></Grid>
+        <Grid item xs={12} className='Note'><MMDEquivalent CMMD={CMMD} ExRate={ExRate} /></Grid>
       </Grid>
     </Stack>
   );
@@ -91,9 +91,9 @@ export function VaultDisplay() {
         <Grid item xs={5}>
           <BalanceBox CurrencyClass='CurrencyFormat' currency='CMMD Credited' BalanceClass='BalanceFormat BalanceSecondary CMMD-color' balance={CMMD} />
         </Grid>
-        <Grid item xs={12} className='note'><MMDEquivalent CMMD={CMMD} ExRate={ExRate} /></Grid>
-        <Grid item xs={12} className='note'><CollateralRatio MMD={MMD} CMMD={CMMD} ExRate={ExRate} /></Grid>
-        <Grid item xs={12} className='note'><ErrorOutlineOutlined className='icon_small' sx={{ fontSize: 12.8 }} /> Liquidates when the collateral ratio is below 110%</Grid>
+        <Grid item xs={12} className='Note'><MMDEquivalent CMMD={CMMD} ExRate={ExRate} /></Grid>
+        <Grid item xs={12} className='Note'><CollateralRatio MMD={MMD} CMMD={CMMD} ExRate={ExRate} /></Grid>
+        <Grid item xs={12} className='Note'><ErrorOutlineOutlined className='icon_small' sx={{ fontSize: 12.8 }} /> Liquidates when the collateral ratio is below 110%</Grid>
       </Grid>
     </Stack>
   );

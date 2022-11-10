@@ -1,8 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { Stack, Divider } from '@mui/material';
 import './index.css';
-// import App from './App';
+import { Stack, Divider } from '@mui/material';
 import { WalletDisplay, VaultDisplay } from './balance';
 
 const root = ReactDOM.createRoot(
@@ -14,6 +13,7 @@ root.render(
       <Stack spacing={2} className="main" divider={<Divider orientation="horizontal" color="#666666" flexItem />}>
         <WalletDisplay />
         <VaultDisplay />
+        <div>Transfer CMMD</div>
         <div>Borrow CMMD</div>
         <div>Repay CMMD</div>
         <div>Deposit MMD</div>
