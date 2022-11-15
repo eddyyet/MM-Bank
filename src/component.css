@@ -6,6 +6,11 @@
     vertical-align:middle;
 }
 
+.button2 {
+    border-radius: 100px;
+    border-color:FFFFFF;
+}
+
 .BalanceHeading {
     font-weight:bold;
     font-size: 1.5rem;
