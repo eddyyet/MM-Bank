@@ -1,8 +1,7 @@
-import './component.css';
 import { Stack, Grid } from '@mui/material';
 import { Wallet, Lock, ErrorOutlineOutlined } from '@mui/icons-material';
 import { NumericFormat } from 'react-number-format';
-// import "@fontsource/news-cycle"
+import './component.css';
 
 interface Props {
   CurrencyClass: string;

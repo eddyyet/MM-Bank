@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import { Stack, Divider } from '@mui/material';
 import { MetaMaskProvider } from "metamask-react";
-import { MetaMaskConnection } from './metamask';
+import MetaMaskConnection from './metamask';
 import { WalletDisplay, VaultDisplay } from './balance';
 
 const root = ReactDOM.createRoot(
