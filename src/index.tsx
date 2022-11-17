@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
 import { Stack, Divider } from '@mui/material';
 import { MetaMaskProvider } from "metamask-react";
 import MetaMaskConnection from './metamask';
 import { WalletDisplay, VaultDisplay } from './balance';
+import './index.css';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
