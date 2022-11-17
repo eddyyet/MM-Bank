@@ -4,13 +4,13 @@ import './component.css';
 
 interface Props {
     OperationName: string;
-    Note: (input: number) => string;
+    Note: (input: number) => JSX.Element;
     InputLabel: string;
     Action: string;
     Operator: (input: number) => void;
   }
 
-function operation (props: Props): JSX.Element {
+export function operation (props: Props): JSX.Element {
     const [InputValue, setInputValue] = useState<number>(0);
 
     return (
@@ -23,18 +23,21 @@ function operation (props: Props): JSX.Element {
             </Grid>
             <Grid item xs={6} sm={1}>
                 <TextField label={props.InputLabel}
-                    type="text" inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }} 
+                    type="text" inputProps={{ inputMode: 'numeric', pattern: '^(\d*\.)?\d+$' }} 
                     value={InputValue}
                     onChange={event => setInputValue(+event.target.value)} />
             </Grid>
             <Grid item xs={6} sm={1}>
                 <Button onClick={() => props.Operator(InputValue)}
-                    sx= {{borderRadius:'2rem', border:'1px solid #DDDDDD',
-                        backgroundColor:'#DDDDDD',color:'#1C1B1F',
-                        '&:hover':{backgroundColor:'#2C2B2F',color:'#FFFFFF'}}}>
+                    sx= {{borderRadius:'2rem', border:'1px solid #999999',backgroundColor:'#1C1B1F',color:'#999999',
+                        '&:hover':{backgroundColor:'#2B2C2F'}}}>
                     {props.Action}
                 </Button>
                 </Grid>
         </Grid>
     );
+}
+
+export function NoteTopUpMMD (input: number): JSX.Element {
+    return (<span></span>);
 }

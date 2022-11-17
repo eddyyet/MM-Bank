@@ -23,14 +23,13 @@
 
 .CurrencyFormat {
     display: inline-flex;
-    align-items : center;
+    align-items: center;
     font-size: 1rem;
 }
 
 .BalanceFormat {
     text-align: right;
     font-size: 3rem;
-    /* font-family: "News Cycle", sans-serif; */
 }
 
 .BalancePrimary {
@@ -50,8 +49,6 @@
 }
 
 .Note {
-    display: inline-flex;
-    align-items : center;
     text-align: right;
     line-height: 1rem;
     font-size: 0.8rem;

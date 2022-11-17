@@ -24,7 +24,7 @@ function BalanceBox (props: Props): JSX.Element {
 }
 
 function MMDEquivalent (props: {CMMD: number, ExRate:number}): JSX.Element {
-  var MMD = props.CMMD / props.ExRate;
+  let MMD = props.CMMD / props.ExRate;
   return (
     <span>≈ MMD <NumericFormat displayType="text" value={MMD} thousandSeparator="," decimalScale={2} /></span>
   );
@@ -45,11 +45,11 @@ function CollateralRatio (props: {MMD:number, CMMD: number, ExRate:number}): JSX
 }
 
 export function WalletDisplay() {
-  var test_balance = 321.123;
-  var test_balance_large = 654321.123456;
-  var MMD = test_balance;
-  var CMMD = test_balance_large;
-  var ExRate = 50;
+  const test_balance = 321.123;
+  const test_balance_large = 654321.123456;
+  let MMD = test_balance;
+  let CMMD = test_balance_large;
+  const ExRate = 50;
 
   return (
     <Stack>
@@ -71,11 +71,11 @@ export function WalletDisplay() {
 }
 
 export function VaultDisplay() {
-  var test_balance_vault = 21;
-  var test_balance_vault_large = -321.1;
-  var MMD = test_balance_vault;
-  var CMMD = test_balance_vault_large;
-  var ExRate = 50;
+  const test_balance_vault = 21;
+  const test_balance_vault_large = -321.1;
+  let MMD = test_balance_vault;
+  let CMMD = test_balance_vault_large;
+  const ExRate = 50;
 
   return (
     <Stack>
