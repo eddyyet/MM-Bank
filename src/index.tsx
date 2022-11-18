@@ -5,7 +5,7 @@ import { MetaMaskProvider } from "metamask-react";
 import MetaMaskConnection from './metamask';
 import { WalletDisplay, VaultDisplay } from './wallet';
 import { BalanceProvider } from './tokenvalue';
-import { TopUpMMD } from './operation';
+import { TopUpMMD, DepositMMD, WithdrawMMD, TransferCMMD, BorrowCMMD, RepayCMMD } from './operation';
 import './index.css';
 
 const root = ReactDOM.createRoot(
@@ -21,11 +21,11 @@ root.render(
             <WalletDisplay />
             <VaultDisplay />
             <TopUpMMD />
-            <div>Borrow CMMD</div>
-            <div>Repay CMMD</div>
-            <div>Top up MMD</div>
-            <div>Deposit MMD</div>
-            <div>Withdraw MMD</div>
+            <DepositMMD />
+            <WithdrawMMD />
+            <TransferCMMD />
+            <BorrowCMMD />
+            <RepayCMMD />
           </Stack>
         </div>
       </MetaMaskProvider>

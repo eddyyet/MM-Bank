@@ -3,17 +3,17 @@ import React, { createContext, useState, useContext, Dispatch, SetStateAction } 
 export interface BalanceInterface {
   ETD: number;
   MMDinWallet: number;
-  MMDinValut: number;
+  MMDinVault: number;
   CMMDinWallet: number;
-  CMMDinValut: number;
+  CMMDinVault: number;
 }
 
 const BalanceContext = createContext({
   balance: {ETD: NaN,
     MMDinWallet: NaN,
-    MMDinValut: NaN,
+    MMDinVault: NaN,
     CMMDinWallet: NaN,
-    CMMDinValut: NaN} as Partial<BalanceInterface>,
+    CMMDinVault: NaN} as Partial<BalanceInterface>,
   setBalance: {} as Dispatch<SetStateAction<Partial<BalanceInterface>>>,
 });
 
@@ -42,5 +42,6 @@ const useBalance = () => {
 
 const ETDtoMMD = 1000;
 const MMDtoCMMD = 5;
+const MinCollateralRatio = 1.1;
 
-export { BalanceProvider, useBalance, ETDtoMMD, MMDtoCMMD };
+export { BalanceProvider, useBalance, ETDtoMMD, MMDtoCMMD, MinCollateralRatio };
