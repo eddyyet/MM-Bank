@@ -59,7 +59,6 @@
 }
 
 .OperationMessage {
-    height: 100%;
     display: inline-flex;
     align-items: center;
     margin-right: 1rem;

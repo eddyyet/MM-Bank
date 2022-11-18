@@ -5,7 +5,7 @@ import { useBalance, ETDtoMMD, MMDtoCMMD, MinCollateralRatio } from './tokenvalu
 import './component.css';
 
 const OperationTextField = styled(TextField)({
-    width: '100%',
+    width: '100%', 
     '& label':{color:'#999999'},'&:hover label':{color:'#CCCCCC'},'& label.Mui-focused':{color:'#CCCCCC'},
     '& .MuiOutlinedInput-root': {'& fieldset': {borderColor: '#999999'},'&:hover fieldset': {borderColor: '#CCCCCC'},'&.Mui-focused fieldset': {borderColor: '#CCCCCC'}}, 
     input: {textAlign:'right', color:'#999999',
@@ -15,7 +15,7 @@ const OperationTextField = styled(TextField)({
 );
 
 const OperationButton = styled(Button)({
-    height: '100%', width:'100%', marginLeft:'1rem',
+    height: '100%', width:'fill-available', marginLeft:'1rem',
     borderRadius:'2rem', border:'1px solid #999999',backgroundColor:'#1C1B1F',color:'#999999',
     '&:hover':{backgroundColor:'#2B2C2F'}}
 );
@@ -37,22 +37,30 @@ export function TopUpMMD (): JSX.Element {
 
     return (
         <Grid container>
-            <Grid item xs={12} sm={2} className='OperationName'>
-                Top Up MMD
+            <Grid item xs={12} md={9} sx={{ marginBottom:'1rem' }}>
+                <Grid container>
+                    <Grid item xs={4} className='OperationName'>
+                        Top Up MMD
+                    </Grid>
+                    <Grid item xs={8} className='Note'>
+                        <div className='OperationMessage'>{Message}</div>
+                    </Grid>
+                </Grid>
             </Grid>
-            <Grid item xs={12} sm={8} className='Note'>
-                <div className='OperationMessage'>{Message}</div>
-            </Grid>
-            <Grid item xs={8} sm={1}>
-                <OperationTextField size='small' label='MMD'
-                    type='number' inputProps={{ min:'0'}}
-                    value={InputValue}
-                    onChange={event => setInputValue(+event.target.value)} />
-            </Grid>
-            <Grid item xs={4} sm={1}>
-                <OperationButton onClick={() => TopUpMMDOperator(InputValue)}>
-                    Top Up
-                </OperationButton>
+            <Grid item xs={12} md={3}>
+                <Grid container>
+                    <Grid item xs={8} md={6}>
+                        <OperationTextField size='small' label='MMD'
+                            type='number' inputProps={{ min:'0'}}
+                            value={InputValue}
+                            onChange={event => setInputValue(+event.target.value)} />
+                    </Grid>
+                    <Grid item xs={4} md={6}>
+                        <OperationButton onClick={() => TopUpMMDOperator(InputValue)}>
+                            Top Up
+                        </OperationButton>
+                    </Grid>
+                </Grid>
             </Grid>
         </Grid>
     );
@@ -73,22 +81,30 @@ export function DepositMMD (): JSX.Element {
 
     return (
         <Grid container>
-            <Grid item xs={12} sm={2} className='OperationName'>
-                Deposit MMD
+            <Grid item xs={12} md={9} sx={{ marginBottom:'1rem' }}>
+                <Grid container>
+                    <Grid item xs={4} className='OperationName'>
+                        Deposit MMD
+                    </Grid>
+                    <Grid item xs={8} className='Note'>
+                        <div className='OperationMessage'>{Message}</div>
+                    </Grid>
+                </Grid>
             </Grid>
-            <Grid item xs={12} sm={8} className='Note'>
-                <div className='OperationMessage'>{Message}</div>
-            </Grid>
-            <Grid item xs={8} sm={1}>
-                <OperationTextField size='small' label='MMD'
-                    type='number' inputProps={{ min:'0'}}
-                    value={InputValue}
-                    onChange={event => setInputValue(+event.target.value)} />
-            </Grid>
-            <Grid item xs={4} sm={1}>
-                <OperationButton onClick={() => DepositMMDOperator(InputValue)}>
-                    Deposit
-                </OperationButton>
+            <Grid item xs={12} md={3}>
+                <Grid container>
+                    <Grid item xs={8} md={6}>
+                        <OperationTextField size='small' label='MMD'
+                            type='number' inputProps={{ min:'0'}}
+                            value={InputValue}
+                            onChange={event => setInputValue(+event.target.value)} />
+                    </Grid>
+                    <Grid item xs={4} md={6}>
+                        <OperationButton onClick={() => DepositMMDOperator(InputValue)}>
+                            Deposit
+                        </OperationButton>
+                    </Grid>
+                </Grid>
             </Grid>
         </Grid>
     );
@@ -109,22 +125,30 @@ export function WithdrawMMD (): JSX.Element {
 
     return (
         <Grid container>
-            <Grid item xs={12} sm={2} className='OperationName'>
-                Withdraw MMD
+            <Grid item xs={12} md={9} sx={{ marginBottom:'1rem' }}>
+                <Grid container>
+                    <Grid item xs={4} className='OperationName'>
+                        Withdraw MMD
+                    </Grid>
+                    <Grid item xs={8} className='Note'>
+                        <div className='OperationMessage'>{Message}</div>
+                    </Grid>
+                </Grid>
             </Grid>
-            <Grid item xs={12} sm={8} className='Note'>
-                <div className='OperationMessage'>{Message}</div>
-            </Grid>
-            <Grid item xs={8} sm={1}>
-                <OperationTextField size='small' label='MMD'
-                    type='number' inputProps={{ min:'0'}}
-                    value={InputValue}
-                    onChange={event => setInputValue(+event.target.value)} />
-            </Grid>
-            <Grid item xs={4} sm={1}>
-                <OperationButton onClick={() => WithdrawMMDOperator(InputValue)}>
-                    Withdraw
-                </OperationButton>
+            <Grid item xs={12} md={3}>
+                <Grid container>
+                    <Grid item xs={8} md={6}>
+                        <OperationTextField size='small' label='MMD'
+                            type='number' inputProps={{ min:'0'}}
+                            value={InputValue}
+                            onChange={event => setInputValue(+event.target.value)} />
+                    </Grid>
+                    <Grid item xs={4} md={6}>
+                        <OperationButton onClick={() => WithdrawMMDOperator(InputValue)}>
+                            Withdraw
+                        </OperationButton>
+                    </Grid>
+                </Grid>
             </Grid>
         </Grid>
     );
@@ -146,32 +170,38 @@ export function TransferCMMD (): JSX.Element {
 
     return (
         <Grid container>
-            <Grid item xs={12} sm={2} className='OperationName'>
-                Transfer CMMD
-            </Grid>
-            <Grid item xs={12} sm={6} className='Note'>
-                <div className='OperationMessage'>{Message}</div>
-            </Grid>
-            <Grid item xs={12} sm={2}>
-                <Grid item xs={12} sx ={{ paddingRight:'1rem' }}>
-                    <OperationTextField size='small' label='Address'
-                        InputLabelProps={{ shrink: true }}
-                        sx={{ input:{textAlign:'left'} }}
-                        type='text'
-                        value={Address}
-                        onChange={event => setAddress(event.target.value)} />
+            <Grid item xs={12} md={6} sx={{ marginBottom:'1rem' }}>
+                <Grid container>
+                    <Grid item xs={4} className='OperationName'>
+                        Transfer CMMD
+                    </Grid>
+                    <Grid item xs={8} className='Note'>
+                        <div className='OperationMessage'>{Message}</div>
+                    </Grid>
                 </Grid>
             </Grid>
-            <Grid item xs={8} sm={1}>
-                <OperationTextField size='small' label='CMMD'
-                    type='number' inputProps={{ min:'0'}}
-                    value={InputValue}
-                    onChange={event => setInputValue(+event.target.value)} />
+            <Grid item xs={12} md={3} sx ={{ paddingRight:'1rem' }}>
+                <OperationTextField size='small' label='Address'
+                    InputLabelProps={{ shrink: true }}
+                    sx={{ input:{textAlign:'left'} }}
+                    type='text'
+                    value={Address}
+                    onChange={event => setAddress(event.target.value)} />
             </Grid>
-            <Grid item xs={4} sm={1}>
-                <OperationButton onClick={() => TransferCMMDOperator(InputValue)}>
-                    Transfer
-                </OperationButton>
+            <Grid item xs={12} md={3}>
+                <Grid container>
+                    <Grid item xs={8} md={6}>
+                        <OperationTextField size='small' label='CMMD'
+                            type='number' inputProps={{ min:'0'}}
+                            value={InputValue}
+                            onChange={event => setInputValue(+event.target.value)} />
+                    </Grid>
+                    <Grid item xs={4} md={6}>
+                        <OperationButton onClick={() => TransferCMMDOperator(InputValue)}>
+                            Transfer
+                        </OperationButton>
+                    </Grid>
+                </Grid>
             </Grid>
         </Grid>
     );
@@ -199,22 +229,30 @@ export function BorrowCMMD (): JSX.Element {
 
     return (
         <Grid container>
-            <Grid item xs={12} sm={2} className='OperationName'>
-                Borrow CMMD
+            <Grid item xs={12} md={9} sx={{ marginBottom:'1rem' }}>
+                <Grid container>
+                    <Grid item xs={4} className='OperationName'>
+                        Borrow CMMD
+                    </Grid>
+                    <Grid item xs={8} className='Note'>
+                        <div className='OperationMessage'>{Message}</div>
+                    </Grid>
+                </Grid>
             </Grid>
-            <Grid item xs={12} sm={8} className='Note'>
-                <div className='OperationMessage'>{Message}</div>
-            </Grid>
-            <Grid item xs={8} sm={1}>
-                <OperationTextField size='small' label='CMMD'
-                    type='number' inputProps={{ min:'0'}}
-                    value={InputValue}
-                    onChange={event => setInputValue(+event.target.value)} />
-            </Grid>
-            <Grid item xs={4} sm={1}>
-                <OperationButton onClick={() => BorrowCMMDOperator(InputValue)}>
-                    Borrow
-                </OperationButton>
+            <Grid item xs={12} md={3}>
+                <Grid container>
+                    <Grid item xs={8} md={6}>
+                        <OperationTextField size='small' label='CMMD'
+                            type='number' inputProps={{ min:'0'}}
+                            value={InputValue}
+                            onChange={event => setInputValue(+event.target.value)} />
+                    </Grid>
+                    <Grid item xs={4} md={6}>
+                        <OperationButton onClick={() => BorrowCMMDOperator(InputValue)}>
+                          Borrow
+                        </OperationButton>
+                    </Grid>
+                </Grid>
             </Grid>
         </Grid>
     );
@@ -240,22 +278,30 @@ export function RepayCMMD (): JSX.Element {
 
     return (
         <Grid container>
-            <Grid item xs={12} sm={2} className='OperationName'>
-                Repay CMMD
+            <Grid item xs={12} md={9} sx={{ marginBottom:'1rem' }}>
+                <Grid container>
+                    <Grid item xs={4} className='OperationName'>
+                        Repay CMMD
+                    </Grid>
+                    <Grid item xs={8} className='Note'>
+                        <div className='OperationMessage'>{Message}</div>
+                    </Grid>
+                </Grid>
             </Grid>
-            <Grid item xs={12} sm={8} className='Note'>
-                <div className='OperationMessage'>{Message}</div>
-            </Grid>
-            <Grid item xs={8} sm={1}>
-                <OperationTextField size='small' label='CMMD'
-                    type='number' inputProps={{ min:'0'}}
-                    value={InputValue}
-                    onChange={event => setInputValue(+event.target.value)} />
-            </Grid>
-            <Grid item xs={4} sm={1}>
-                <OperationButton onClick={() => RepayCMMDOperator(InputValue)}>
-                    Repay
-                </OperationButton>
+            <Grid item xs={12} md={3}>
+                <Grid container>
+                    <Grid item xs={8} md={6}>
+                        <OperationTextField size='small' label='CMMD'
+                            type='number' inputProps={{ min:'0'}}
+                            value={InputValue}
+                            onChange={event => setInputValue(+event.target.value)} />
+                    </Grid>
+                    <Grid item xs={4} md={6}>
+                        <OperationButton onClick={() => RepayCMMDOperator(InputValue)}>
+                            Repay
+                        </OperationButton>
+                    </Grid>
+                </Grid>
             </Grid>
         </Grid>
     );
