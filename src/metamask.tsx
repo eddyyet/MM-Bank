@@ -8,7 +8,6 @@ import { useBalance } from './tokenvalue';
 export default function MetaMaskConnection () {
     const { status, connect, account, chainId, ethereum } = useMetaMask();
     const { balance, setBalance } = useBalance();
-    // const [balance, setBalance] = useState('');
 
     async function getBalance() {
       const accounts = await ethereum.request({ method: 'eth_requestAccounts' });

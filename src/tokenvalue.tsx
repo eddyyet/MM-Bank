@@ -8,8 +8,12 @@ export interface BalanceInterface {
   CMMDinValut: number;
 }
 
-const BalanceInterface = createContext({
-  balance: {} as Partial<BalanceInterface>,
+const BalanceContext = createContext({
+  balance: {ETD: NaN,
+    MMDinWallet: NaN,
+    MMDinValut: NaN,
+    CMMDinWallet: NaN,
+    CMMDinValut: NaN} as Partial<BalanceInterface>,
   setBalance: {} as Dispatch<SetStateAction<Partial<BalanceInterface>>>,
 });
 
@@ -22,18 +26,21 @@ const BalanceProvider = ({
 }) => {
   const [balance, setBalance] = useState(value);
   return (
-    <BalanceInterface.Provider value={{ balance, setBalance }}>
+    <BalanceContext.Provider value={{ balance, setBalance }}>
       {children}
-    </BalanceInterface.Provider>
+    </BalanceContext.Provider>
   );
 };
 
 const useBalance = () => {
-  const context = useContext(BalanceInterface);
+  const context = useContext(BalanceContext);
   if (!context) {
     throw new Error("useBalance must be used within a BalanceInterface");
   }
   return context;
 };
 
-export { BalanceProvider, useBalance };
+const ETDtoMMD = 1000;
+const MMDtoCMMD = 5;
+
+export { BalanceProvider, useBalance, ETDtoMMD, MMDtoCMMD };
