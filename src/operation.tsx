@@ -29,9 +29,9 @@ export function TopUpMMD (): JSX.Element {
         if (InputValue === NaN || InputValue === 0) {
             setMessage('');
         } else if (InputValue / ETDtoMMD <= ETD) {
-            setMessage('Needs ' + InputValue / ETDtoMMD + ' ETD');
+            setMessage('Consumes ' + InputValue / ETDtoMMD + ' ETD');
         } else {
-            setMessage('Needs ' + InputValue / ETDtoMMD + ' ETD. Not enough ETD.');
+            setMessage('Consumes ' + InputValue / ETDtoMMD + ' ETD. Not enough ETD.');
         }
     }, [InputValue]);
 
