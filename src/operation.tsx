@@ -1,7 +1,7 @@
 import { styled } from '@mui/material/styles';
 import { Grid, TextField, Button } from '@mui/material';
 import { useState, useEffect } from 'react';
-import { useBalance, ETDtoMMD, MMDtoCMMD, MinCollateralRatio } from './tokenvalue';
+import { useBalance, ETDtoMMD, MMDtoCMMD, InitialCollateralRatio, MinCollateralRatio } from './tokenvalue';
 import './component.css';
 
 const OperationTextField = styled(TextField)({
@@ -114,12 +114,17 @@ export function WithdrawMMD (): JSX.Element {
     const [InputValue, setInputValue] = useState<number>(0);
     const [Message, setMessage] = useState<string>('');
     const MMDinVault = Number(useBalance().balance.MMDinVault);
+    const CMMDinVault = Number(useBalance().balance.CMMDinVault);
 
     useEffect(() => {
-        if (InputValue === NaN || InputValue === 0 || InputValue <= MMDinVault) {
+        if (InputValue === NaN || InputValue === 0) {
             setMessage('');
-        } else {
+        } else if (InputValue > MMDinVault) {
             setMessage('Not enough MMD Collateral in Vault');
+        } else if (InputValue <= MMDinVault && (MMDinVault - InputValue) * MMDtoCMMD < - CMMDinVault * MinCollateralRatio) {
+            setMessage('Minimal collateral ratio: 110%. Withdrawal will cause liquidation at 80% of the trading price.');
+        } else {
+            setMessage('');
         }
     }, [InputValue]);
 
@@ -216,14 +221,14 @@ export function BorrowCMMD (): JSX.Element {
     useEffect(() => {
         if (InputValue === NaN || InputValue === 0) {
             setMessage('');
-        } else if (InputValue / MMDtoCMMD <= (MMDinWallet + MMDinVault)) {
-            if (InputValue / MMDtoCMMD <= MMDinVault) {
-                setMessage('Needs ' + InputValue / MMDtoCMMD + ' MMD Collateral in Vault');
+        } else if (InputValue * InitialCollateralRatio / MMDtoCMMD <= (MMDinWallet + MMDinVault)) {
+            if (InputValue * InitialCollateralRatio / MMDtoCMMD <= MMDinVault) {
+                setMessage('Initial collateral ratio: 150%. Needs ' + InputValue * InitialCollateralRatio / MMDtoCMMD + ' MMD Collateral in Vault.');
             } else {
-                setMessage('Needs ' + InputValue / MMDtoCMMD + ' MMD Collateral in Vault. ' + (InputValue / MMDtoCMMD - MMDinVault) + ' MMD will be transferred from Wallet.');
+                setMessage('Initial collateral ratio: 150%. Needs ' + InputValue * InitialCollateralRatio / MMDtoCMMD + ' MMD Collateral in Vault. ' + (InputValue * InitialCollateralRatio / MMDtoCMMD - MMDinVault) + ' MMD will be transferred from Wallet.');
             }
         } else {
-            setMessage('Needs ' + InputValue / MMDtoCMMD + ' MMD Collateral in Vault. Not enough MMD from Wallet and Vault.');
+            setMessage('Initial collateral ratio: 150%. Needs ' + InputValue * InitialCollateralRatio / MMDtoCMMD + ' MMD Collateral in Vault. Not enough MMD from Wallet and Vault.');
         }
     }, [InputValue]);
 

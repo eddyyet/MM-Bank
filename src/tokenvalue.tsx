@@ -43,6 +43,7 @@ const useBalance = () => {
 
 const ETDtoMMD = 1000;
 const MMDtoCMMD = 5;
+const InitialCollateralRatio = 1.5;
 const MinCollateralRatio = 1.1;
 
-export { BalanceProvider, useBalance, ETDtoMMD, MMDtoCMMD, MinCollateralRatio };
+export { BalanceProvider, useBalance, ETDtoMMD, MMDtoCMMD, InitialCollateralRatio, MinCollateralRatio };
