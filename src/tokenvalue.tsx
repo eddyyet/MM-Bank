@@ -9,7 +9,8 @@ export interface BalanceInterface {
 }
 
 const BalanceContext = createContext({
-  balance: {ETD: NaN,
+  balance: {
+    ETD: NaN,
     MMDinWallet: NaN,
     MMDinVault: NaN,
     CMMDinWallet: NaN,

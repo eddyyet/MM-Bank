@@ -170,7 +170,7 @@ export function TransferCMMD (): JSX.Element {
 
     return (
         <Grid container>
-            <Grid item xs={12} md={6} sx={{ marginBottom:'1rem' }}>
+            <Grid item xs={12} md={6} sx={{ marginBottom:['1rem','1rem','0rem'] }}>
                 <Grid container>
                     <Grid item xs={4} className='OperationName'>
                         Transfer CMMD
@@ -180,7 +180,7 @@ export function TransferCMMD (): JSX.Element {
                     </Grid>
                 </Grid>
             </Grid>
-            <Grid item xs={12} md={3} sx ={{ paddingRight:'1rem' }}>
+            <Grid item xs={12} md={3} sx ={{ paddingRight:['null','null','1rem'], marginBottom:['1rem','1rem','0rem'] }}>
                 <OperationTextField size='small' label='Address'
                     InputLabelProps={{ shrink: true }}
                     sx={{ input:{textAlign:'left'} }}
