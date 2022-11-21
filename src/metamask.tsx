@@ -3,7 +3,7 @@ import { Button } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { useMetaMask } from 'metamask-react';
 import { ethers } from 'ethers';
-import { useBalance } from './tokenvalue';
+import { useBalance, NumberFormatted } from './tokenvalue';
 
 export default function MetaMaskConnection () {
     const { status, connect, account, chainId, ethereum } = useMetaMask();
@@ -14,8 +14,8 @@ export default function MetaMaskConnection () {
       const firstAccount = accounts[0];
       const ETDWei = await ethereum.request({method: 'eth_getBalance', params: [firstAccount, 'latest'],});
       
-      const ETDEther = ETDWei ? ethers.utils.formatEther(ETDWei) : '0.0';
-      setBalance(existingBalance => ({existingBalance, ETD: +ETDEther}));
+      const ETDEther = ETDWei ? +ethers.utils.formatEther(ETDWei) : 0;
+      setBalance(existingBalance => ({existingBalance, ETD: ETDEther}));
     }
     getBalance();
 

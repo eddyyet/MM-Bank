@@ -1,6 +1,6 @@
 import { Stack, Grid } from '@mui/material';
 import { Wallet, Lock, ErrorOutlineOutlined } from '@mui/icons-material';
-import { NumericFormat } from 'react-number-format';
+import { NumberFormatted } from './tokenvalue';
 import './component.css';
 
 interface Props {
@@ -17,7 +17,7 @@ function BalanceBox (props: Props): JSX.Element {
         {props.currency}
       </Grid>
       <Grid item xs={10} className={props.BalanceClass}>
-        <NumericFormat displayType="text" value={props.balance} thousandSeparator="," decimalScale={2} />
+        <NumberFormatted value={props.balance} />
       </Grid>
     </Grid>
   );
@@ -26,7 +26,7 @@ function BalanceBox (props: Props): JSX.Element {
 function MMDEquivalent (props: {CMMD: number, ExRate:number}): JSX.Element {
   let MMD = props.CMMD / props.ExRate;
   return (
-    <span>≈ MMD <NumericFormat displayType="text" value={MMD} thousandSeparator="," decimalScale={2} /></span>
+    <span>≈ MMD <NumberFormatted value={MMD} /></span>
   );
 }
 
@@ -40,7 +40,7 @@ function CollateralRatio (props: {MMD:number, CMMD: number, ExRate:number}): JSX
   }
 
   return (
-    <span>Collateral ratio: <NumericFormat displayType="text" value={CollateralRatio} thousandSeparator="," decimalScale={0} />%</span>
+    <span>Collateral ratio: <NumberFormatted value={CollateralRatio} />%</span>
   );
 }
 

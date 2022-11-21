@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext, Dispatch, SetStateAction } from "react";
+import { NumericFormat } from 'react-number-format';
 
 export interface BalanceInterface {
   ETD: number;
@@ -41,9 +42,13 @@ const useBalance = () => {
   return context;
 };
 
+function NumberFormatted (props: {value: number}) {
+  return <NumericFormat displayType="text" value={props.value} thousandSeparator="," decimalScale={2} />;
+}
+
 const ETDtoMMD = 1000;
 const MMDtoCMMD = 5;
 const InitialCollateralRatio = 1.5;
 const MinCollateralRatio = 1.1;
 
-export { BalanceProvider, useBalance, ETDtoMMD, MMDtoCMMD, InitialCollateralRatio, MinCollateralRatio };
+export { BalanceProvider, useBalance, NumberFormatted, ETDtoMMD, MMDtoCMMD, InitialCollateralRatio, MinCollateralRatio };
