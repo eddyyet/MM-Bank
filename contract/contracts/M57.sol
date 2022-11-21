@@ -5,6 +5,6 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract MSBD5017Token is ERC20 {
     constructor() ERC20("MSBD5017", "M57") {
-        _mint(msg.sender, 3000);
+        _mint(msg.sender, 3000*10**18);
     }
 }

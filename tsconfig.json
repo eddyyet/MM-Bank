@@ -21,6 +21,5 @@
     "jsx": "react-jsx"
   },
   "include": [
-    "src", "contract"
-  ]
+    "src", "contracts"  ]
 }

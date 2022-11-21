@@ -7,8 +7,8 @@ async function main() {
   await contract.deployed();
   console.log("Contract deployed to:", contract.address);
 
-  // const value = await contract.balanceOf('0x2Efe371AA24D1276B91F8C50C86c2e2D163e966d');
-  // console.log("Contract balance:", value.toString());
+  const value = await contract.balanceOf('0x2Efe371AA24D1276B91F8C50C86c2e2D163e966d');
+  console.log("Contract balance:", value.toString());
 }
 
 // We recommend this pattern to be able to use async/await everywhere
