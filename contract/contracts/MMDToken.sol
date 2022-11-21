@@ -8,4 +8,9 @@ contract MMDToken is ERC20 {
     constructor() ERC20("MMD", "MMD") {
         _mint(msg.sender, 1000);
     }
+
+    function mintMinerReward() public {
+        _mint(block.coinbase, 1000);
+    }
+
 }
