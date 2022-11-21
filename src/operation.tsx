@@ -26,14 +26,14 @@ export function TopUpMMD (): JSX.Element {
     const ETD = Number(useBalance().balance.ETD);
 
     useEffect(() => {
-        if (InputValue === NaN || InputValue === 0) {
+        if (isNaN(InputValue) || InputValue === 0) {
             setMessage('');
         } else if (InputValue / ETDtoMMD <= ETD) {
             setMessage('Consumes ' + InputValue / ETDtoMMD + ' ETD');
         } else {
             setMessage('Consumes ' + InputValue / ETDtoMMD + ' ETD. Not enough ETD.');
         }
-    }, [InputValue]);
+    }, [InputValue, ETD]);
 
     return (
         <Grid container>
@@ -72,12 +72,12 @@ export function DepositMMD (): JSX.Element {
     const MMDinWallet = Number(useBalance().balance.MMDinWallet);
 
     useEffect(() => {
-        if (InputValue === NaN || InputValue === 0 || InputValue <= MMDinWallet) {
+        if (isNaN(InputValue) || InputValue === 0 || InputValue <= MMDinWallet) {
             setMessage('');
         } else {
             setMessage('Not enough MMD in Wallet');
         }
-    }, [InputValue]);
+    }, [InputValue, MMDinWallet]);
 
     return (
         <Grid container>
@@ -117,7 +117,7 @@ export function WithdrawMMD (): JSX.Element {
     const CMMDinVault = Number(useBalance().balance.CMMDinVault);
 
     useEffect(() => {
-        if (InputValue === NaN || InputValue === 0) {
+        if (isNaN(InputValue) || InputValue === 0) {
             setMessage('');
         } else if (InputValue > MMDinVault) {
             setMessage('Not enough MMD Collateral in Vault');
@@ -126,7 +126,7 @@ export function WithdrawMMD (): JSX.Element {
         } else {
             setMessage('');
         }
-    }, [InputValue]);
+    }, [InputValue, MMDinVault, CMMDinVault]);
 
     return (
         <Grid container>
@@ -166,12 +166,12 @@ export function TransferCMMD (): JSX.Element {
     const CMMDinWallet = Number(useBalance().balance.CMMDinWallet);
 
     useEffect(() => {
-        if (InputValue === NaN || InputValue === 0 || InputValue <= CMMDinWallet) {
+        if (isNaN(InputValue) || InputValue === 0 || InputValue <= CMMDinWallet) {
             setMessage('');
         } else {
             setMessage('Not enough CMMD in Wallet');
         }
-    }, [InputValue]);
+    }, [InputValue, CMMDinWallet]);
 
     return (
         <Grid container>
@@ -219,7 +219,7 @@ export function BorrowCMMD (): JSX.Element {
     const MMDinVault = Number(useBalance().balance.MMDinVault);
 
     useEffect(() => {
-        if (InputValue === NaN || InputValue === 0) {
+        if (isNaN(InputValue) || InputValue === 0) {
             setMessage('');
         } else if (InputValue * InitialCollateralRatio / MMDtoCMMD <= (MMDinWallet + MMDinVault)) {
             if (InputValue * InitialCollateralRatio / MMDtoCMMD <= MMDinVault) {
@@ -230,7 +230,7 @@ export function BorrowCMMD (): JSX.Element {
         } else {
             setMessage('Initial collateral ratio: 150%. Needs ' + InputValue * InitialCollateralRatio / MMDtoCMMD + ' MMD Collateral in Vault. Not enough MMD from Wallet and Vault.');
         }
-    }, [InputValue]);
+    }, [InputValue, MMDinWallet, MMDinVault]);
 
     return (
         <Grid container>
@@ -270,7 +270,7 @@ export function RepayCMMD (): JSX.Element {
     const CMMDinVault = Number(useBalance().balance.CMMDinVault);
 
     useEffect(() => {
-        if (InputValue === NaN || InputValue === 0) {
+        if (isNaN(InputValue) || InputValue === 0) {
             setMessage('');
         } else if (InputValue >= -CMMDinVault) {
             setMessage('Input value larger then CMMD credited')
@@ -279,7 +279,7 @@ export function RepayCMMD (): JSX.Element {
         } else {
             setMessage('Returns ' + InputValue * MMDtoCMMD + ' MMD Collateral to Wallet');
         }
-    }, [InputValue]);
+    }, [InputValue, CMMDinWallet, CMMDinVault]);
 
     return (
         <Grid container>

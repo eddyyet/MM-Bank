@@ -1,20 +1,16 @@
-import { useState } from 'react';
 import { Button } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { useMetaMask } from 'metamask-react';
 import { ethers } from 'ethers';
-import { useBalance, NumberFormatted } from './tokenvalue';
+import { useBalance } from './tokenvalue';
 
 export default function MetaMaskConnection () {
     const { status, connect, account, chainId, ethereum } = useMetaMask();
     const { balance, setBalance } = useBalance();
 
     async function getBalance() {
-      const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-      const firstAccount = accounts[0];
-      const ETDWei = await ethereum.request({method: 'eth_getBalance', params: [firstAccount, 'latest'],});
-      
-      const ETDEther = ETDWei ? +ethers.utils.formatEther(ETDWei) : 0;
+      const ETDWei = await ethereum.request({method: 'eth_getBalance', params: [account, 'latest'],});
+      const ETDEther = ETDWei ? +ethers.utils.formatEther(ETDWei) : NaN;
       setBalance(existingBalance => ({existingBalance, ETD: ETDEther}));
     }
     getBalance();
