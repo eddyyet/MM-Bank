@@ -1,6 +1,9 @@
 import { Stack, Grid } from '@mui/material';
 import { Wallet, Lock, ErrorOutlineOutlined } from '@mui/icons-material';
-import { NumberFormatted } from './tokenvalue';
+import { useMetaMask } from 'metamask-react';
+import { ethers } from 'ethers';
+import { useBalance, NumberFormatted } from './tokenvalue';
+import { M57Contract } from './contractinstance';
 import './component.css';
 
 interface Props {
@@ -45,6 +48,16 @@ function CollateralRatio (props: {MMD:number, CMMD: number, ExRate:number}): JSX
 }
 
 export function WalletDisplay() {
+  const { account } = useMetaMask();
+  const { balance, setBalance } = useBalance();
+
+  async function getBalance() {
+    const MMDinWalletWei = await M57Contract.methods.balanceOf(account);
+    const MMDinWalletEther = MMDinWalletWei ? +ethers.utils.formatEther(MMDinWalletWei) : NaN;
+    await setBalance(existingBalance => ({existingBalance, MMDinWallet: MMDinWalletEther}));
+  }
+  getBalance();
+
   const test_balance = 321.123;
   const test_balance_large = 654321.123456;
   let MMD = test_balance;
@@ -58,7 +71,7 @@ export function WalletDisplay() {
       </div>
       <Grid container className ='BalanceBoxContent'>
         <Grid item xs={5}>
-          <BalanceBox CurrencyClass='CurrencyFormat' currency='MMD' BalanceClass='BalanceFormat BalancePrimary MMD-color' balance={MMD} />
+          <BalanceBox CurrencyClass='CurrencyFormat' currency='MMD' BalanceClass='BalanceFormat BalancePrimary MMD-color' balance={Number(balance.MMDinWallet)} />
         </Grid>
         <Grid item xs={2} />
         <Grid item xs={5}>
