@@ -56,7 +56,7 @@ export function WalletDisplay() {
     if (account) {
       const MMDinWalletWei = await M57Contract().balanceOf(account);
       const MMDinWalletEther = MMDinWalletWei ? +ethers.utils.formatEther(MMDinWalletWei) : NaN;
-      if (MMDinWalletEther !== balance.MMDinWallet) { setBalance(existingBalance => ({existingBalance, MMDinWallet: MMDinWalletEther})) };
+      if (MMDinWalletEther !== balance.MMDinWallet) { setBalance(existingBalance => ({...existingBalance, MMDinWallet: MMDinWalletEther})) };
     }
   }
   getBalance();

@@ -9,7 +9,7 @@ export default function MetaMaskConnection () {
     const { balance, setBalance } = useBalance();
 
     async function getBalance() {
-      if (account !== null) {
+      if (account) {
         const ETDWei = await ethereum.request({method: 'eth_getBalance', params: [account, 'latest'],});
         const ETDEther = ETDWei ? +ethers.utils.formatEther(ETDWei) : NaN;
         if (ETDEther !== balance.ETD) { setBalance(existingBalance => ({...existingBalance, ETD: ETDEther})); }
