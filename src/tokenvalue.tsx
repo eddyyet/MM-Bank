@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, Dispatch, SetStateAction } from "react";
 import { NumericFormat } from 'react-number-format';
 
+/* Balance interface */
 export interface BalanceInterface {
   ETD: number;
   MMDinWallet: number;
@@ -41,6 +42,35 @@ const useBalance = () => {
   }
   return context;
 };
+
+/* ETD interface */
+// const ETDContext = createContext({
+//   ETD: NaN as number,
+//   setETD: {} as Dispatch<SetStateAction<number>>,
+// });
+
+// const ETDProvider = ({
+//   children,
+//   value = {} as number,
+// }: {
+//   children: React.ReactNode;
+//   value?: number;
+// }) => {
+//   const [ETD, setETD] = useState(value);
+//   return (
+//     <ETDContext.Provider value={{ ETD, setETD }}>
+//       {children}
+//     </ETDContext.Provider>
+//   );
+// };
+
+// const useETD = () => {
+//   const context = useContext(ETDContext);
+//   if (!context) {
+//     throw new Error("useETD must be used within a ETDInterface");
+//   }
+//   return context;
+// };
 
 function NumberFormatted (props: {value: number}) {
   return <NumericFormat displayType="text" value={props.value} thousandSeparator="," decimalScale={2} />;

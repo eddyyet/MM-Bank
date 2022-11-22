@@ -1,6 +1,7 @@
 import { Stack, Grid } from '@mui/material';
 import { Wallet, Lock, ErrorOutlineOutlined } from '@mui/icons-material';
 import { useMetaMask } from 'metamask-react';
+import React from 'react';
 import { ethers } from 'ethers';
 import { useBalance, NumberFormatted } from './tokenvalue';
 import { M57Contract } from './contractinstance';
@@ -52,15 +53,15 @@ export function WalletDisplay() {
   const { balance, setBalance } = useBalance();
 
   async function getBalance() {
-    const MMDinWalletWei = await M57Contract().balanceOf(account);
-    const MMDinWalletEther = MMDinWalletWei ? +ethers.utils.formatEther(MMDinWalletWei) : NaN;
-    setBalance(existingBalance => ({existingBalance, MMDinWallet: MMDinWalletEther}));
+    if (account) {
+      const MMDinWalletWei = await M57Contract().balanceOf(account);
+      const MMDinWalletEther = MMDinWalletWei ? +ethers.utils.formatEther(MMDinWalletWei) : NaN;
+      if (MMDinWalletEther !== balance.MMDinWallet) { setBalance(existingBalance => ({existingBalance, MMDinWallet: MMDinWalletEther})) };
+    }
   }
   getBalance();
 
-  const test_balance = 321.123;
   const test_balance_large = 654321.123456;
-  let MMD = test_balance;
   let CMMD = test_balance_large;
   const ExRate = 50;
 

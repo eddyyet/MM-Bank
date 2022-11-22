@@ -9,7 +9,6 @@
     "@etherdata-blockchain/etherdata-sdk-account": "^5.1.3",
     "@etherdata-blockchain/etherdata-sdk-common": "^5.1.3",
     "@fontsource/news-cycle": "^4.5.9",
-    "@metamask/providers": "^10.2.1",
     "@mui/icons-material": "^5.10.9",
     "@mui/lab": "^5.0.0-alpha.107",
     "@mui/material": "^5.10.13",
