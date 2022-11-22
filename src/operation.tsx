@@ -1,7 +1,10 @@
 import { styled } from '@mui/material/styles';
 import { Grid, TextField, Button } from '@mui/material';
 import { useState, useEffect } from 'react';
+import { useMetaMask } from 'metamask-react';
 import { useBalance, ETDtoMMD, MMDtoCMMD, InitialCollateralRatio, MinCollateralRatio } from './tokenvalue';
+import { M57Contract } from './contractinstance';
+import { ethers } from 'ethers';
 import './component.css';
 
 const OperationTextField = styled(TextField)({
@@ -313,7 +316,23 @@ export function RepayCMMD (): JSX.Element {
 }
 
 function TopUpMMDOperator (input: number): void {
+    const { account, ethereum} = useMetaMask();
+    const { balance, setBalance } = useBalance();
 
+    async function TopUp() {
+        if (account) {
+            await M57Contract().buy({value: input * 1e18});
+
+            const ETDWei = await ethereum.request({method: 'eth_getBalance', params: [account, 'latest'],});
+            const ETDEther = ETDWei ? +ethers.utils.formatEther(ETDWei) : NaN;
+            if (ETDEther !== balance.ETD) { setBalance(existingBalance => ({...existingBalance, ETD: ETDEther})); }
+
+            const MMDinWalletWei = await M57Contract().balanceOf(account);
+            const MMDinWalletEther = MMDinWalletWei ? +ethers.utils.formatEther(MMDinWalletWei) : NaN;
+            if (MMDinWalletEther !== balance.MMDinWallet) { setBalance(existingBalance => ({...existingBalance, MMDinWallet: MMDinWalletEther})) };
+        }
+    }
+    TopUp();
 }
 
 function DepositMMDOperator (input: number): void {
