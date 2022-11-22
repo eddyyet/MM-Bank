@@ -12,7 +12,7 @@ declare global {
     }
   }
 
-export const M57Contract = () => { 
+export function M57Contract() { 
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const contract = new ethers.Contract(M57Address, M57ABI, provider);
     console.log(contract.balanceOf('0x2efe371aa24d1276b91f8c50c86c2e2d163e966d'));

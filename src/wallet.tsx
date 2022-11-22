@@ -52,9 +52,9 @@ export function WalletDisplay() {
   const { balance, setBalance } = useBalance();
 
   async function getBalance() {
-    const MMDinWalletWei = await M57Contract.methods.balanceOf(account);
+    const MMDinWalletWei = await M57Contract().balanceOf(account);
     const MMDinWalletEther = MMDinWalletWei ? +ethers.utils.formatEther(MMDinWalletWei) : NaN;
-    await setBalance(existingBalance => ({existingBalance, MMDinWallet: MMDinWalletEther}));
+    setBalance(existingBalance => ({existingBalance, MMDinWallet: MMDinWalletEther}));
   }
   getBalance();
 
