@@ -1,8 +1,7 @@
 import { ethers } from 'ethers';
-import { M57ABI } from './M57.abi'; 
+import { MMDABI } from './MMD.abi'; 
 
-const M57Address = '0x6afcb5f153efC2B35c52B12682ab6c9B5FDF73C1';
-// const MMDAddress = '';
+const MMDAddress = '0x7D0Ee74f1df232EE48289B7e4f6c65239e6f4c24';
 // const CMMDAddress = '';
 
 declare global {
@@ -11,8 +10,8 @@ declare global {
     }
   }
 
-export function M57Contract() { 
+export function MMDContract() { 
     const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const contract = new ethers.Contract(M57Address, M57ABI, provider);;
+    const contract = new ethers.Contract(MMDAddress, MMDABI, provider);;
     return contract;
 }

@@ -18,6 +18,10 @@ contract MMDToken is ERC20 {
         _mint(msg.sender, 25000*10**18);
     }
 
+    function vaultBalanceOf(address account) public view virtual returns (uint256) {
+        return _vaultBalances[account];
+    }
+
     function buy() payable external {
         uint256 amount = msg.value * 1000;
         _mint(msg.sender, amount);

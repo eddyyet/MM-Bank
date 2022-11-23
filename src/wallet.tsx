@@ -3,8 +3,8 @@ import { Wallet, Lock, ErrorOutlineOutlined } from '@mui/icons-material';
 import { useMetaMask } from 'metamask-react';
 import React from 'react';
 import { ethers } from 'ethers';
-import { useBalance, NumberFormatted } from './tokenvalue';
-import { M57Contract } from './contractinstance';
+import { useBalance, NumberFormatted, MMDtoCMMD } from './tokenvalue';
+import { MMDContract } from './contractinstance';
 import './component.css';
 
 interface Props {
@@ -54,7 +54,7 @@ export function WalletDisplay() {
 
   async function getBalance() {
     if (account) {
-      const MMDinWalletWei = await M57Contract().balanceOf(account);
+      const MMDinWalletWei = await MMDContract().balanceOf(account);
       const MMDinWalletEther = MMDinWalletWei ? +ethers.utils.formatEther(MMDinWalletWei) : NaN;
       if (MMDinWalletEther !== balance.MMDinWallet) { setBalance(existingBalance => ({...existingBalance, MMDinWallet: MMDinWalletEther})) };
     }
@@ -63,7 +63,6 @@ export function WalletDisplay() {
 
   const test_balance_large = 654321.123456;
   let CMMD = test_balance_large;
-  const ExRate = 50;
 
   return (
     <Stack>
@@ -72,24 +71,35 @@ export function WalletDisplay() {
       </div>
       <Grid container className ='BalanceBoxContent'>
         <Grid item xs={5}>
-          <BalanceBox CurrencyClass='CurrencyFormat' currency='MMD' BalanceClass='BalanceFormat BalancePrimary MMD-color' balance={Number(balance.MMDinWallet)} />
+          <BalanceBox CurrencyClass='CurrencyFormat' currency='MMD' BalanceClass='BalanceFormat BalancePrimary MMD-color' balance={balance.MMDinWallet ? balance.MMDinWallet : 0} />
         </Grid>
         <Grid item xs={2} />
         <Grid item xs={5}>
           <BalanceBox CurrencyClass='CurrencyFormat' currency='CMMD' BalanceClass='BalanceFormat BalancePrimary CMMD-color' balance={CMMD} />
         </Grid>
-        <Grid item xs={12} className='Note'><MMDEquivalent CMMD={CMMD} ExRate={ExRate} /></Grid>
+        <Grid item xs={12} className='Note'><MMDEquivalent CMMD={CMMD} ExRate={MMDtoCMMD} /></Grid>
       </Grid>
     </Stack>
   );
 }
 
 export function VaultDisplay() {
+  const { account } = useMetaMask();
+  const { balance, setBalance } = useBalance();
+
+  async function getBalance() {
+    if (account) {
+      const MMDinVaultWei = await MMDContract().vaultBalanceOf(account);
+      const MMDinVaultEther = MMDinVaultWei ? +ethers.utils.formatEther(MMDinVaultWei) : NaN;
+      if (MMDinVaultEther !== balance.MMDinVault) { setBalance(existingBalance => ({...existingBalance, MMDinVault: MMDinVaultEther})) };
+    }
+  }
+  getBalance();
+
   const test_balance_vault = 21;
   const test_balance_vault_large = -321.1;
   let MMD = test_balance_vault;
   let CMMD = test_balance_vault_large;
-  const ExRate = 50;
 
   return (
     <Stack>
@@ -98,14 +108,14 @@ export function VaultDisplay() {
       </div>
       <Grid container className ='BalanceBoxContent'>
         <Grid item xs={5}>
-          <BalanceBox CurrencyClass='CurrencyFormat' currency='MMD Colleteral' BalanceClass='BalanceFormat BalanceSecondary MMD-color' balance={MMD} />
+          <BalanceBox CurrencyClass='CurrencyFormat' currency='MMD Colleteral' BalanceClass='BalanceFormat BalanceSecondary MMD-color' balance={balance.MMDinVault ? balance.MMDinVault : 0} />
         </Grid>
         <Grid item xs={2} />
         <Grid item xs={5}>
           <BalanceBox CurrencyClass='CurrencyFormat' currency='CMMD Credited' BalanceClass='BalanceFormat BalanceSecondary CMMD-color' balance={CMMD} />
         </Grid>
-        <Grid item xs={12} className='Note'><MMDEquivalent CMMD={CMMD} ExRate={ExRate} /></Grid>
-        <Grid item xs={12} className='Note'><CollateralRatio MMD={MMD} CMMD={CMMD} ExRate={ExRate} /></Grid>
+        <Grid item xs={12} className='Note'><MMDEquivalent CMMD={CMMD} ExRate={MMDtoCMMD} /></Grid>
+        <Grid item xs={12} className='Note'><CollateralRatio MMD={MMD} CMMD={CMMD} ExRate={MMDtoCMMD} /></Grid>
         <Grid item xs={12} className='Note'><ErrorOutlineOutlined className='icon_small' sx={{ fontSize: 12.8 }} /> Liquidates when the collateral ratio is below 110%</Grid>
       </Grid>
     </Stack>

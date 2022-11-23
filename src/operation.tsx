@@ -3,7 +3,7 @@ import { Grid, TextField, Button } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { useMetaMask } from 'metamask-react';
 import { useBalance, ETDtoMMD, MMDtoCMMD, InitialCollateralRatio, MinCollateralRatio } from './tokenvalue';
-import { M57Contract } from './contractinstance';
+import { MMDContract } from './contractinstance';
 import { ethers } from 'ethers';
 import './component.css';
 
@@ -316,27 +316,43 @@ export function RepayCMMD (): JSX.Element {
 }
 
 function TopUpMMDOperator (input: number): void {
-    const { account, ethereum} = useMetaMask();
-    const { balance, setBalance } = useBalance();
+    // const { account, ethereum} = useMetaMask();
+    // const { balance, setBalance } = useBalance();
 
-    async function TopUp() {
-        if (account) {
-            await M57Contract().buy({value: input * 1e18});
+    // async function TopUp() {
+    //     if (account) {
+    //         await MMDContract().buy({value: input * 1e18});
 
-            const ETDWei = await ethereum.request({method: 'eth_getBalance', params: [account, 'latest'],});
-            const ETDEther = ETDWei ? +ethers.utils.formatEther(ETDWei) : NaN;
-            if (ETDEther !== balance.ETD) { setBalance(existingBalance => ({...existingBalance, ETD: ETDEther})); }
+    //         const ETDWei = await ethereum.request({method: 'eth_getBalance', params: [account, 'latest'],});
+    //         const ETDEther = ETDWei ? +ethers.utils.formatEther(ETDWei) : NaN;
+    //         if (ETDEther !== balance.ETD) { setBalance(existingBalance => ({...existingBalance, ETD: ETDEther})); }
 
-            const MMDinWalletWei = await M57Contract().balanceOf(account);
-            const MMDinWalletEther = MMDinWalletWei ? +ethers.utils.formatEther(MMDinWalletWei) : NaN;
-            if (MMDinWalletEther !== balance.MMDinWallet) { setBalance(existingBalance => ({...existingBalance, MMDinWallet: MMDinWalletEther})) };
-        }
-    }
-    TopUp();
+    //         const MMDinWalletWei = await MMDContract().balanceOf(account);
+    //         const MMDinWalletEther = MMDinWalletWei ? +ethers.utils.formatEther(MMDinWalletWei) : NaN;
+    //         if (MMDinWalletEther !== balance.MMDinWallet) { setBalance(existingBalance => ({...existingBalance, MMDinWallet: MMDinWalletEther})) };
+    //     }
+    // }
+    // TopUp();
 }
 
 function DepositMMDOperator (input: number): void {
+    const { account } = useMetaMask();
+    const { balance, setBalance } = useBalance();
 
+    async function Deposit() {
+        if (account) {
+            await MMDContract().deposit(ethers.utils.parseEther(String(input)));
+
+            const MMDinWalletWei = await MMDContract().balanceOf(account);
+            const MMDinWalletEther = MMDinWalletWei ? +ethers.utils.formatEther(MMDinWalletWei) : NaN;
+            if (MMDinWalletEther !== balance.MMDinWallet) { setBalance(existingBalance => ({...existingBalance, MMDinWallet: MMDinWalletEther})) };
+
+            const MMDinVaultWei = await MMDContract().vaultBalanceOf(account);
+            const MMDinVaultEther = MMDinVaultWei ? +ethers.utils.formatEther(MMDinVaultWei) : NaN;
+            if (MMDinVaultEther !== balance.MMDinVault) { setBalance(existingBalance => ({...existingBalance, MMDinVault: MMDinVaultEther})) };
+        }
+    }
+    Deposit();
 }
 
 function WithdrawMMDOperator (input: number): void {
