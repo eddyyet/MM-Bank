@@ -70,6 +70,8 @@ export function TopUpMMD (): JSX.Element {
 }
 
 export function DepositMMD (): JSX.Element {
+    const { account } = useMetaMask();
+    const { balance, setBalance } = useBalance();
     const [InputValue, setInputValue] = useState<number>(0);
     const [Message, setMessage] = useState<string>('');
     const MMDinWallet = Number(useBalance().balance.MMDinWallet);
@@ -81,6 +83,20 @@ export function DepositMMD (): JSX.Element {
             setMessage('Not enough MMD in Wallet');
         }
     }, [InputValue, MMDinWallet]);
+
+    async function Deposit(input: number) {
+        if (account) {
+            await MMDContract().deposit(ethers.utils.parseEther(String(input)));
+
+            const MMDinWalletWei = await MMDContract().balanceOf(account);
+            const MMDinWalletEther = MMDinWalletWei ? +ethers.utils.formatEther(MMDinWalletWei) : NaN;
+            if (MMDinWalletEther !== balance.MMDinWallet) { setBalance(existingBalance => ({...existingBalance, MMDinWallet: MMDinWalletEther})) };
+
+            const MMDinVaultWei = await MMDContract().vaultBalanceOf(account);
+            const MMDinVaultEther = MMDinVaultWei ? +ethers.utils.formatEther(MMDinVaultWei) : NaN;
+            if (MMDinVaultEther !== balance.MMDinVault) { setBalance(existingBalance => ({...existingBalance, MMDinVault: MMDinVaultEther})) };
+        }
+    }
 
     return (
         <Grid container>
@@ -103,7 +119,7 @@ export function DepositMMD (): JSX.Element {
                             onChange={event => setInputValue(+event.target.value)} />
                     </Grid>
                     <Grid item xs={4} md={6}>
-                        <OperationButton onClick={() => DepositMMDOperator(InputValue)}>
+                        <OperationButton onClick={() => Deposit(InputValue)}>
                             Deposit
                         </OperationButton>
                     </Grid>
@@ -335,25 +351,9 @@ function TopUpMMDOperator (input: number): void {
     // TopUp();
 }
 
-function DepositMMDOperator (input: number): void {
-    const { account } = useMetaMask();
-    const { balance, setBalance } = useBalance();
-
-    async function Deposit() {
-        if (account) {
-            await MMDContract().deposit(ethers.utils.parseEther(String(input)));
-
-            const MMDinWalletWei = await MMDContract().balanceOf(account);
-            const MMDinWalletEther = MMDinWalletWei ? +ethers.utils.formatEther(MMDinWalletWei) : NaN;
-            if (MMDinWalletEther !== balance.MMDinWallet) { setBalance(existingBalance => ({...existingBalance, MMDinWallet: MMDinWalletEther})) };
-
-            const MMDinVaultWei = await MMDContract().vaultBalanceOf(account);
-            const MMDinVaultEther = MMDinVaultWei ? +ethers.utils.formatEther(MMDinVaultWei) : NaN;
-            if (MMDinVaultEther !== balance.MMDinVault) { setBalance(existingBalance => ({...existingBalance, MMDinVault: MMDinVaultEther})) };
-        }
-    }
-    Deposit();
-}
+// function DepositMMDOperator (input: number): void {
+    
+// }
 
 function WithdrawMMDOperator (input: number): void {
 

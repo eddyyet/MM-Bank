@@ -12,6 +12,8 @@ declare global {
 
 export function MMDContract() { 
     const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const contract = new ethers.Contract(MMDAddress, MMDABI, provider);;
-    return contract;
+    const signer = provider.getSigner();
+    const contract = new ethers.Contract(MMDAddress, MMDABI, provider);
+    const contractSigned = contract.connect(signer);
+    return contractSigned;
 }
