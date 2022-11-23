@@ -1,7 +1,7 @@
 import { ethers } from "hardhat";
 
 async function main() {
-  const Contract = await ethers.getContractFactory("MSBD5017Token");
+  const Contract = await ethers.getContractFactory("MMDToken");
   const contract = await Contract.deploy();
 
   await contract.deployed();

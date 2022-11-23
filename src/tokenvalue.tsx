@@ -43,42 +43,15 @@ const useBalance = () => {
   return context;
 };
 
-/* ETD interface */
-// const ETDContext = createContext({
-//   ETD: NaN as number,
-//   setETD: {} as Dispatch<SetStateAction<number>>,
-// });
-
-// const ETDProvider = ({
-//   children,
-//   value = {} as number,
-// }: {
-//   children: React.ReactNode;
-//   value?: number;
-// }) => {
-//   const [ETD, setETD] = useState(value);
-//   return (
-//     <ETDContext.Provider value={{ ETD, setETD }}>
-//       {children}
-//     </ETDContext.Provider>
-//   );
-// };
-
-// const useETD = () => {
-//   const context = useContext(ETDContext);
-//   if (!context) {
-//     throw new Error("useETD must be used within a ETDInterface");
-//   }
-//   return context;
-// };
-
 function NumberFormatted (props: {value: number}) {
   return <NumericFormat displayType="text" value={props.value} thousandSeparator="," decimalScale={2} />;
 }
 
+/* constants - token value ratios */
 const ETDtoMMD = 1000;
 const MMDtoCMMD = 5;
 const InitialCollateralRatio = 1.5;
 const MinCollateralRatio = 1.1;
 
+/* export */
 export { BalanceProvider, useBalance, NumberFormatted, ETDtoMMD, MMDtoCMMD, InitialCollateralRatio, MinCollateralRatio };
