@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { MMDABI } from './MMD.abi'; 
 
-const MMDAddress = '0x7D0Ee74f1df232EE48289B7e4f6c65239e6f4c24';
+const MMDAddress = '0x5038BB6563b386889f7A4c369Ba621166CDDc0b8';
 // const CMMDAddress = '';
 
 declare global {

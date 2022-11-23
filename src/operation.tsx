@@ -86,7 +86,7 @@ export function DepositMMD (): JSX.Element {
 
     async function Deposit(input: number) {
         if (account) {
-            await MMDContract().deposit(ethers.utils.parseEther(String(input)));
+            await MMDContract().deposit(ethers.utils.parseEther(String(input)), {gasLimit:1e6, gasPrice:1e7});
 
             const MMDinWalletWei = await MMDContract().balanceOf(account);
             const MMDinWalletEther = MMDinWalletWei ? +ethers.utils.formatEther(MMDinWalletWei) : NaN;
