@@ -1,17 +1,17 @@
-import { Stack, Grid } from '@mui/material';
-import { Wallet, Lock, ErrorOutlineOutlined } from '@mui/icons-material';
-import { useMetaMask } from 'metamask-react';
-import React from 'react';
-import { ethers } from 'ethers';
-import { useBalance, NumberFormatted, MMDtoCMMD } from './tokenvalue';
-import { MMDContract } from './contractinstance';
-import './component.css';
+import React from 'react'
+import { Stack, Grid } from '@mui/material'
+import { Wallet, Lock, ErrorOutlineOutlined } from '@mui/icons-material'
+import { useMetaMask } from 'metamask-react'
+import { ethers } from 'ethers'
+import { useBalance, NumberFormatted, MMDtoCMMD } from './tokenvalue'
+import { MMDContract } from './contractinstance'
+import './component.css'
 
 interface Props {
-  CurrencyClass: string;
-  currency: string;
-  BalanceClass: string;
-  balance: number;
+  CurrencyClass: string
+  currency: string
+  BalanceClass: string
+  balance: number
 }
 
 function BalanceBox (props: Props): JSX.Element {
@@ -24,45 +24,45 @@ function BalanceBox (props: Props): JSX.Element {
         <NumberFormatted value={props.balance} />
       </Grid>
     </Grid>
-  );
+  )
 }
 
-function MMDEquivalent (props: {CMMD: number, ExRate:number}): JSX.Element {
-  let MMD = props.CMMD / props.ExRate;
+function MMDEquivalent (props: { CMMD: number, ExRate: number }): JSX.Element {
+  const MMD = props.CMMD / props.ExRate
   return (
     <span>≈ MMD <NumberFormatted value={MMD} /></span>
-  );
+  )
 }
 
-function CollateralRatio (props: {MMD:number, CMMD: number, ExRate:number}): JSX.Element {
-  var CollateralRatio: number;
+function CollateralRatio (props: { MMD: number, CMMD: number, ExRate: number }): JSX.Element {
+  let CollateralRatio: number
 
   if (props.CMMD < 0 && props.MMD >= 0) {
-    CollateralRatio = - props.MMD / props.CMMD * props.ExRate * 100;
+    CollateralRatio = -props.MMD / props.CMMD * props.ExRate * 100
   } else {
-    CollateralRatio = 0;
+    CollateralRatio = 0
   }
 
   return (
     <span>Collateral ratio: <NumberFormatted value={CollateralRatio} />%</span>
-  );
+  )
 }
 
-export function WalletDisplay() {
-  const { account } = useMetaMask();
-  const { balance, setBalance } = useBalance();
+export function WalletDisplay (): JSX.Element {
+  const { account } = useMetaMask()
+  const { balance, setBalance } = useBalance()
 
-  async function getBalance() {
-    if (account) {
-      const MMDinWalletWei = await MMDContract().balanceOf(account);
-      const MMDinWalletEther = MMDinWalletWei ? +ethers.utils.formatEther(MMDinWalletWei) : NaN;
-      if (MMDinWalletEther !== balance.MMDinWallet) { setBalance(existingBalance => ({...existingBalance, MMDinWallet: MMDinWalletEther})) };
+  async function getBalance (): Promise<void> {
+    if (account !== null) {
+      const MMDinWalletWei = await MMDContract().balanceOf(account)
+      const MMDinWalletEther = MMDinWalletWei !== null ? +ethers.utils.formatEther(MMDinWalletWei) : NaN
+      if (MMDinWalletEther !== balance.MMDinWallet) { setBalance(existingBalance => ({ ...existingBalance, MMDinWallet: MMDinWalletEther })) };
     }
   }
-  getBalance();
+  getBalance()
 
-  const test_balance_large = 654321.123456;
-  let CMMD = test_balance_large;
+  const test_balance_large = 654321.123456
+  const CMMD = test_balance_large
 
   return (
     <Stack>
@@ -80,26 +80,26 @@ export function WalletDisplay() {
         <Grid item xs={12} className='Note'><MMDEquivalent CMMD={CMMD} ExRate={MMDtoCMMD} /></Grid>
       </Grid>
     </Stack>
-  );
+  )
 }
 
-export function VaultDisplay() {
-  const { account } = useMetaMask();
-  const { balance, setBalance } = useBalance();
+export function VaultDisplay: JSX.Element () {
+  const { account } = useMetaMask()
+  const { balance, setBalance } = useBalance()
 
-  async function getBalance() {
+  async function getBalance () {
     if (account) {
-      const MMDinVaultWei = await MMDContract().vaultBalanceOf(account);
-      const MMDinVaultEther = MMDinVaultWei ? +ethers.utils.formatEther(MMDinVaultWei) : NaN;
-      if (MMDinVaultEther !== balance.MMDinVault) { setBalance(existingBalance => ({...existingBalance, MMDinVault: MMDinVaultEther})) };
+      const MMDinVaultWei = await MMDContract().vaultBalanceOf(account)
+      const MMDinVaultEther = MMDinVaultWei ? +ethers.utils.formatEther(MMDinVaultWei) : NaN
+      if (MMDinVaultEther !== balance.MMDinVault) { setBalance(existingBalance => ({ ...existingBalance, MMDinVault: MMDinVaultEther })) };
     }
   }
-  getBalance();
+  getBalance()
 
-  const test_balance_vault = 21;
-  const test_balance_vault_large = -321.1;
-  let MMD = test_balance_vault;
-  let CMMD = test_balance_vault_large;
+  const test_balance_vault = 21
+  const test_balance_vault_large = -321.1
+  const MMD = test_balance_vault
+  const CMMD = test_balance_vault_large
 
   return (
     <Stack>
@@ -119,5 +119,5 @@ export function VaultDisplay() {
         <Grid item xs={12} className='Note'><ErrorOutlineOutlined className='icon_small' sx={{ fontSize: 12.8 }} /> Liquidates when the collateral ratio is below 110%</Grid>
       </Grid>
     </Stack>
-  );
+  )
 }

@@ -1,11 +1,5 @@
 import { ethers } from "hardhat";
 
-declare global {
-  interface Window{
-    ethereum?:any
-  }
-}
-
 async function main() {
   const Contract = await ethers.getContractFactory("MMDToken");
   const contract = await Contract.deploy();
@@ -16,25 +10,28 @@ async function main() {
   const value = await contract.balanceOf('0x2Efe371AA24D1276B91F8C50C86c2e2D163e966d');
   console.log("Contract balance:", value.toString());
 
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  const signer = provider.getSigner();
-  const contractWithSigner = contract.connect(signer);
-  await contractWithSigner.buy({value: ethers.utils.parseEther("1.0")});
-
+  // const provider = new ethers.providers.JsonRpcProvider('https://rpc.debugchain.net');
+  // const signer = provider.getSigner();
+  // const contractWithSigner = contract.connect(accounts);
+  await contract.buy({value: ethers.utils.parseEther("1.0")});
   const value2 = await contract.balanceOf('0x2Efe371AA24D1276B91F8C50C86c2e2D163e966d');
   console.log("Contract balance after buy:", value2.toString());
 
-  await contractWithSigner.sell(ethers.utils.parseEther("0.5"));
+  await contract.sell(ethers.utils.parseEther("500"));
   const value3 = await contract.balanceOf('0x2Efe371AA24D1276B91F8C50C86c2e2D163e966d');
   console.log("Contract balance after sell:", value3.toString());
 
-  await contractWithSigner.deposit(ethers.utils.parseEther("100.0"));
+  await contract.deposit(ethers.utils.parseEther("80"));
   const value4 = await contract.balanceOf('0x2Efe371AA24D1276B91F8C50C86c2e2D163e966d');
+  const value5 = await contract.vaultBalanceOf('0x2Efe371AA24D1276B91F8C50C86c2e2D163e966d');
   console.log("Contract balance after deposit:", value4.toString());
+  console.log("Vault balance after deposit:", value5.toString());
 
-  await contractWithSigner.withdraw(ethers.utils.parseEther("50.0"));
-  const value5 = await contract.balanceOf('0x2Efe371AA24D1276B91F8C50C86c2e2D163e966d');
-  console.log("Contract balance after withdraw:", value5.toString());
+  await contract.withdraw(ethers.utils.parseEther("40"));
+  const value6 = await contract.balanceOf('0x2Efe371AA24D1276B91F8C50C86c2e2D163e966d');
+  const value7 = await contract.vaultBalanceOf('0x2Efe371AA24D1276B91F8C50C86c2e2D163e966d');
+  console.log("Contract balance after withdraw:", value6.toString());
+  console.log("Vault balance after withdraw:", value7.toString());
 }
 
 // We recommend this pattern to be able to use async/await everywhere

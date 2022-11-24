@@ -391,4 +391,4 @@ export const MMDABI = `[
     "stateMutability": "nonpayable",
     "type": "function"
   }
-]`;
+]`

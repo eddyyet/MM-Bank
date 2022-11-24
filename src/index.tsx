@@ -1,17 +1,17 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { Stack, Divider } from '@mui/material';
-import { MetaMaskProvider } from "metamask-react";
-import MetaMaskConnection from './metamask';
-import { WalletDisplay, VaultDisplay } from './wallet';
-import { BalanceProvider } from './tokenvalue';
-import { TopUpMMD, DepositMMD, WithdrawMMD, TransferCMMD, BorrowCMMD, RepayCMMD } from './operation';
-import { reason } from  './reason';
-import './index.css';
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { Stack, Divider } from '@mui/material'
+import { MetaMaskProvider } from 'metamask-react'
+import MetaMaskConnection from './metamask'
+import { WalletDisplay, VaultDisplay } from './wallet'
+import { BalanceProvider } from './tokenvalue'
+import { TopUpMMD, DepositMMD, WithdrawMMD, TransferCMMD, BorrowCMMD, RepayCMMD } from './operation'
+import { reason } from './reason'
+import './index.css'
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
-);
+)
 root.render(
   <React.StrictMode>
     <BalanceProvider>
@@ -32,5 +32,5 @@ root.render(
       </MetaMaskProvider>
     </BalanceProvider>
   </React.StrictMode>
-);
-reason();
+)
+reason()

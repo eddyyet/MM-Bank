@@ -9,7 +9,9 @@ const config: HardhatUserConfig = {
   networks: {
     etherdata: {
       url: "http://rpc.debugchain.net",
-      accounts: process.env.PK !== undefined ? [process.env.PK] : []
+      accounts: process.env.PK !== undefined ? [process.env.PK] : [],
+      // gas: 21000000,
+      // gasPrice: 8000000000,
     },
   },
 };
