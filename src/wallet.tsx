@@ -61,8 +61,8 @@ export function WalletDisplay (): JSX.Element {
   }
   getBalance()
 
-  const test_balance_large = 654321.123456
-  const CMMD = test_balance_large
+  const testBalanceLarge = 654321.123456
+  const CMMD = testBalanceLarge
 
   return (
     <Stack>
@@ -83,7 +83,7 @@ export function WalletDisplay (): JSX.Element {
   )
 }
 
-export function VaultDisplay: JSX.Element () {
+export function VaultDisplay (): JSX.Element {
   const { account } = useMetaMask()
   const { balance, setBalance } = useBalance()
 
@@ -94,12 +94,12 @@ export function VaultDisplay: JSX.Element () {
       if (MMDinVaultEther !== balance.MMDinVault) { setBalance(existingBalance => ({ ...existingBalance, MMDinVault: MMDinVaultEther })) };
     }
   }
-  getBalance()
+  getBalance().then().catch()
 
-  const test_balance_vault = 21
-  const test_balance_vault_large = -321.1
-  const MMD = test_balance_vault
-  const CMMD = test_balance_vault_large
+  const testBalanceVault = 21
+  const testBalanceVaultLarge = -321.1
+  const MMD = testBalanceVault
+  const CMMD = testBalanceVaultLarge
 
   return (
     <Stack>

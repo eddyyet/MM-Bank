@@ -115,7 +115,7 @@ export function DepositMMD (): JSX.Element {
     }
   }, [InputValue, MMDinWallet])
 
-  async function Deposit (input: number) {
+  async function Deposit (input: number): Promise<void> {
     if (account !== null) {
       await MMDContract().deposit(ethers.utils.parseEther(String(input)))
 

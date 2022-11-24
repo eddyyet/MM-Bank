@@ -33,4 +33,4 @@ root.render(
     </BalanceProvider>
   </React.StrictMode>
 )
-reason()
+reason().then().catch()

@@ -11,10 +11,10 @@ declare global {
   }
 }
 
-export function MMDContract () {
+export function MMDContract (): ethers.Contract {
   const { account } = useMetaMask()
   const provider = new ethers.providers.Web3Provider(window.ethereum)
-  const signer = provider.getSigner(account || '')
+  const signer = provider.getSigner(account ?? '')
   const contract = new ethers.Contract(MMDAddress, MMDABI, provider)
   const contractSigned = contract.connect(signer)
   return contractSigned
