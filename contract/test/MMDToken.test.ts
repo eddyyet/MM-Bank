@@ -1,7 +1,10 @@
 import { expect } from "chai";
+import { assert } from "console";
 import { ethers } from "hardhat";
 
 describe("MMD Test", function () {
+  var testInstance: any;
+
   it("Owner should get the initial supply", async function () {
     const [owner] = await ethers.getSigners();
     const MMD = await ethers.getContractFactory("MMDToken");
@@ -32,6 +35,17 @@ describe("MMD Test", function () {
     expect(balanceAfterSell).to.equal(25500000000000000000000n);
   });
 
+  it("Deposit 800 MMD (then way)", async function () {
+    const [owner] = await ethers.getSigners();
+    const MMD = await ethers.getContractFactory("MMDToken");
+    const MMDContract = await MMD.deploy();
+    return MMDContract.deployed()
+      .then ((instance) => {testInstance = instance;})
+      .then (() => testInstance.deposit(800000000000000000000n))
+      .then (() => testInstance.balanceOf(owner.address))
+      .then ((val) => expect(val).to.equal(24200000000000000000000n));
+  });
+
   it("Deposit 800 MMD", async function () {
     const [owner] = await ethers.getSigners();
     const MMD = await ethers.getContractFactory("MMDToken");
@@ -39,7 +53,7 @@ describe("MMD Test", function () {
     await MMDContract.deployed();
     await MMDContract.deposit(800000000000000000000n);
     const balanceAfterDeposit = await MMDContract.balanceOf(owner.address);
-    expect(balanceAfterDeposit).to.equal(24700000000000000000000n);
+    expect(balanceAfterDeposit).to.equal(24200000000000000000000n);
   });
 
   it("Withdraw 400 MMD after deposit 800 MMD", async function () {
@@ -50,6 +64,6 @@ describe("MMD Test", function () {
     await MMDContract.deposit(800000000000000000000n);
     await MMDContract.withdraw(400000000000000000000n);
     const balanceAfterWithdraw = await MMDContract.balanceOf(owner.address);
-    expect(balanceAfterWithdraw).to.equal(25100000000000000000000n);
+    expect(balanceAfterWithdraw).to.equal(24600000000000000000000n);
   });
 });
