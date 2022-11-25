@@ -52,21 +52,16 @@ export function TopUpMMD (): JSX.Element {
     }
   }, [InputValue, ETD])
 
-  function TopUp (input: number): void {
-    async function TopUpOperator (input: number): Promise<void> {
-      if (account !== null) {
-        await MMDContract().buy({ value: ethers.utils.parseEther(String(input)) })
+  async function TopUp (input: number): Promise<void> {
+    await MMDContract().buy({ value: ethers.utils.parseEther(String(input)) })
 
-        const ETDWei = await ethereum.request({ method: 'eth_getBalance', params: [account, 'latest'] })
-        const ETDEther = ETDWei !== null ? +ethers.utils.formatEther(ETDWei) : NaN
-        if (ETDEther !== balance.ETD) { setBalance(existingBalance => ({ ...existingBalance, ETD: ETDEther })) }
+    const ETDWei = await ethereum.request({ method: 'eth_getBalance', params: [account ?? '', 'latest'] })
+    const ETDEther = ETDWei !== null ? +ethers.utils.formatEther(ETDWei) : NaN
+    if (ETDEther !== balance.ETD) { setBalance(existingBalance => ({ ...existingBalance, ETD: ETDEther })) }
 
-        const MMDinWalletWei = await MMDContract().balanceOf(account)
-        const MMDinWalletEther = MMDinWalletWei !== null ? +ethers.utils.formatEther(MMDinWalletWei) : NaN
-        if (MMDinWalletEther !== balance.MMDinWallet) { setBalance(existingBalance => ({ ...existingBalance, MMDinWallet: MMDinWalletEther })) };
-      }
-    }
-    TopUpOperator(input)
+    const MMDinWalletWei = await MMDContract().balanceOf(account ?? '')
+    const MMDinWalletEther = MMDinWalletWei !== null ? +ethers.utils.formatEther(MMDinWalletWei) : NaN
+    if (MMDinWalletEther !== balance.MMDinWallet) { setBalance(existingBalance => ({ ...existingBalance, MMDinWallet: MMDinWalletEther })) };
   }
 
   return (
@@ -90,7 +85,7 @@ export function TopUpMMD (): JSX.Element {
                             onChange={event => setInputValue(+event.target.value)} />
                     </Grid>
                     <Grid item xs={4} md={6}>
-                        <OperationButton onClick={() => TopUp(InputValue)}>
+                        <OperationButton onClick={async () => await TopUp(InputValue)}>
                             Top Up
                         </OperationButton>
                     </Grid>
@@ -116,17 +111,15 @@ export function DepositMMD (): JSX.Element {
   }, [InputValue, MMDinWallet])
 
   async function Deposit (input: number): Promise<void> {
-    if (account !== null) {
-      await MMDContract().deposit(ethers.utils.parseEther(String(input)))
+    await MMDContract().deposit(ethers.utils.parseEther(String(input)))
 
-      const MMDinWalletWei = await MMDContract().balanceOf(account)
-      const MMDinWalletEther = MMDinWalletWei !== null ? +ethers.utils.formatEther(MMDinWalletWei) : NaN
-      if (MMDinWalletEther !== balance.MMDinWallet) { setBalance(existingBalance => ({ ...existingBalance, MMDinWallet: MMDinWalletEther })) };
+    const MMDinWalletWei = await MMDContract().balanceOf(account ?? '')
+    const MMDinWalletEther = MMDinWalletWei !== null ? +ethers.utils.formatEther(MMDinWalletWei) : NaN
+    if (MMDinWalletEther !== balance.MMDinWallet) { setBalance(existingBalance => ({ ...existingBalance, MMDinWallet: MMDinWalletEther })) };
 
-      const MMDinVaultWei = await MMDContract().vaultBalanceOf(account)
-      const MMDinVaultEther = MMDinVaultWei !== null ? +ethers.utils.formatEther(MMDinVaultWei) : NaN
-      if (MMDinVaultEther !== balance.MMDinVault) { setBalance(existingBalance => ({ ...existingBalance, MMDinVault: MMDinVaultEther })) };
-    }
+    const MMDinVaultWei = await MMDContract().vaultBalanceOf(account ?? '')
+    const MMDinVaultEther = MMDinVaultWei !== null ? +ethers.utils.formatEther(MMDinVaultWei) : NaN
+    if (MMDinVaultEther !== balance.MMDinVault) { setBalance(existingBalance => ({ ...existingBalance, MMDinVault: MMDinVaultEther })) };
   }
 
   return (
@@ -150,7 +143,7 @@ export function DepositMMD (): JSX.Element {
                             onChange={event => setInputValue(+event.target.value)} />
                     </Grid>
                     <Grid item xs={4} md={6}>
-                        <OperationButton onClick={async () => await Deposit(InputValue)}>
+                        <OperationButton onClick={async () => await Deposit(InputValue) }>
                             Deposit
                         </OperationButton>
                     </Grid>

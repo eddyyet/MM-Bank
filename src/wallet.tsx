@@ -53,11 +53,9 @@ export function WalletDisplay (): JSX.Element {
   const { balance, setBalance } = useBalance()
 
   async function getBalance (): Promise<void> {
-    if (account !== null) {
-      const MMDinWalletWei = await MMDContract().balanceOf(account)
-      const MMDinWalletEther = MMDinWalletWei !== null ? +ethers.utils.formatEther(MMDinWalletWei) : NaN
-      if (MMDinWalletEther !== balance.MMDinWallet) { setBalance(existingBalance => ({ ...existingBalance, MMDinWallet: MMDinWalletEther })) };
-    }
+    const MMDinWalletWei = await MMDContract().balanceOf(account ?? '')
+    const MMDinWalletEther = MMDinWalletWei !== null ? +ethers.utils.formatEther(MMDinWalletWei) : NaN
+    if (MMDinWalletEther !== balance.MMDinWallet) { setBalance(existingBalance => ({ ...existingBalance, MMDinWallet: MMDinWalletEther })) };
   }
   getBalance()
 
@@ -71,7 +69,7 @@ export function WalletDisplay (): JSX.Element {
       </div>
       <Grid container className ='BalanceBoxContent'>
         <Grid item xs={5}>
-          <BalanceBox CurrencyClass='CurrencyFormat' currency='MMD' BalanceClass='BalanceFormat BalancePrimary MMD-color' balance={balance.MMDinWallet ? balance.MMDinWallet : 0} />
+          <BalanceBox CurrencyClass='CurrencyFormat' currency='MMD' BalanceClass='BalanceFormat BalancePrimary MMD-color' balance={ Number(balance.MMDinWallet) } />
         </Grid>
         <Grid item xs={2} />
         <Grid item xs={5}>
@@ -87,14 +85,12 @@ export function VaultDisplay (): JSX.Element {
   const { account } = useMetaMask()
   const { balance, setBalance } = useBalance()
 
-  async function getBalance () {
-    if (account) {
-      const MMDinVaultWei = await MMDContract().vaultBalanceOf(account)
-      const MMDinVaultEther = MMDinVaultWei ? +ethers.utils.formatEther(MMDinVaultWei) : NaN
-      if (MMDinVaultEther !== balance.MMDinVault) { setBalance(existingBalance => ({ ...existingBalance, MMDinVault: MMDinVaultEther })) };
-    }
+  async function getBalance (): Promise<void> {
+    const MMDinVaultWei = await MMDContract().vaultBalanceOf(account ?? '')
+    const MMDinVaultEther = MMDinVaultWei !== null ? +ethers.utils.formatEther(MMDinVaultWei) : NaN
+    if (MMDinVaultEther !== balance.MMDinVault) { setBalance(existingBalance => ({ ...existingBalance, MMDinVault: MMDinVaultEther })) };
   }
-  getBalance().then().catch()
+  getBalance()
 
   const testBalanceVault = 21
   const testBalanceVaultLarge = -321.1
@@ -108,7 +104,7 @@ export function VaultDisplay (): JSX.Element {
       </div>
       <Grid container className ='BalanceBoxContent'>
         <Grid item xs={5}>
-          <BalanceBox CurrencyClass='CurrencyFormat' currency='MMD Colleteral' BalanceClass='BalanceFormat BalanceSecondary MMD-color' balance={balance.MMDinVault ? balance.MMDinVault : 0} />
+          <BalanceBox CurrencyClass='CurrencyFormat' currency='MMD Colleteral' BalanceClass='BalanceFormat BalanceSecondary MMD-color' balance={ Number(balance.MMDinVault) } />
         </Grid>
         <Grid item xs={2} />
         <Grid item xs={5}>

@@ -38,13 +38,13 @@ const BalanceProvider = ({
 
 const useBalance = () => {
   const context = useContext(BalanceContext)
-  if (!context) {
+  if (context === null) {
     throw new Error('useBalance must be used within a BalanceInterface')
   }
   return context
 }
 
-function NumberFormatted (props: { value: number }) {
+function NumberFormatted (props: { value: number }): JSX.Element {
   return <NumericFormat displayType="text" value={props.value} thousandSeparator="," decimalScale={2} />
 }
 

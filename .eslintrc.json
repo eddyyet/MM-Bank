@@ -8,20 +8,52 @@
         "standard-with-typescript",
         "plugin:react-hooks/recommended"
     ],
-    "overrides": [
-    ],
+    "overrides": [{
+        "files": ["./src/reason.js"],
+        "parserOptions": {
+          "parser": "@typescript-eslint/parser",
+          "project": "./tsconfig.json"
+        },
+        "rules": {
+            "@typescript-eslint/no-floating-promises": "off"
+        }
+    },
+    {
+        "files": ["./src/tokenvalue.tsx"],
+        "parserOptions": {
+          "parser": "@typescript-eslint/parser",
+          "project": "./tsconfig.json"
+        },
+        "rules": {
+            "@typescript-eslint/explicit-function-return-type": "off"
+        }
+    },
+    {
+        "files": ["./src/operation.tsx"],
+        "parserOptions": {
+          "parser": "@typescript-eslint/parser",
+          "project": "./tsconfig.json"
+        },
+        "rules": {
+            "@typescript-eslint/no-misused-promises": "off",
+            "react-hooks/rules-of-hooks": "error",
+            "react-hooks/exhaustive-deps": "warn"
+        }
+    }],
     "parserOptions": {
         "ecmaVersion": "latest",
         "sourceType": "module",
-        "project": ["./tsconfig.json"]
+        "parser": "@typescript-eslint/parser",
+        "project": "./tsconfig.json"
     },
     "plugins": [
         "react",
         "react-hooks"
     ],
     "rules": {
-        "@typescript-eslint/no-floating-promises": "warn",
         "@typescript-eslint/consistent-type-assertions": "off",
+        "@typescript-eslint/no-floating-promises": "off",
+        "@typescript-eslint/no-misused-promises": "off",
         "react-hooks/rules-of-hooks": "error",
         "react-hooks/exhaustive-deps": "warn"
     }
