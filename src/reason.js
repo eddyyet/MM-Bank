@@ -2,7 +2,7 @@ import { ethers } from 'ethers'
 
 export async function reason () {
   const provider = new ethers.providers.Web3Provider(window.ethereum)
-  const a = await provider.getTransaction('0xc7e9bea5e4f96b3d1bfaa73ca21633b0f451434dc799e8ea7d440f5660f3e800')
+  const a = await provider.getTransaction('0x69435f68e5153614391b00be063230b2a3b3a5fe7e10831319fe3ce06a2b6848')
   try {
     const code = await provider.call(a, a.blockNumber)
     console.log('success', code)

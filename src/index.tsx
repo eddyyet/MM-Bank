@@ -7,6 +7,7 @@ import { WalletDisplay, VaultDisplay } from './wallet'
 import { BalanceProvider } from './tokenvalue'
 import { TopUpMMD, DepositMMD, WithdrawMMD, TransferCMMD, BorrowCMMD, RepayCMMD } from './operation'
 import './index.css'
+import { reason } from './reason.js'
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -32,3 +33,4 @@ root.render(
     </BalanceProvider>
   </React.StrictMode>
 )
+reason()
