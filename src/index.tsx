@@ -6,7 +6,6 @@ import MetaMaskConnection from './metamask'
 import { WalletDisplay, VaultDisplay } from './wallet'
 import { BalanceProvider } from './tokenvalue'
 import { TopUpMMD, DepositMMD, WithdrawMMD, TransferCMMD, BorrowCMMD, RepayCMMD } from './operation'
-import { reason } from './reason'
 import './index.css'
 
 const root = ReactDOM.createRoot(
@@ -33,4 +32,3 @@ root.render(
     </BalanceProvider>
   </React.StrictMode>
 )
-reason().then().catch()

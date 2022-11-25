@@ -36,7 +36,8 @@ const OperationButton = styled(Button)({
 )
 
 export function TopUpMMD (): JSX.Element {
-  const { account, ethereum } = useMetaMask()
+  const metamask = useMetaMask()
+  const { account, ethereum } = metamask
   const { balance, setBalance } = useBalance()
   const [InputValue, setInputValue] = useState<number>(0)
   const [Message, setMessage] = useState<string>('')
@@ -53,13 +54,13 @@ export function TopUpMMD (): JSX.Element {
   }, [InputValue, ETD])
 
   async function TopUp (input: number): Promise<void> {
-    await MMDContract().buy({ value: ethers.utils.parseEther(String(input)) })
+    await MMDContract(metamask).buy({ value: ethers.utils.parseEther(String(input / ETDtoMMD)), gasLimit: 300000 })
 
     const ETDWei = await ethereum.request({ method: 'eth_getBalance', params: [account ?? '', 'latest'] })
     const ETDEther = ETDWei !== null ? +ethers.utils.formatEther(ETDWei) : NaN
     if (ETDEther !== balance.ETD) { setBalance(existingBalance => ({ ...existingBalance, ETD: ETDEther })) }
 
-    const MMDinWalletWei = await MMDContract().balanceOf(account ?? '')
+    const MMDinWalletWei = await MMDContract(metamask).balanceOf(account ?? '')
     const MMDinWalletEther = MMDinWalletWei !== null ? +ethers.utils.formatEther(MMDinWalletWei) : NaN
     if (MMDinWalletEther !== balance.MMDinWallet) { setBalance(existingBalance => ({ ...existingBalance, MMDinWallet: MMDinWalletEther })) };
   }
@@ -96,7 +97,8 @@ export function TopUpMMD (): JSX.Element {
 }
 
 export function DepositMMD (): JSX.Element {
-  const { account } = useMetaMask()
+  const metamask = useMetaMask()
+  const { account } = metamask
   const { balance, setBalance } = useBalance()
   const [InputValue, setInputValue] = useState<number>(0)
   const [Message, setMessage] = useState<string>('')
@@ -111,13 +113,13 @@ export function DepositMMD (): JSX.Element {
   }, [InputValue, MMDinWallet])
 
   async function Deposit (input: number): Promise<void> {
-    await MMDContract().deposit(ethers.utils.parseEther(String(input)))
+    await MMDContract(metamask).deposit(ethers.utils.parseEther(String(input)), { gasLimit: 300000 })
 
-    const MMDinWalletWei = await MMDContract().balanceOf(account ?? '')
+    const MMDinWalletWei = await MMDContract(metamask).balanceOf(account ?? '')
     const MMDinWalletEther = MMDinWalletWei !== null ? +ethers.utils.formatEther(MMDinWalletWei) : NaN
     if (MMDinWalletEther !== balance.MMDinWallet) { setBalance(existingBalance => ({ ...existingBalance, MMDinWallet: MMDinWalletEther })) };
 
-    const MMDinVaultWei = await MMDContract().vaultBalanceOf(account ?? '')
+    const MMDinVaultWei = await MMDContract(metamask).vaultBalanceOf(account ?? '')
     const MMDinVaultEther = MMDinVaultWei !== null ? +ethers.utils.formatEther(MMDinVaultWei) : NaN
     if (MMDinVaultEther !== balance.MMDinVault) { setBalance(existingBalance => ({ ...existingBalance, MMDinVault: MMDinVaultEther })) };
   }

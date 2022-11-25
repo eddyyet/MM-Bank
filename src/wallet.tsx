@@ -49,11 +49,12 @@ function CollateralRatio (props: { MMD: number, CMMD: number, ExRate: number }):
 }
 
 export function WalletDisplay (): JSX.Element {
-  const { account } = useMetaMask()
+  const metamask = useMetaMask()
+  const { account } = metamask
   const { balance, setBalance } = useBalance()
 
   async function getBalance (): Promise<void> {
-    const MMDinWalletWei = await MMDContract().balanceOf(account ?? '')
+    const MMDinWalletWei = await MMDContract(metamask).balanceOf(account ?? '')
     const MMDinWalletEther = MMDinWalletWei !== null ? +ethers.utils.formatEther(MMDinWalletWei) : NaN
     if (MMDinWalletEther !== balance.MMDinWallet) { setBalance(existingBalance => ({ ...existingBalance, MMDinWallet: MMDinWalletEther })) };
   }
@@ -82,11 +83,12 @@ export function WalletDisplay (): JSX.Element {
 }
 
 export function VaultDisplay (): JSX.Element {
-  const { account } = useMetaMask()
+  const metamask = useMetaMask()
+  const { account } = metamask
   const { balance, setBalance } = useBalance()
 
   async function getBalance (): Promise<void> {
-    const MMDinVaultWei = await MMDContract().vaultBalanceOf(account ?? '')
+    const MMDinVaultWei = await MMDContract(metamask).vaultBalanceOf(account ?? '')
     const MMDinVaultEther = MMDinVaultWei !== null ? +ethers.utils.formatEther(MMDinVaultWei) : NaN
     if (MMDinVaultEther !== balance.MMDinVault) { setBalance(existingBalance => ({ ...existingBalance, MMDinVault: MMDinVaultEther })) };
   }
