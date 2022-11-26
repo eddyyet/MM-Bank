@@ -1,5 +1,4 @@
 import { expect } from "chai";
-import { assert } from "console";
 import { ethers } from "hardhat";
 
 describe("MMD Test", function () {
@@ -29,8 +28,8 @@ describe("MMD Test", function () {
     const MMD = await ethers.getContractFactory("MMDToken");
     const MMDContract = await MMD.deploy();
     await MMDContract.deployed();
-    await MMDContract.buy({value: 1000000000000000000n});
-    await MMDContract.sell(500000000000000000000n);
+    await MMDContract.buy({value: ethers.utils.parseEther('1')});
+    await MMDContract.sell(ethers.utils.parseEther('500'));
     const balanceAfterSell = await MMDContract.balanceOf(owner.address);
     expect(balanceAfterSell).to.equal(25500000000000000000000n);
   });
@@ -41,7 +40,7 @@ describe("MMD Test", function () {
     const MMDContract = await MMD.deploy();
     return MMDContract.deployed()
       .then ((instance) => {testInstance = instance;})
-      .then (() => testInstance.deposit(800000000000000000000n))
+      .then (() => testInstance.deposit(ethers.utils.parseEther('800'), {from: owner.address}))
       .then (() => testInstance.balanceOf(owner.address))
       .then ((val) => expect(val).to.equal(24200000000000000000000n));
   });
@@ -51,7 +50,7 @@ describe("MMD Test", function () {
     const MMD = await ethers.getContractFactory("MMDToken");
     const MMDContract = await MMD.deploy();
     await MMDContract.deployed();
-    await MMDContract.deposit(800000000000000000000n);
+    await MMDContract.deposit(ethers.utils.parseEther('800'));
     const balanceAfterDeposit = await MMDContract.balanceOf(owner.address);
     expect(balanceAfterDeposit).to.equal(24200000000000000000000n);
   });
@@ -61,8 +60,8 @@ describe("MMD Test", function () {
     const MMD = await ethers.getContractFactory("MMDToken");
     const MMDContract = await MMD.deploy();
     await MMDContract.deployed();
-    await MMDContract.deposit(800000000000000000000n);
-    await MMDContract.withdraw(400000000000000000000n);
+    await MMDContract.deposit(ethers.utils.parseEther('800'));
+    await MMDContract.withdraw(ethers.utils.parseEther('400'));
     const balanceAfterWithdraw = await MMDContract.balanceOf(owner.address);
     expect(balanceAfterWithdraw).to.equal(24600000000000000000000n);
   });
