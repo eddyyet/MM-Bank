@@ -18,8 +18,30 @@ contract MMDToken is ERC20 {
         _mint(msg.sender, 25000*10**18);
     }
 
-    function vaultBalanceOf(address account) public view virtual returns (uint256) {
+    function balanceOf(address account) public view override returns (uint256) {
+        return _balances[account];
+    }
+
+    function vaultBalanceOf(address account) public view returns (uint256) {
         return _vaultBalances[account];
+    }
+
+    function _mint(address account, uint256 amount) internal override {
+        require(account != address(0), "ERC20: mint to the zero address");
+        _totalSupply += amount;
+        unchecked {
+            _balances[account] += amount;
+        }
+    }
+
+    function _burn(address account, uint256 amount) internal override {
+        require(account != address(0), "ERC20: burn from the zero address");
+        uint256 accountBalance = _balances[account];
+        require(accountBalance >= amount, "ERC20: burn amount exceeds balance");
+        unchecked {
+            _balances[account] = accountBalance - amount;
+            _totalSupply -= amount;
+        }
     }
 
     function buy() payable external {
@@ -41,17 +63,17 @@ contract MMDToken is ERC20 {
 
     function deposit(uint256 amount) external {
         require(balanceOf(msg.sender) >= amount, "Not enough MMD in Wallet");
-        _vaultBalances[msg.sender] += amount;
-        _balances[msg.sender] -= amount;
+        _balances[msg.sender] = balanceOf(msg.sender) - amount;
+        _vaultBalances[msg.sender] += vaultBalanceOf(msg.sender) + amount;
         emit Deposited(amount);
     }
 
     event Deposited(uint256 amount);
 
     function withdraw(uint256 amount) external {
-        require(_vaultBalances[msg.sender] >= amount, "Not enough MMD Collteral in Vault");
-        _vaultBalances[msg.sender] -= amount;
-        _balances[msg.sender] += amount;
+        require(vaultBalanceOf(msg.sender) >= amount, "Not enough MMD Collteral in Vault");
+        _balances[msg.sender] = balanceOf(msg.sender) + amount;
+        _vaultBalances[msg.sender] += vaultBalanceOf(msg.sender) - amount;
         emit Withdrawn(amount);
     }
 
