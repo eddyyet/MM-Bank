@@ -2,7 +2,7 @@ import { ethers } from 'ethers'
 import { MMDABI } from './MMD.abi'
 import { IMetaMaskContext } from 'metamask-react/lib/metamask-context'
 
-const MMDAddress = '0x2dA09a2F4dB08a7e513601f4B834bfCD385b25A4'
+const MMDAddress = '0x2f3c0f216584700C76C708725a090D0f7Cedb68F'
 // const CMMDAddress = '';
 
 declare global {
