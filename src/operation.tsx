@@ -54,7 +54,8 @@ export function TopUpMMD (): JSX.Element {
   }, [InputValue, ETD])
 
   async function TopUp (input: number): Promise<void> {
-    await MMDContract(metamask).buy({ value: ethers.utils.parseEther(String(input / ETDtoMMD)), gasLimit: 300000 })
+    const tx = await MMDContract(metamask).buy({ value: ethers.utils.parseEther(String(input / ETDtoMMD)), gasLimit: 300000 })
+    await tx.wait()
 
     const ETDWei = await ethereum.request({ method: 'eth_getBalance', params: [account ?? '', 'latest'] })
     const ETDEther = ETDWei !== null ? +ethers.utils.formatEther(ETDWei) : NaN
@@ -113,7 +114,8 @@ export function DepositMMD (): JSX.Element {
   }, [InputValue, MMDinWallet])
 
   async function Deposit (input: number): Promise<void> {
-    await MMDContract(metamask).deposit(ethers.utils.parseEther(String(input)), { gasLimit: 300000 })
+    const tx = await MMDContract(metamask).deposit(ethers.utils.parseEther(String(input)), { gasLimit: 300000 })
+    await tx.wait()
 
     const MMDinWalletWei = await MMDContract(metamask).balanceOf(account ?? '')
     const MMDinWalletEther = MMDinWalletWei !== null ? +ethers.utils.formatEther(MMDinWalletWei) : NaN
@@ -177,7 +179,8 @@ export function WithdrawMMD (): JSX.Element {
   }, [InputValue, MMDinVault, CMMDinVault])
 
   async function Withdraw (input: number): Promise<void> {
-    await MMDContract(metamask).withdraw(ethers.utils.parseEther(String(input)), { gasLimit: 300000 })
+    const tx = await MMDContract(metamask).withdraw(ethers.utils.parseEther(String(input)), { gasLimit: 300000 })
+    await tx.wait()
 
     const MMDinWalletWei = await MMDContract(metamask).balanceOf(account ?? '')
     const MMDinWalletEther = MMDinWalletWei !== null ? +ethers.utils.formatEther(MMDinWalletWei) : NaN
@@ -185,7 +188,10 @@ export function WithdrawMMD (): JSX.Element {
 
     const MMDinVaultWei = await MMDContract(metamask).vaultBalanceOf(account ?? '')
     const MMDinVaultEther = MMDinVaultWei !== null ? +ethers.utils.formatEther(MMDinVaultWei) : NaN
-    if (MMDinVaultEther !== balance.MMDinVault) { setBalance(existingBalance => ({ ...existingBalance, MMDinVault: MMDinVaultEther })) }
+    if (MMDinVaultEther !== balance.MMDinVault) {
+      setBalance(existingBalance => ({ ...existingBalance, MMDinVault: MMDinVaultEther }))
+      console.log('WITHDRAW5!!')
+    }
   }
 
   return (

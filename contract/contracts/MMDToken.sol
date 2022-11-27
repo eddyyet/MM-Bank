@@ -44,7 +44,7 @@ contract MMDToken is ERC20 {
     event Sold(uint256 amount);
 
     function deposit(uint256 amount) external {
-        require(balanceOf(msg.sender) >= amount, "Not enough MMD in Wallet");
+        require(_balances[msg.sender] >= amount, "Not enough MMD in Wallet");
         _balances[msg.sender] -= amount;
         _vaultBalances[msg.sender] += amount;
         emit Deposited(amount);
@@ -53,7 +53,7 @@ contract MMDToken is ERC20 {
     event Deposited(uint256 amount);
 
     function withdraw(uint256 amount) external {
-        require(vaultBalanceOf(msg.sender) >= amount, "Not enough MMD Collteral in Vault");
+        require(_vaultBalances[msg.sender] >= amount, "Not enough MMD Collteral in Vault");
         _balances[msg.sender] += amount;
         _vaultBalances[msg.sender] -= amount;
         emit Withdrawn(amount);
