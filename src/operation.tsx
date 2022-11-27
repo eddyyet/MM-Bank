@@ -1,5 +1,6 @@
 import { styled } from '@mui/material/styles'
-import { Grid, TextField, Button } from '@mui/material'
+import { Grid, TextField } from '@mui/material'
+import { LoadingButton } from '@mui/lab'
 import React, { useState, useEffect } from 'react'
 import { useMetaMask } from 'metamask-react'
 import { useBalance, ETDtoMMD, MMDtoCMMD, InitialCollateralRatio, MinCollateralRatio } from './tokenvalue'
@@ -23,7 +24,7 @@ const OperationTextField = styled(TextField)({
 }
 )
 
-const OperationButton = styled(Button)({
+const OperationButton = styled(LoadingButton)({
   height: '100%',
   width: 'fill-available',
   marginLeft: '1rem',
@@ -41,6 +42,7 @@ export function TopUpMMD (): JSX.Element {
   const { balance, setBalance } = useBalance()
   const [InputValue, setInputValue] = useState<number>(0)
   const [Message, setMessage] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(false)
   const ETD = Number(useBalance().balance.ETD)
 
   useEffect(() => {
@@ -54,16 +56,24 @@ export function TopUpMMD (): JSX.Element {
   }, [InputValue, ETD])
 
   async function TopUp (input: number): Promise<void> {
-    const tx = await MMDContract(metamask).buy({ value: ethers.utils.parseEther(String(input / ETDtoMMD)), gasLimit: 300000 })
-    await tx.wait()
+    setLoading(true)
 
-    const ETDWei = await ethereum.request({ method: 'eth_getBalance', params: [account ?? '', 'latest'] })
-    const ETDEther = ETDWei !== null ? +ethers.utils.formatEther(ETDWei) : NaN
-    if (ETDEther !== balance.ETD) { setBalance(existingBalance => ({ ...existingBalance, ETD: ETDEther })) }
+    try {
+      const tx = await MMDContract(metamask).buy({ value: ethers.utils.parseEther(String(input / ETDtoMMD)), gasLimit: 300000 })
+      await tx.wait()
 
-    const MMDinWalletWei = await MMDContract(metamask).balanceOf(account ?? '')
-    const MMDinWalletEther = MMDinWalletWei !== null ? +ethers.utils.formatEther(MMDinWalletWei) : NaN
-    if (MMDinWalletEther !== balance.MMDinWallet) { setBalance(existingBalance => ({ ...existingBalance, MMDinWallet: MMDinWalletEther })) };
+      const ETDWei = await ethereum.request({ method: 'eth_getBalance', params: [account ?? '', 'latest'] })
+      const ETDEther = ETDWei !== null ? +ethers.utils.formatEther(ETDWei) : NaN
+      if (ETDEther !== balance.ETD) { setBalance(existingBalance => ({ ...existingBalance, ETD: ETDEther })) }
+
+      const MMDinWalletWei = await MMDContract(metamask).balanceOf(account ?? '')
+      const MMDinWalletEther = MMDinWalletWei !== null ? +ethers.utils.formatEther(MMDinWalletWei) : NaN
+      if (MMDinWalletEther !== balance.MMDinWallet) { setBalance(existingBalance => ({ ...existingBalance, MMDinWallet: MMDinWalletEther })) }
+    } catch (error) {
+      console.log(error)
+    }
+
+    setLoading(false)
   }
 
   return (
@@ -87,7 +97,7 @@ export function TopUpMMD (): JSX.Element {
                             onChange={event => setInputValue(+event.target.value)} />
                     </Grid>
                     <Grid item xs={4} md={6}>
-                        <OperationButton onClick={async () => await TopUp(InputValue)}>
+                        <OperationButton loading={loading} onClick={async () => await TopUp(InputValue)}>
                             Top Up
                         </OperationButton>
                     </Grid>
