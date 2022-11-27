@@ -26,24 +26,6 @@ contract MMDToken is ERC20 {
         return _vaultBalances[account];
     }
 
-    function _mint(address account, uint256 amount) internal override {
-        require(account != address(0), "ERC20: mint to the zero address");
-        _totalSupply += amount;
-        unchecked {
-            _balances[account] += amount;
-        }
-    }
-
-    function _burn(address account, uint256 amount) internal override {
-        require(account != address(0), "ERC20: burn from the zero address");
-        uint256 accountBalance = _balances[account];
-        require(accountBalance >= amount, "ERC20: burn amount exceeds balance");
-        unchecked {
-            _balances[account] = accountBalance - amount;
-            _totalSupply -= amount;
-        }
-    }
-
     function buy() payable external {
         uint256 amount = msg.value * 1000;
         _mint(msg.sender, amount);
@@ -78,22 +60,47 @@ contract MMDToken is ERC20 {
     }
 
     event Withdrawn(uint256 amount);
+    
+    function transfer(address to, uint256 amount) public virtual override returns (bool) {
+        address owner = _msgSender();
+        _transfer(owner, to, amount);
+        return true;
+    }
 
-    // function buy() payable public {
-    //     uint256 amountTobuy = msg.value;
-    //     uint256 Balance = token.balanceOf(address(this));
-    //     require(amountTobuy > 0, "You need to send some ether");
-    //     require(amountTobuy <= Balance, "Not enough tokens in the reserve");
-    //     token.transfer(msg.sender, amountTobuy);
-    //     emit Bought(amountTobuy);
-    // }
+    function _transfer(
+        address from,
+        address to,
+        uint256 amount
+    ) internal override {
+        require(from != address(0), "ERC20: transfer from the zero address");
+        require(to != address(0), "ERC20: transfer to the zero address");
 
-    // function sell(uint256 amount) public {
-    //     require(amount > 0, "You need to sell at least some tokens");
-    //     uint256 allowance = token.allowance(msg.sender, address(this));
-    //     require(allowance >= amount, "Check the token allowance");
-    //     token.transferFrom(msg.sender, address(this), amount);
-    //     payable(msg.sender).transfer(amount);
-    //     emit Sold(amount);
-    // }
+        uint256 fromBalance = _balances[from];
+        require(fromBalance >= amount, "ERC20: transfer amount exceeds balance");
+        unchecked {
+            _balances[from] = fromBalance - amount;
+            _balances[to] += amount;
+        }
+        emit Transfer(from, to, amount);
+    }
+
+    function _mint(address account, uint256 amount) internal override {
+        require(account != address(0), "ERC20: mint to the zero address");
+        _totalSupply += amount;
+        unchecked {
+            _balances[account] += amount;
+        }
+        emit Transfer(address(0), account, amount);
+    }
+
+    function _burn(address account, uint256 amount) internal override {
+        require(account != address(0), "ERC20: burn from the zero address");
+        uint256 accountBalance = _balances[account];
+        require(accountBalance >= amount, "ERC20: burn amount exceeds balance");
+        unchecked {
+            _balances[account] = accountBalance - amount;
+            _totalSupply -= amount;
+        }
+        emit Transfer(account, address(0), amount);
+    }
 }

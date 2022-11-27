@@ -34,17 +34,6 @@ describe("MMD Test", function () {
     expect(balanceAfterSell).to.equal(25500000000000000000000n);
   });
 
-  it("Deposit 800 MMD (then way)", async function () {
-    const [owner] = await ethers.getSigners();
-    const MMD = await ethers.getContractFactory("MMDToken");
-    const MMDContract = await MMD.deploy();
-    return MMDContract.deployed()
-      .then ((instance) => {testInstance = instance;})
-      .then (() => testInstance.deposit(ethers.utils.parseEther('800'), {from: owner.address}))
-      .then (() => testInstance.balanceOf(owner.address))
-      .then ((val) => expect(val).to.equal(24200000000000000000000n));
-  });
-
   it("Deposit 800 MMD", async function () {
     const [owner] = await ethers.getSigners();
     const MMD = await ethers.getContractFactory("MMDToken");
