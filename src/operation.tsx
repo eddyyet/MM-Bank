@@ -156,6 +156,9 @@ export function DepositMMD (): JSX.Element {
 }
 
 export function WithdrawMMD (): JSX.Element {
+  const metamask = useMetaMask()
+  const { account } = metamask
+  const { balance, setBalance } = useBalance()
   const [InputValue, setInputValue] = useState<number>(0)
   const [Message, setMessage] = useState<string>('')
   const MMDinVault = Number(useBalance().balance.MMDinVault)
@@ -172,6 +175,18 @@ export function WithdrawMMD (): JSX.Element {
       setMessage('')
     }
   }, [InputValue, MMDinVault, CMMDinVault])
+
+  async function Withdraw (input: number): Promise<void> {
+    await MMDContract(metamask).withdraw(ethers.utils.parseEther(String(input)), { gasLimit: 300000 })
+
+    const MMDinWalletWei = await MMDContract(metamask).balanceOf(account ?? '')
+    const MMDinWalletEther = MMDinWalletWei !== null ? +ethers.utils.formatEther(MMDinWalletWei) : NaN
+    if (MMDinWalletEther !== balance.MMDinWallet) { setBalance(existingBalance => ({ ...existingBalance, MMDinWallet: MMDinWalletEther })) }
+
+    const MMDinVaultWei = await MMDContract(metamask).vaultBalanceOf(account ?? '')
+    const MMDinVaultEther = MMDinVaultWei !== null ? +ethers.utils.formatEther(MMDinVaultWei) : NaN
+    if (MMDinVaultEther !== balance.MMDinVault) { setBalance(existingBalance => ({ ...existingBalance, MMDinVault: MMDinVaultEther })) }
+  }
 
   return (
         <Grid container>
@@ -194,7 +209,7 @@ export function WithdrawMMD (): JSX.Element {
                             onChange={event => setInputValue(+event.target.value)} />
                     </Grid>
                     <Grid item xs={4} md={6}>
-                        <OperationButton onClick={() => WithdrawMMDOperator(InputValue)}>
+                        <OperationButton onClick={async () => await Withdraw(InputValue)}>
                             Withdraw
                         </OperationButton>
                     </Grid>
@@ -355,10 +370,6 @@ export function RepayCMMD (): JSX.Element {
             </Grid>
         </Grid>
   )
-}
-
-function WithdrawMMDOperator (input: number): void {
-
 }
 
 function TransferCMMDOperator (input: number): void {

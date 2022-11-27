@@ -16,21 +16,21 @@ interface Props {
 
 function BalanceBox (props: Props): JSX.Element {
   return (
-    <Grid container>
-      <Grid item xs={2} className={props.CurrencyClass}>
-        {props.currency}
-      </Grid>
-      <Grid item xs={10} className={props.BalanceClass}>
-        <NumberFormatted value={props.balance} />
-      </Grid>
-    </Grid>
+        <Grid container>
+            <Grid item xs={2} className={props.CurrencyClass}>
+                {props.currency}
+            </Grid>
+            <Grid item xs={10} className={props.BalanceClass}>
+                <NumberFormatted value={props.balance} />
+            </Grid>
+        </Grid>
   )
 }
 
 function MMDEquivalent (props: { CMMD: number, ExRate: number }): JSX.Element {
   const MMD = props.CMMD / props.ExRate
   return (
-    <span>≈ MMD <NumberFormatted value={MMD} /></span>
+        <span>≈ MMD <NumberFormatted value={MMD} /></span>
   )
 }
 
@@ -44,7 +44,7 @@ function CollateralRatio (props: { MMD: number, CMMD: number, ExRate: number }):
   }
 
   return (
-    <span>Collateral ratio: <NumberFormatted value={CollateralRatio} />%</span>
+        <span>Collateral ratio: <NumberFormatted value={CollateralRatio} />%</span>
   )
 }
 
@@ -54,9 +54,11 @@ export function WalletDisplay (): JSX.Element {
   const { balance, setBalance } = useBalance()
 
   async function getBalance (): Promise<void> {
-    const MMDinWalletWei = await MMDContract(metamask).balanceOf(account ?? '')
-    const MMDinWalletEther = MMDinWalletWei !== null ? +ethers.utils.formatEther(MMDinWalletWei) : NaN
-    if (MMDinWalletEther !== balance.MMDinWallet) { setBalance(existingBalance => ({ ...existingBalance, MMDinWallet: MMDinWalletEther })) };
+    if (account !== null) {
+      const MMDinWalletWei = await MMDContract(metamask).balanceOf(account ?? '')
+      const MMDinWalletEther = MMDinWalletWei !== null ? +ethers.utils.formatEther(MMDinWalletWei) : NaN
+      if (MMDinWalletEther !== balance.MMDinWallet) { setBalance(existingBalance => ({ ...existingBalance, MMDinWallet: MMDinWalletEther })) };
+    }
   }
   getBalance()
 
@@ -64,21 +66,21 @@ export function WalletDisplay (): JSX.Element {
   const CMMD = testBalanceLarge
 
   return (
-    <Stack>
-      <div className='BalanceHeading'>
-      <span className='icon'><Wallet /></span> Wallet
-      </div>
-      <Grid container className ='BalanceBoxContent'>
-        <Grid item xs={5}>
-          <BalanceBox CurrencyClass='CurrencyFormat' currency='MMD' BalanceClass='BalanceFormat BalancePrimary MMD-color' balance={ Number(balance.MMDinWallet) } />
-        </Grid>
-        <Grid item xs={2} />
-        <Grid item xs={5}>
-          <BalanceBox CurrencyClass='CurrencyFormat' currency='CMMD' BalanceClass='BalanceFormat BalancePrimary CMMD-color' balance={CMMD} />
-        </Grid>
-        <Grid item xs={12} className='Note'><MMDEquivalent CMMD={CMMD} ExRate={MMDtoCMMD} /></Grid>
-      </Grid>
-    </Stack>
+        <Stack>
+            <div className='BalanceHeading'>
+                <span className='icon'><Wallet /></span> Wallet
+            </div>
+            <Grid container className ='BalanceBoxContent'>
+                <Grid item xs={5}>
+                    <BalanceBox CurrencyClass='CurrencyFormat' currency='MMD' BalanceClass='BalanceFormat BalancePrimary MMD-color' balance={ Number(balance.MMDinWallet) } />
+                </Grid>
+                <Grid item xs={2} />
+                <Grid item xs={5}>
+                    <BalanceBox CurrencyClass='CurrencyFormat' currency='CMMD' BalanceClass='BalanceFormat BalancePrimary CMMD-color' balance={CMMD} />
+                </Grid>
+                <Grid item xs={12} className='Note'><MMDEquivalent CMMD={CMMD} ExRate={MMDtoCMMD} /></Grid>
+            </Grid>
+        </Stack>
   )
 }
 
@@ -88,9 +90,11 @@ export function VaultDisplay (): JSX.Element {
   const { balance, setBalance } = useBalance()
 
   async function getBalance (): Promise<void> {
-    const MMDinVaultWei = await MMDContract(metamask).vaultBalanceOf(account ?? '')
-    const MMDinVaultEther = MMDinVaultWei !== null ? +ethers.utils.formatEther(MMDinVaultWei) : NaN
-    if (MMDinVaultEther !== balance.MMDinVault) { setBalance(existingBalance => ({ ...existingBalance, MMDinVault: MMDinVaultEther })) };
+    if (account !== null) {
+      const MMDinVaultWei = await MMDContract(metamask).vaultBalanceOf(account ?? '')
+      const MMDinVaultEther = MMDinVaultWei !== null ? +ethers.utils.formatEther(MMDinVaultWei) : NaN
+      if (MMDinVaultEther !== balance.MMDinVault) { setBalance(existingBalance => ({ ...existingBalance, MMDinVault: MMDinVaultEther })) };
+    }
   }
   getBalance()
 
@@ -100,22 +104,22 @@ export function VaultDisplay (): JSX.Element {
   const CMMD = testBalanceVaultLarge
 
   return (
-    <Stack>
-      <div className='BalanceHeading'>
-        <span className='icon'><Lock /></span> Vault
-      </div>
-      <Grid container className ='BalanceBoxContent'>
-        <Grid item xs={5}>
-          <BalanceBox CurrencyClass='CurrencyFormat' currency='MMD Colleteral' BalanceClass='BalanceFormat BalanceSecondary MMD-color' balance={ Number(balance.MMDinVault) } />
-        </Grid>
-        <Grid item xs={2} />
-        <Grid item xs={5}>
-          <BalanceBox CurrencyClass='CurrencyFormat' currency='CMMD Credited' BalanceClass='BalanceFormat BalanceSecondary CMMD-color' balance={CMMD} />
-        </Grid>
-        <Grid item xs={12} className='Note'><MMDEquivalent CMMD={CMMD} ExRate={MMDtoCMMD} /></Grid>
-        <Grid item xs={12} className='Note'><CollateralRatio MMD={MMD} CMMD={CMMD} ExRate={MMDtoCMMD} /></Grid>
-        <Grid item xs={12} className='Note'><ErrorOutlineOutlined className='icon_small' sx={{ fontSize: 12.8 }} /> Liquidates when the collateral ratio is below 110%</Grid>
-      </Grid>
-    </Stack>
+        <Stack>
+            <div className='BalanceHeading'>
+                <span className='icon'><Lock /></span> Vault
+            </div>
+            <Grid container className ='BalanceBoxContent'>
+                <Grid item xs={5}>
+                    <BalanceBox CurrencyClass='CurrencyFormat' currency='MMD Colleteral' BalanceClass='BalanceFormat BalanceSecondary MMD-color' balance={ Number(balance.MMDinVault) } />
+                </Grid>
+                <Grid item xs={2} />
+                <Grid item xs={5}>
+                    <BalanceBox CurrencyClass='CurrencyFormat' currency='CMMD Credited' BalanceClass='BalanceFormat BalanceSecondary CMMD-color' balance={CMMD} />
+                </Grid>
+                <Grid item xs={12} className='Note'><MMDEquivalent CMMD={CMMD} ExRate={MMDtoCMMD} /></Grid>
+                <Grid item xs={12} className='Note'><CollateralRatio MMD={MMD} CMMD={CMMD} ExRate={MMDtoCMMD} /></Grid>
+                <Grid item xs={12} className='Note'><ErrorOutlineOutlined className='icon_small' sx={{ fontSize: 12.8 }} /> Liquidates when the collateral ratio is below 110%</Grid>
+            </Grid>
+        </Stack>
   )
 }

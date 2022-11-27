@@ -30,9 +30,9 @@ const BalanceProvider = ({
 }) => {
   const [balance, setBalance] = useState(value)
   return (
-    <BalanceContext.Provider value={{ balance, setBalance }}>
-      {children}
-    </BalanceContext.Provider>
+        <BalanceContext.Provider value={{ balance, setBalance }}>
+            {children}
+        </BalanceContext.Provider>
   )
 }
 

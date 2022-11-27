@@ -7,30 +7,30 @@ import { WalletDisplay, VaultDisplay } from './wallet'
 import { BalanceProvider } from './tokenvalue'
 import { TopUpMMD, DepositMMD, WithdrawMMD, TransferCMMD, BorrowCMMD, RepayCMMD } from './operation'
 import './index.css'
-import { reason } from './reason.js'
+// import { reason } from './reason.js'
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 )
 root.render(
-  <React.StrictMode>
-    <BalanceProvider>
-      <MetaMaskProvider>
-        <div className = 'root'>
-          <Stack spacing={2} className="main" divider={<Divider orientation="horizontal" color="#666666" flexItem />}>
-            <MetaMaskConnection />
-            <WalletDisplay />
-            <VaultDisplay />
-            <TopUpMMD />
-            <DepositMMD />
-            <WithdrawMMD />
-            <TransferCMMD />
-            <BorrowCMMD />
-            <RepayCMMD />
-          </Stack>
-        </div>
-      </MetaMaskProvider>
-    </BalanceProvider>
-  </React.StrictMode>
+    <React.StrictMode>
+        <BalanceProvider>
+            <MetaMaskProvider>
+                <div className = 'root'>
+                    <Stack spacing={2} className="main" divider={<Divider orientation="horizontal" color="#666666" flexItem />}>
+                        <MetaMaskConnection />
+                        <WalletDisplay />
+                        <VaultDisplay />
+                        <TopUpMMD />
+                        <DepositMMD />
+                        <WithdrawMMD />
+                        <TransferCMMD />
+                        <BorrowCMMD />
+                        <RepayCMMD />
+                    </Stack>
+                </div>
+            </MetaMaskProvider>
+        </BalanceProvider>
+    </React.StrictMode>
 )
-reason()
+// reason()
