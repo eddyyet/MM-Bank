@@ -8,8 +8,11 @@ contract CMMDToken is ERC20 {
     mapping(address => uint256) private _balances;
     mapping(address => uint256) private _vaultBalances;
     mapping(address => mapping(address => uint256)) private _allowances;
+    mapping(address => MMDToken) _MMDContract;
 
     uint256 private _totalSupply;
+    uint public constant initialCollateralPercentage = 150;
+    uint public constant minCollateralPercentage = 110;
 
     string private _name;
     string private _symbol;
@@ -22,6 +25,17 @@ contract CMMDToken is ERC20 {
 
     function vaultBalanceOf(address account) public view returns (uint256) {
         return _vaultBalances[account];
+    }
+
+    function linkMMDContract() public {
+        if (_MMDContract[msg.sender] != MMDToken(0)) {
+            _MMDContract[msg.sender] = new MMDToken(msg.sender);
+        }
+    }
+
+    function borrow(uint amount) external {
+        linkMMDContract();
+        
     }
 
     function _transfer(
