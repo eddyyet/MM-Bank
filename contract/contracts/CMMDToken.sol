@@ -3,16 +3,18 @@ pragma solidity ^0.8.9;
 
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "./MMDToken.sol";
 
 contract CMMDToken is ERC20 {
     mapping(address => uint256) private _balances;
-    mapping(address => uint256) private _vaultBalances;
+    mapping(address => int256) private _vaultBalances;
     mapping(address => mapping(address => uint256)) private _allowances;
     mapping(address => MMDToken) _MMDContract;
 
     uint256 private _totalSupply;
     uint public constant initialCollateralPercentage = 150;
     uint public constant minCollateralPercentage = 110;
+    uint public constant MMDtoCMMD = 5;
 
     string private _name;
     string private _symbol;
@@ -23,20 +25,46 @@ contract CMMDToken is ERC20 {
         return _balances[account];
     }
 
-    function vaultBalanceOf(address account) public view returns (uint256) {
+    function vaultBalanceOf(address account) public view returns (int256) {
         return _vaultBalances[account];
     }
 
-    function linkMMDContract() public {
+    function _linkMMDContract() private {
         if (_MMDContract[msg.sender] != MMDToken(0)) {
             _MMDContract[msg.sender] = new MMDToken(msg.sender);
         }
     }
 
-    function borrow(uint amount) external {
-        linkMMDContract();
-        
+    function _colleteralPercentage() private {
+        uint256 borrowed = uint256(-_vaultBalances[msg.sender]);
+        uint256 collateral = _MMDContract[msg.sender].vaultBalanceOf(msg.sender);
+        uint256 collateralPercentage = (borrowed * 100) / collateral;
+        return collateralPercentage;
     }
+
+    function borrow(uint256 amount) external {
+        _linkMMDContract();
+
+        unchecked {
+            uint256 collateralCurrent = _MMDContract[msg.sender].vaultBalanceOf(msg.sender);
+            uint256 MMDavailable = _MMDContract[msg.sender].balanceOf(msg.sender) + collateralCurrent;
+            uint256 totalDebtAfterBorrow = uint256(-_vaultBalances[msg.sender]) + amount;
+            uint256 collateralRequired = totalDebtAfterBorrow * MMDtoCMMD * initialCollateralPercentage / 100 ;
+        
+            require(collateralRequired <= MMDavailable, "Not enough MMD as collateral");
+        
+            if (collateralCurrent < collateralRequired) {
+                _MMDContract[msg.sender].deposit(collateralRequired - collateralCurrent);
+            }
+
+            _mint(msg.sender, amount);
+            _vaultBalances[msg.sender] -= int256(amount);
+        }
+        
+        emit Borrowed(amount);
+    }
+
+    event Borrowed(uint256 amount);
 
     function _transfer(
         address from,
