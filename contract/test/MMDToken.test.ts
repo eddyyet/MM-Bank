@@ -2,7 +2,23 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 
 describe("MMD Test", function () {
-  var testInstance: any;
+  it("Token name is the same as declared in the constrcutor function", async function () {
+    const [owner] = await ethers.getSigners();
+    const MMD = await ethers.getContractFactory("MMDToken");
+    const MMDContract = await MMD.deploy();
+    await MMDContract.deployed();
+    const name = await MMDContract.name();
+    expect(name).to.equal("Meta Merchant Dot");
+  });
+
+  it("Token symbol is the same as declared in the constrcutor function", async function () {
+    const [owner] = await ethers.getSigners();
+    const MMD = await ethers.getContractFactory("MMDToken");
+    const MMDContract = await MMD.deploy();
+    await MMDContract.deployed();
+    const symbol = await MMDContract.symbol();
+    expect(symbol).to.equal("MMD");
+  });
 
   it("Owner should get the initial supply", async function () {
     const [owner] = await ethers.getSigners();

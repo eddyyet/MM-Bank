@@ -14,7 +14,7 @@ contract MMDToken is ERC20 {
     string private _name;
     string private _symbol;
     
-    constructor() ERC20("MMD", "MMD") {
+    constructor() ERC20("Meta Merchant Dot", "MMD") {
         _mint(msg.sender, 25000*10**18);
     }
 
