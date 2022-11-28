@@ -32,9 +32,10 @@ const OperationButton = styled(LoadingButton)({
   border: '1px solid #999999',
   backgroundColor: '#1C1B1F',
   color: '#999999',
-  '&:hover': { backgroundColor: '#2B2C2F' }
-}
-)
+  '&:hover': { backgroundColor: '#2B2C2F' },
+  '&:disabled': { border: '1px solid #666666', backgroundColor: '#2B2C2F' },
+  '& .MuiLoadingButton-loadingIndicator': { color: '#666666' }
+})
 
 export function TopUpMMD (): JSX.Element {
   const metamask = useMetaMask()
@@ -73,6 +74,7 @@ export function TopUpMMD (): JSX.Element {
       console.log(error)
     }
 
+    setInputValue(0)
     setLoading(false)
   }
 
@@ -113,6 +115,7 @@ export function DepositMMD (): JSX.Element {
   const { balance, setBalance } = useBalance()
   const [InputValue, setInputValue] = useState<number>(0)
   const [Message, setMessage] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(false)
   const MMDinWallet = Number(useBalance().balance.MMDinWallet)
 
   useEffect(() => {
@@ -124,16 +127,25 @@ export function DepositMMD (): JSX.Element {
   }, [InputValue, MMDinWallet])
 
   async function Deposit (input: number): Promise<void> {
-    const tx = await MMDContract(metamask).deposit(ethers.utils.parseEther(String(input)), { gasLimit: 300000 })
-    await tx.wait()
+    setLoading(true)
 
-    const MMDinWalletWei = await MMDContract(metamask).balanceOf(account ?? '')
-    const MMDinWalletEther = MMDinWalletWei !== null ? +ethers.utils.formatEther(MMDinWalletWei) : NaN
-    if (MMDinWalletEther !== balance.MMDinWallet) { setBalance(existingBalance => ({ ...existingBalance, MMDinWallet: MMDinWalletEther })) };
+    try {
+      const tx = await MMDContract(metamask).deposit(ethers.utils.parseEther(String(input)), { gasLimit: 300000 })
+      await tx.wait()
 
-    const MMDinVaultWei = await MMDContract(metamask).vaultBalanceOf(account ?? '')
-    const MMDinVaultEther = MMDinVaultWei !== null ? +ethers.utils.formatEther(MMDinVaultWei) : NaN
-    if (MMDinVaultEther !== balance.MMDinVault) { setBalance(existingBalance => ({ ...existingBalance, MMDinVault: MMDinVaultEther })) };
+      const MMDinWalletWei = await MMDContract(metamask).balanceOf(account ?? '')
+      const MMDinWalletEther = MMDinWalletWei !== null ? +ethers.utils.formatEther(MMDinWalletWei) : NaN
+      if (MMDinWalletEther !== balance.MMDinWallet) { setBalance(existingBalance => ({ ...existingBalance, MMDinWallet: MMDinWalletEther })) };
+
+      const MMDinVaultWei = await MMDContract(metamask).vaultBalanceOf(account ?? '')
+      const MMDinVaultEther = MMDinVaultWei !== null ? +ethers.utils.formatEther(MMDinVaultWei) : NaN
+      if (MMDinVaultEther !== balance.MMDinVault) { setBalance(existingBalance => ({ ...existingBalance, MMDinVault: MMDinVaultEther })) };
+    } catch (error) {
+      console.log(error)
+    }
+
+    setInputValue(0)
+    setLoading(false)
   }
 
   return (
@@ -157,7 +169,7 @@ export function DepositMMD (): JSX.Element {
                             onChange={event => setInputValue(+event.target.value)} />
                     </Grid>
                     <Grid item xs={4} md={6}>
-                        <OperationButton onClick={async () => await Deposit(InputValue) }>
+                        <OperationButton loading={loading} onClick={async () => await Deposit(InputValue) }>
                             Deposit
                         </OperationButton>
                     </Grid>
@@ -173,6 +185,7 @@ export function WithdrawMMD (): JSX.Element {
   const { balance, setBalance } = useBalance()
   const [InputValue, setInputValue] = useState<number>(0)
   const [Message, setMessage] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(false)
   const MMDinVault = Number(useBalance().balance.MMDinVault)
   const CMMDinVault = Number(useBalance().balance.CMMDinVault)
 
@@ -189,19 +202,27 @@ export function WithdrawMMD (): JSX.Element {
   }, [InputValue, MMDinVault, CMMDinVault])
 
   async function Withdraw (input: number): Promise<void> {
-    const tx = await MMDContract(metamask).withdraw(ethers.utils.parseEther(String(input)), { gasLimit: 300000 })
-    await tx.wait()
+    setLoading(true)
 
-    const MMDinWalletWei = await MMDContract(metamask).balanceOf(account ?? '')
-    const MMDinWalletEther = MMDinWalletWei !== null ? +ethers.utils.formatEther(MMDinWalletWei) : NaN
-    if (MMDinWalletEther !== balance.MMDinWallet) { setBalance(existingBalance => ({ ...existingBalance, MMDinWallet: MMDinWalletEther })) }
+    try {
+      const tx = await MMDContract(metamask).withdraw(ethers.utils.parseEther(String(input)), { gasLimit: 300000 })
+      await tx.wait()
 
-    const MMDinVaultWei = await MMDContract(metamask).vaultBalanceOf(account ?? '')
-    const MMDinVaultEther = MMDinVaultWei !== null ? +ethers.utils.formatEther(MMDinVaultWei) : NaN
-    if (MMDinVaultEther !== balance.MMDinVault) {
-      setBalance(existingBalance => ({ ...existingBalance, MMDinVault: MMDinVaultEther }))
-      console.log('WITHDRAW5!!')
+      const MMDinWalletWei = await MMDContract(metamask).balanceOf(account ?? '')
+      const MMDinWalletEther = MMDinWalletWei !== null ? +ethers.utils.formatEther(MMDinWalletWei) : NaN
+      if (MMDinWalletEther !== balance.MMDinWallet) { setBalance(existingBalance => ({ ...existingBalance, MMDinWallet: MMDinWalletEther })) }
+
+      const MMDinVaultWei = await MMDContract(metamask).vaultBalanceOf(account ?? '')
+      const MMDinVaultEther = MMDinVaultWei !== null ? +ethers.utils.formatEther(MMDinVaultWei) : NaN
+      if (MMDinVaultEther !== balance.MMDinVault) {
+        setBalance(existingBalance => ({ ...existingBalance, MMDinVault: MMDinVaultEther }))
+      }
+    } catch (error) {
+      console.log(error)
     }
+
+    setInputValue(0)
+    setLoading(false)
   }
 
   return (
@@ -225,7 +246,7 @@ export function WithdrawMMD (): JSX.Element {
                             onChange={event => setInputValue(+event.target.value)} />
                     </Grid>
                     <Grid item xs={4} md={6}>
-                        <OperationButton onClick={async () => await Withdraw(InputValue)}>
+                        <OperationButton loading={loading} onClick={async () => await Withdraw(InputValue)}>
                             Withdraw
                         </OperationButton>
                     </Grid>
