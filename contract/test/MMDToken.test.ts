@@ -7,6 +7,10 @@ describe("MMD Test", function () {
     const MMD = await ethers.getContractFactory("MMDToken");
     const MMDContract = await MMD.deploy();
     await MMDContract.deployed();
+
+    const CMMD = await ethers.getContractFactory("CMMDToken");
+    const CMMDContract = await CMMD.deploy(MMDContract.address);
+    await CMMDContract.deployed();
   });
 
   it("Token name is the same as declared in the constrcutor function", async function () {

@@ -1,14 +1,21 @@
 import { ethers } from "hardhat";
 
 async function main() {
-  const Contract = await ethers.getContractFactory("MMDToken");
-  const contract = await Contract.deploy();
+  const MMDContract = await ethers.getContractFactory("MMDToken");
+  const MMDcontract = await MMDContract.deploy();
 
-  await contract.deployed();
-  console.log("Contract deployed to:", contract.address);
+  await MMDcontract.deployed();
+  MMDaddress = MMDcontract.address;
+  console.log("Contract deployed to:", MMDaddress);
 
-  const value = await contract.balanceOf('0x2Efe371AA24D1276B91F8C50C86c2e2D163e966d');
-  console.log("Contract balance:", value.toString());
+  const MMDvalue = await MMDcontract.balanceOf('0x2Efe371AA24D1276B91F8C50C86c2e2D163e966d');
+  console.log("Contract balance:", MMDvalue.toString());
+
+  const CMMDContract = await ethers.getContractFactory("CMMDToken");
+  const CMMDcontract = await CMMDContract.deploy();
+
+  const CMMDvalue = await CMMDcontract.balanceOf('0x2Efe371AA24D1276B91F8C50C86c2e2D163e966d');
+  console.log("Contract balance:", CMMDvalue.toString());
 }
 
 // We recommend this pattern to be able to use async/await everywhere
