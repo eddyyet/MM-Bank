@@ -13,16 +13,22 @@ describe("MMD Test", function () {
     // await CMMDContract.deployed();
   // });
 
-  it("Try cmmd", async function () {
+  it("Deploy MMD and CMMD", async function () {
     const [owner] = await ethers.getSigners();
       const MMD = await ethers.getContractFactory("MMDToken");
       const MMDContract = await MMD.deploy();
       await MMDContract.deployed();
       const MMDaddress = await MMDContract.address;
 
-    const CMMD = await ethers.getContractFactory("CMMDToken");
-    const CMMDContract = await CMMD.deploy(MMDaddress);//(MMDContract.address);
-    await CMMDContract.deployed();
+      const CMMD = await ethers.getContractFactory("CMMDToken");
+      const CMMDContract = await CMMD.deploy(MMDaddress);//(MMDContract.address);
+      await CMMDContract.deployed();
+      const CMMDaddress = await CMMDContract.address;
+
+      await MMDContract.setCMMDAddress(CMMDaddress);
+      const CMMDaddressInMMD = await MMDContract.CMMDAddress();
+      console.log("CMMD address in MMD:", CMMDaddressInMMD);
+      expect(CMMDaddressInMMD).to.equal(CMMDaddress);
   });
 
 
