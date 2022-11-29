@@ -62,8 +62,11 @@ contract MMDToken is ERC20 {
     event Withdrawn(uint256 amount);
 
     function decreaseVault(uint256 amount) external {
+        console.log("msg.sender: %s", msg.sender);
+        console.log(_vaultBalances[msg.sender]);
         require(_vaultBalances[msg.sender] >= amount, "Not enough MMD Collteral in Vault");
         _vaultBalances[msg.sender] -= amount; 
+        console.log(_vaultBalances[msg.sender]);
         // return _vaultBalances[msg.sender];
     }
 

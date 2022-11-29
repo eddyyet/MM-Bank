@@ -9,9 +9,9 @@ contract CMMDToken is ERC20 {
     mapping(address => uint256) private _balances;
     mapping(address => uint256) private _vaultBalances;
     mapping(address => mapping(address => uint256)) private _allowances;
-    mapping(address => MMDToken) _MMDContract;
-
-    MMDToken private MMD;
+    // mapping(address => MMDToken) _MMDContract;
+    address private _MMDaddress;
+    // MMDToken private MMD;
 
     uint256 private _totalSupply;
     uint public constant initialCollateralPercentage = 150;
@@ -22,7 +22,9 @@ contract CMMDToken is ERC20 {
 
     // uint256 private _MMDContract = MMDToken.balanceOf(msg.sender);
 
-    constructor() ERC20("Consumer Meta Merchant Dot", "CMMD") {}
+    constructor(address MMDaddress_) ERC20("Consumer Meta Merchant Dot", "CMMD") {
+        _MMDaddress = MMDaddress_;
+    }
 
     function balanceOf(address account) public view override returns (uint256) {
         return _balances[account];
@@ -43,16 +45,17 @@ contract CMMDToken is ERC20 {
         // _MMDContract[msg.sender].withdraw(_MMDContract[msg.sender].balanceOf(msg.sender));
     }
 
-    function borrow(uint amount, address addr) external {
+    function borrow(uint amount/*, address addr*/) external {
         // linkMMDContract();
         // _MMDContract[msg.sender].decreaseVault(amount);
-        MMDToken mmd = MMDToken(addr);
+        console.log("msg.sender: %s", msg.sender);
+        MMDToken mmd = MMDToken(_MMDaddress);
         mmd.decreaseVault(amount);
         _balances[msg.sender] += amount;    
     }
 
-    function repay(uint amount, address addr) external {
-        MMDToken mmd = MMDToken(addr);
+    function repay(uint amount/*, address addr*/) external {
+        MMDToken mmd = MMDToken(_MMDaddress);
         // mmd.increaseVault(amount);
         _balances[msg.sender] -= amount;
     }
