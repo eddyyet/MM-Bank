@@ -3,6 +3,7 @@ pragma solidity ^0.8.9;
 
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "./CMMDToken.sol";
 
 contract MMDToken is ERC20 {
     mapping(address => uint256) private _balances;
@@ -11,11 +12,23 @@ contract MMDToken is ERC20 {
 
     uint256 private _totalSupply;
 
+    address private _owner;
+    address private _CMMDAddress;
+
     string private _name;
     string private _symbol;
     
     constructor() ERC20("Meta Merchant Dot", "MMD") {
+        _owner = msg.sender;
         _mint(msg.sender, 25000*10**18);
+    }
+
+    function setCMMDAddress(address CMMDAdress_) external onlyOwner {
+        _CMMDAddress = CMMDAdress_;
+    }
+
+    function CMMDAddress() external view returns (address) {
+        return _CMMDAddress;
     }
 
     function balanceOf(address account) public view override returns (uint256) {
@@ -59,22 +72,7 @@ contract MMDToken is ERC20 {
         emit Withdrawn(amount);
     }
 
-    event Withdrawn(uint256 amount);
-
-    function decreaseVault(uint256 amount) external {
-        require(_vaultBalances[msg.sender] >= amount, "Not enough MMD Collteral in Vault");
-        _vaultBalances[msg.sender] -= amount; 
-        // return _vaultBalances[msg.sender];
-    }
-
-    event decreasedVault(uint256 amount);
-
-    function increaseVault(uint256 amount) external {
-        _vaultBalances[msg.sender] += amount;
-        // return _vaultBalances[msg.sender];
-    }
-
-    // event increaseVault(uint256 amount);    
+    event Withdrawn(uint256 amount); 
     
     function transfer(address to, uint256 amount) public virtual override returns (bool) {
         address owner = _msgSender();
@@ -119,5 +117,8 @@ contract MMDToken is ERC20 {
         emit Transfer(account, address(0), amount);
     }
 
-
+    modifier onlyOwner {
+        require(msg.sender == _owner);
+        _;
+    }
 }

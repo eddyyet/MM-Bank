@@ -13,11 +13,22 @@ describe("MMD Test", function () {
     // await CMMDContract.deployed();
   // });
 
-  it("Try cmmd", async function () {
+  it("Deploy MMD and CMMD", async function () {
     const [owner] = await ethers.getSigners();
-    const CMMD = await ethers.getContractFactory("CMMDToken");
-    const CMMDContract = await CMMD.deploy()//(MMDContract.address);
-    await CMMDContract.deployed();
+      const MMD = await ethers.getContractFactory("MMDToken");
+      const MMDContract = await MMD.deploy();
+      await MMDContract.deployed();
+      const MMDaddress = await MMDContract.address;
+
+      const CMMD = await ethers.getContractFactory("CMMDToken");
+      const CMMDContract = await CMMD.deploy(MMDaddress);//(MMDContract.address);
+      await CMMDContract.deployed();
+      const CMMDaddress = await CMMDContract.address;
+
+      await MMDContract.setCMMDAddress(CMMDaddress);
+      const CMMDaddressInMMD = await MMDContract.CMMDAddress();
+      console.log("CMMD address in MMD:", CMMDaddressInMMD);
+      expect(CMMDaddressInMMD).to.equal(CMMDaddress);
   });
 
 
@@ -105,9 +116,9 @@ describe("MMD Test", function () {
       await MMDContract.deposit(ethers.utils.parseEther('800'));
 
     const CMMD = await ethers.getContractFactory("CMMDToken");
-    const CMMDContract = await CMMD.deploy()//(MMDContract.address);
+    const CMMDContract = await CMMD.deploy(MMDContract.address)//(MMDContract.address);
     await CMMDContract.deployed();
-    await CMMDContract.borrow(ethers.utils.parseEther('400'), MMDContract.address);
+    await CMMDContract.borrow(ethers.utils.parseEther('400'));
     const CMMDbalanceAfterWithdraw = await CMMDContract.balanceOf(owner.address);
     expect(CMMDbalanceAfterWithdraw).to.equal(24600000000000000000000n);
   });
