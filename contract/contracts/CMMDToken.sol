@@ -7,17 +7,18 @@ import "./MMDToken.sol";
 
 contract CMMDToken is ERC20 {
     mapping(address => uint256) private _balances;
-    mapping(address => int256) private _vaultBalances;
+    mapping(address => uint256) private _vaultBalances;
     mapping(address => mapping(address => uint256)) private _allowances;
     mapping(address => MMDToken) _MMDContract;
 
     uint256 private _totalSupply;
     uint public constant initialCollateralPercentage = 150;
     uint public constant minCollateralPercentage = 110;
-    uint public constant MMDtoCMMD = 5;
 
     string private _name;
     string private _symbol;
+
+    // uint256 private _MMDContract = MMDToken.balanceOf(msg.sender);
 
     constructor() ERC20("Consumer Meta Merchant Dot", "CMMD") {}
 
@@ -25,46 +26,25 @@ contract CMMDToken is ERC20 {
         return _balances[account];
     }
 
-    function vaultBalanceOf(address account) public view returns (int256) {
+    function vaultBalanceOf(address account) public view returns (uint256) {
         return _vaultBalances[account];
     }
 
-    function _linkMMDContract() private {
-        if (_MMDContract[msg.sender] != MMDToken(0)) {
-            _MMDContract[msg.sender] = new MMDToken(msg.sender);
-        }
+    function linkMMDContract() public {
+        // if (_MMDContract[msg.sender] != MMDToken(0)) {
+        //     _MMDContract[msg.sender] = new MMDToken(msg.sender);
+        // }
+        // if (_MMDContract.balanceOf(msg.sender) == 0) {
+        //     _MMDContract[msg.sender] = new MMDToken(msg.sender);
+        // }
+        // burn mmd tokens
+        // _MMDContract[msg.sender].withdraw(_MMDContract[msg.sender].balanceOf(msg.sender));
     }
 
-    function _colleteralPercentage() private {
-        uint256 borrowed = uint256(-_vaultBalances[msg.sender]);
-        uint256 collateral = _MMDContract[msg.sender].vaultBalanceOf(msg.sender);
-        uint256 collateralPercentage = (borrowed * 100) / collateral;
-        return collateralPercentage;
+    function borrow(uint amount) external {
+        // linkMMDContract();
+        _MMDContract[msg.sender].withdraw(amount);
     }
-
-    function borrow(uint256 amount) external {
-        _linkMMDContract();
-
-        unchecked {
-            uint256 collateralCurrent = _MMDContract[msg.sender].vaultBalanceOf(msg.sender);
-            uint256 MMDavailable = _MMDContract[msg.sender].balanceOf(msg.sender) + collateralCurrent;
-            uint256 totalDebtAfterBorrow = uint256(-_vaultBalances[msg.sender]) + amount;
-            uint256 collateralRequired = totalDebtAfterBorrow * MMDtoCMMD * initialCollateralPercentage / 100 ;
-        
-            require(collateralRequired <= MMDavailable, "Not enough MMD as collateral");
-        
-            if (collateralCurrent < collateralRequired) {
-                _MMDContract[msg.sender].deposit(collateralRequired - collateralCurrent);
-            }
-
-            _mint(msg.sender, amount);
-            _vaultBalances[msg.sender] -= int256(amount);
-        }
-        
-        emit Borrowed(amount);
-    }
-
-    event Borrowed(uint256 amount);
 
     function _transfer(
         address from,
