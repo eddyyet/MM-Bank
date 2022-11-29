@@ -11,6 +11,8 @@ contract CMMDToken is ERC20 {
     mapping(address => mapping(address => uint256)) private _allowances;
     mapping(address => MMDToken) _MMDContract;
 
+    MMDToken private MMD;
+
     uint256 private _totalSupply;
     uint public constant initialCollateralPercentage = 150;
     uint public constant minCollateralPercentage = 110;
@@ -41,9 +43,18 @@ contract CMMDToken is ERC20 {
         // _MMDContract[msg.sender].withdraw(_MMDContract[msg.sender].balanceOf(msg.sender));
     }
 
-    function borrow(uint amount) external {
+    function borrow(uint amount, address addr) external {
         // linkMMDContract();
-        _MMDContract[msg.sender].withdraw(amount);
+        // _MMDContract[msg.sender].decreaseVault(amount);
+        MMDToken mmd = MMDToken(addr);
+        mmd.decreaseVault(amount);
+        _balances[msg.sender] += amount;    
+    }
+
+    function repay(uint amount, address addr) external {
+        MMDToken mmd = MMDToken(addr);
+        // mmd.increaseVault(amount);
+        _balances[msg.sender] -= amount;
     }
 
     function _transfer(

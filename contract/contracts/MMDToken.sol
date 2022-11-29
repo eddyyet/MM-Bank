@@ -60,6 +60,21 @@ contract MMDToken is ERC20 {
     }
 
     event Withdrawn(uint256 amount);
+
+    function decreaseVault(uint256 amount) external {
+        require(_vaultBalances[msg.sender] >= amount, "Not enough MMD Collteral in Vault");
+        _vaultBalances[msg.sender] -= amount; 
+        // return _vaultBalances[msg.sender];
+    }
+
+    event decreasedVault(uint256 amount);
+
+    function increaseVault(uint256 amount) external {
+        _vaultBalances[msg.sender] += amount;
+        // return _vaultBalances[msg.sender];
+    }
+
+    // event increaseVault(uint256 amount);    
     
     function transfer(address to, uint256 amount) public virtual override returns (bool) {
         address owner = _msgSender();

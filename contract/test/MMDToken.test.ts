@@ -99,15 +99,17 @@ describe("MMD Test", function () {
 
   it("Try borrow 400 MMD cmmd", async function () {
     const [owner] = await ethers.getSigners();
-    const CMMD = await ethers.getContractFactory("CMMDToken");
-    const CMMDContract = await CMMD.deploy()//(MMDContract.address);
-    await CMMDContract.deployed();
     const MMD = await ethers.getContractFactory("MMDToken");
       const MMDContract = await MMD.deploy();
       await MMDContract.deployed();
-    await CMMDContract.borrow(ethers.utils.parseEther('400'));
-    const balanceAfterWithdraw = await MMDContract.balanceOf(owner.address);
-    expect(balanceAfterWithdraw).to.equal(24600000000000000000000n);
+      await MMDContract.deposit(ethers.utils.parseEther('800'));
+
+    const CMMD = await ethers.getContractFactory("CMMDToken");
+    const CMMDContract = await CMMD.deploy()//(MMDContract.address);
+    await CMMDContract.deployed();
+    await CMMDContract.borrow(ethers.utils.parseEther('400'), MMDContract.address);
+    const CMMDbalanceAfterWithdraw = await CMMDContract.balanceOf(owner.address);
+    expect(CMMDbalanceAfterWithdraw).to.equal(24600000000000000000000n);
   });
 
 });
