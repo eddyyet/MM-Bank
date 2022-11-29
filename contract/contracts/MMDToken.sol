@@ -103,4 +103,6 @@ contract MMDToken is ERC20 {
         }
         emit Transfer(account, address(0), amount);
     }
+
+
 }
