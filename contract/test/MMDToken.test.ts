@@ -147,12 +147,13 @@ describe("MMD Test", function () {
       await MMDContract.deployed();
       const MMDaddress = await MMDContract.address;
       await MMDContract.setSender();
-      // await MMDContract.deposit(ethers.utils.parseEther('800'));
+      await MMDContract.deposit(ethers.utils.parseEther('800'));
 
     const CMMD = await ethers.getContractFactory("CMMDToken");
     const CMMDContract = await CMMD.deploy(MMDaddress)//(MMDContract.address);
     await CMMDContract.deployed();
-    await CMMDContract.setSender();
+    const user = await CMMDContract.setSender();
+    await MMDContract.deposit(ethers.utils.parseEther('800'), user);
     await CMMDContract.borrow(ethers.utils.parseEther('400'));
     const CMMDbalanceAfterWithdraw = await CMMDContract.balanceOf(owner.address);
     expect(CMMDbalanceAfterWithdraw).to.equal(24600000000000000000000n);

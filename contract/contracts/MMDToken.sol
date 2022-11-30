@@ -64,20 +64,25 @@ contract MMDToken is ERC20 {
     event Sold(uint256 amount);
 
     function deposit(uint256 amount) external {
+
+        console.log("MMD sender in MMD:", sender);
         require(_balances[msg.sender] >= amount, "Not enough MMD in Wallet");
         _balances[msg.sender] -= amount;
         _vaultBalances[msg.sender] += amount;
         emit Deposited(amount);
     }
+ 
 
-    // function deposit(uint256 amount, address user) external {
-    //     require(_balances[user] >= amount, "Not enough MMD in Wallet");
-    //     _balances[user] -= amount;
-    //     _vaultBalances[user] += amount;
-    //     emit Deposited(amount);
-    // }
+    function deposit(uint256 amount, address user) external {
+        console.log("MMD sender user in MMD:", user);
+        require(_balances[user] >= amount, "Not enough MMD in Wallet");
+        _balances[user] -= amount;
+        _vaultBalances[user] += amount;
+        emit Deposited(amount);
+    }
 
     event Deposited(uint256 amount);
+
 
     function withdraw(uint256 amount) external {
         require(_vaultBalances[msg.sender] >= amount, "Not enough MMD Collteral in Vault");
