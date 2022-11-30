@@ -97,16 +97,6 @@ describe("MMD Test", function () {
   expect(balanceAfterDeposit).to.equal(24200000000000000000000n);
 });
 
-// it("Deposit 800 MMD 2", async function () {
-//   const [owner] = await ethers.getSigners();
-//     const MMD = await ethers.getContractFactory("MMDToken");
-//     const MMDContract = await MMD.deploy();
-//     await MMDContract.deployed();
-
-//   await MMDContract.deposit(ethers.utils.parseEther('800'));
-//   const balanceAfterDeposit = await MMDContract.balanceOf(owner.address);
-//   expect(balanceAfterDeposit).to.equal(24200000000000000000000n);
-// });
 
   it("Withdraw 400 MMD after deposit 800 MMD", async function () {
     
@@ -120,26 +110,6 @@ describe("MMD Test", function () {
     const balanceAfterWithdraw = await MMDContract.balanceOf(owner.address);
     expect(balanceAfterWithdraw).to.equal(24600000000000000000000n);
   });
-
-  // it("MMD and cMMD have same sender", async function() {
-  //   const [owner] = await ethers.getSigners();
-  //     const MMD = await ethers.getContractFactory("MMDToken");
-  //     const MMDContract = await MMD.deploy();
-  //     await MMDContract.deployed();
-  //     const MMDaddress = await MMDContract.address;
-
-  //     const CMMD = await ethers.getContractFactory("CMMDToken");
-  //     const CMMDContract = await CMMD.deploy(MMDaddress);//(MMDContract.address);
-  //     await CMMDContract.deployed();
-  //     const CMMDaddress = await CMMDContract.address;
-
-  //     const mmdSender = await MMDContract.setSender();
-  //     // console.log("MMD sender:", mmdSender);
-  //     const CMMDSender = await CMMDContract.setSender();
-  //     // console.log("CMMD sender:", CMMDSender);
-  //     expect(mmdSender).to.equal(CMMDSender);
-  // });
-
 
 
   it("Try borrow 400 MMD cmmd", async function () {
