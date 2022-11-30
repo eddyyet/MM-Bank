@@ -63,7 +63,7 @@ contract CMMDToken is ERC20 {
         if (_balances[sender] * initialCollateralPercentage <= mmd.vaultBalanceOf(sender)){
             if (mmd.vaultBalanceOf(sender) >= amount * initialCollateralPercentage){
                 mmd.withdraw(amount * initialCollateralPercentage/*, addr*/);
-            } elif (mmd.vaultBalanceOf(sender) < amount * initialCollateralPercentage && mmd.vaultBalanceOf(sender) >= amount * minCollateralPercentage){
+            } else if (mmd.vaultBalanceOf(sender) < amount * initialCollateralPercentage && mmd.vaultBalanceOf(sender) >= amount * minCollateralPercentage){
                 mmd.withdraw(mmd.vaultBalanceOf(sender)/*, addr*/);
             }
         }
