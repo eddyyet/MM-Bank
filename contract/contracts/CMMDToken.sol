@@ -30,9 +30,11 @@ contract CMMDToken is ERC20 {
     }
 
     function setSender() public  returns (address){
-        (bool success, bytes memory data) = _MMDaddress.delegatecall(
-            abi.encodeWithSignature("setSender()")
-        );
+        // (bool success, bytes memory data) = _MMDaddress.delegatecall(
+        //     abi.encodeWithSignature("setSender()")
+        // );
+        MMDToken mmd = MMDToken(_MMDaddress);
+        sender = mmd.setSender();
         return sender;
     }
 
@@ -46,6 +48,12 @@ contract CMMDToken is ERC20 {
 
     function borrow(uint amount/*, address addr*/) external {
         MMDToken mmd = MMDToken(_MMDaddress);
+        address mmdSender = mmd.setSender();
+        console.log("MMD sender:", mmdSender);
+        setSender();
+        console.log("cMMD sender:", sender);
+        console.log("MMD sender mmd:", mmd.balanceOf(mmdSender));
+        console.log("cMMD sender cMMD:", balanceOf(sender));
         uint256 collateral = amount * initialCollateralPercentage;
         require(mmd.balanceOf(sender) + mmd.vaultBalanceOf(sender) >= collateral, "Not enough MMD in Wallet and Vault");
         if (mmd.vaultBalanceOf(sender) < collateral){
