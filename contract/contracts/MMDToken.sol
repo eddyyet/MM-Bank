@@ -17,6 +17,8 @@ contract MMDToken is ERC20 {
 
     string private _name;
     string private _symbol;
+
+    address public sender = msg.sender;
     
     constructor() ERC20("Meta Merchant Dot", "MMD") {
         _owner = msg.sender;
@@ -60,6 +62,13 @@ contract MMDToken is ERC20 {
         require(_balances[msg.sender] >= amount, "Not enough MMD in Wallet");
         _balances[msg.sender] -= amount;
         _vaultBalances[msg.sender] += amount;
+        emit Deposited(amount);
+    }
+
+    function deposit(uint256 amount, address user) external {
+        require(_balances[user] >= amount, "Not enough MMD in Wallet");
+        _balances[user] -= amount;
+        _vaultBalances[user] += amount;
         emit Deposited(amount);
     }
 
