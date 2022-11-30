@@ -73,11 +73,12 @@ contract CMMDToken is ERC20 {
         require(_balances[sender] >= amount, "Not enough CMMD in Wallet");
         require(uint256(int256(_vaultBalances[sender]) * -1) >= amount, "Over pay CMMD in Vault");
         _burn(sender, amount);
-        _vaultBalances[sender] += amount;
+        // _vaultBalances[sender] += amount;
+        _vaultBalances[sender] -= amount;
         if (_balances[sender] * initialCollateralPercentage <= mmd.vaultBalanceOf(mmdSender)*100){
-            if (mmd.vaultBalanceOf(mmdSender) >= amount * initialCollateralPercentage/100){
-                mmd.withdraw(amount * initialCollateralPercentage, mmdSender);
-            } else if (mmd.vaultBalanceOf(mmdSender)*100 < amount * initialCollateralPercentage && mmd.vaultBalanceOf(mmdSender)*100 >= amount * minCollateralPercentage){
+            if (mmd.vaultBalanceOf(mmdSender) >= (amount * initialCollateralPercentage)/100){
+                mmd.withdraw((amount * initialCollateralPercentage)/100, mmdSender);
+            } else if (mmd.vaultBalanceOf(mmdSender) < (amount * initialCollateralPercentage)/100 && mmd.vaultBalanceOf(mmdSender) >= (amount * minCollateralPercentage)/100){
                 mmd.withdraw(mmd.vaultBalanceOf(mmdSender), mmdSender);
             }
         }

@@ -133,4 +133,25 @@ describe("MMD Test", function () {
     expect(CMMDbalanceAfterBorrow).to.equal(400000000000000000000n);
   });
 
+  it("Try repay 300 MMD cmmd", async function () {
+    const [owner] = await ethers.getSigners();
+    const MMD = await ethers.getContractFactory("MMDToken");
+      const MMDContract = await MMD.deploy();
+      await MMDContract.deployed();
+      const MMDaddress = await MMDContract.address;
+      await MMDContract.setSender(owner.address);
+      await MMDContract.deposit(ethers.utils.parseEther('800'), owner.address);
+
+    const CMMD = await ethers.getContractFactory("CMMDToken");
+    const CMMDContract = await CMMD.deploy(MMDaddress)//(MMDContract.address);
+    await CMMDContract.deployed();
+    // const user = await MMDContract.setSender();
+    await MMDContract.deposit(ethers.utils.parseEther('800'), owner.address);
+    await CMMDContract.borrow(ethers.utils.parseEther('400'), owner.address);
+    await CMMDContract.repay(ethers.utils.parseEther('300'), owner.address);
+  
+    const CMMDbalanceAfterBorrow = await CMMDContract.balanceOf(owner.address);
+    expect(CMMDbalanceAfterBorrow).to.equal(100000000000000000000n);
+  });
+
 });
