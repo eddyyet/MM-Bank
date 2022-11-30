@@ -29,10 +29,11 @@ contract CMMDToken is ERC20 {
         _MMDaddress = MMDaddress_;
     }
 
-    function setSender() public {
+    function setSender() public  returns (address){
         (bool success, bytes memory data) = _MMDaddress.delegatecall(
             abi.encodeWithSignature("setSender()")
         );
+        return sender;
     }
 
     function balanceOf(address account) public view override returns (uint256) {

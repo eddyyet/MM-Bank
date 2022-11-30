@@ -25,8 +25,9 @@ contract MMDToken is ERC20 {
         _mint(msg.sender, 25000*10**18);
     }
 
-    function setSender() public {
+    function setSender() public returns (address){
         sender = msg.sender;
+        return sender;
     }
 
     function setCMMDAddress(address CMMDAdress_) external onlyOwner {
