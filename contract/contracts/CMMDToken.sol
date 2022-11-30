@@ -21,10 +21,18 @@ contract CMMDToken is ERC20 {
     string private _name;
     string private _symbol;
 
+    address public sender;
+
     // uint256 private _MMDContract = MMDToken.balanceOf(msg.sender);
 
     constructor(address MMDaddress_) ERC20("Consumer Meta Merchant Dot", "CMMD") {
         _MMDaddress = MMDaddress_;
+    }
+
+    function setSender() public {
+        (bool success, bytes memory data) = _MMDaddress.delegatecall(
+            abi.encodeWithSignature("setSender()")
+        );
     }
 
     function balanceOf(address account) public view override returns (uint256) {
@@ -35,21 +43,30 @@ contract CMMDToken is ERC20 {
         return _vaultBalances[account];
     }
 
-    function borrow(uint amount, address addr) external {
+    function borrow(uint amount/*, address addr*/) external {
         MMDToken mmd = MMDToken(_MMDaddress);
         uint256 collateral = amount * initialCollateralPercentage;
-        require(mmd.balanceOf(msg.sender) + mmd.vaultBalanceOf(msg.sender) >= collateral, "Not enough MMD in Wallet and Vault");
-        if (mmd.vaultBalanceOf(msg.sender) < collateral){
-            mmd.deposit(collateral - mmd.vaultBalanceOf(msg.sender)/*, addr*/); // need add msg.sender address
+        require(mmd.balanceOf(sender) + mmd.vaultBalanceOf(sender) >= collateral, "Not enough MMD in Wallet and Vault");
+        if (mmd.vaultBalanceOf(sender) < collateral){
+            mmd.deposit(collateral - mmd.vaultBalanceOf(sender)/*, addr*/);
         }
-        _mint(msg.sender, amount);
+        _mint(sender, amount);
         _vaultBalances[msg.sender] -= uint256(int256(collateral)); // feeling something weird about this line
     }
 
     function repay(uint amount/*, address addr*/) external {
         MMDToken mmd = MMDToken(_MMDaddress);
-        // mmd.increaseVault(amount);
-        _balances[msg.sender] -= amount;
+        require(_balances[sender] >= amount, "Not enough CMMD in Wallet");
+        require(uint256(int256(_vaultBalances[sender]) * -1) >= amount, "Over pay CMMD in Vault");
+        _burn(sender, amount);
+        _vaultBalances[sender] += amount;
+        if (_balances[sender] * initialCollateralPercentage <= mmd.vaultBalanceOf(sender)){
+            if (mmd.vaultBalanceOf(sender) >= amount * initialCollateralPercentage){
+                mmd.withdraw(amount * initialCollateralPercentage/*, addr*/);
+            } elif (mmd.vaultBalanceOf(sender) < amount * initialCollateralPercentage && mmd.vaultBalanceOf(sender) >= amount * minCollateralPercentage){
+                mmd.withdraw(mmd.vaultBalanceOf(sender)/*, addr*/);
+            }
+        }
     }
 
     function _transfer(

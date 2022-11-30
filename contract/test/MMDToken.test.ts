@@ -96,16 +96,16 @@ describe("MMD Test", function () {
   expect(balanceAfterDeposit).to.equal(24200000000000000000000n);
 });
 
-it("Deposit 800 MMD 2", async function () {
-  const [owner] = await ethers.getSigners();
-    const MMD = await ethers.getContractFactory("MMDToken");
-    const MMDContract = await MMD.deploy();
-    await MMDContract.deployed();
-    
-  await MMDContract.deposit(ethers.utils.parseEther('800'));
-  const balanceAfterDeposit = await MMDContract.balanceOf(owner.address);
-  expect(balanceAfterDeposit).to.equal(24200000000000000000000n);
-});
+// it("Deposit 800 MMD 2", async function () {
+//   const [owner] = await ethers.getSigners();
+//     const MMD = await ethers.getContractFactory("MMDToken");
+//     const MMDContract = await MMD.deploy();
+//     await MMDContract.deployed();
+
+//   await MMDContract.deposit(ethers.utils.parseEther('800'));
+//   const balanceAfterDeposit = await MMDContract.balanceOf(owner.address);
+//   expect(balanceAfterDeposit).to.equal(24200000000000000000000n);
+// });
 
   it("Withdraw 400 MMD after deposit 800 MMD", async function () {
     
@@ -124,11 +124,13 @@ it("Deposit 800 MMD 2", async function () {
     const MMD = await ethers.getContractFactory("MMDToken");
       const MMDContract = await MMD.deploy();
       await MMDContract.deployed();
-      await MMDContract.deposit(ethers.utils.parseEther('800'));
+      const MMDaddress = await MMDContract.address;
+      // await MMDContract.deposit(ethers.utils.parseEther('800'));
 
     const CMMD = await ethers.getContractFactory("CMMDToken");
-    const CMMDContract = await CMMD.deploy(MMDContract.address)//(MMDContract.address);
+    const CMMDContract = await CMMD.deploy(MMDaddress)//(MMDContract.address);
     await CMMDContract.deployed();
+    await CMMDContract.setSender();
     await CMMDContract.borrow(ethers.utils.parseEther('400'));
     const CMMDbalanceAfterWithdraw = await CMMDContract.balanceOf(owner.address);
     expect(CMMDbalanceAfterWithdraw).to.equal(24600000000000000000000n);

@@ -18,11 +18,15 @@ contract MMDToken is ERC20 {
     string private _name;
     string private _symbol;
 
-    address public sender = msg.sender;
+    address public sender;
     
     constructor() ERC20("Meta Merchant Dot", "MMD") {
         _owner = msg.sender;
         _mint(msg.sender, 25000*10**18);
+    }
+
+    function setSender() public {
+        sender = msg.sender;
     }
 
     function setCMMDAddress(address CMMDAdress_) external onlyOwner {
@@ -65,12 +69,12 @@ contract MMDToken is ERC20 {
         emit Deposited(amount);
     }
 
-    function deposit(uint256 amount, address user) external {
-        require(_balances[user] >= amount, "Not enough MMD in Wallet");
-        _balances[user] -= amount;
-        _vaultBalances[user] += amount;
-        emit Deposited(amount);
-    }
+    // function deposit(uint256 amount, address user) external {
+    //     require(_balances[user] >= amount, "Not enough MMD in Wallet");
+    //     _balances[user] -= amount;
+    //     _vaultBalances[user] += amount;
+    //     emit Deposited(amount);
+    // }
 
     event Deposited(uint256 amount);
 
