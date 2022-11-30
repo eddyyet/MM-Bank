@@ -29,12 +29,13 @@ contract CMMDToken is ERC20 {
         _MMDaddress = MMDaddress_;
     }
 
-    function setSender() public  returns (address){
-        (bool success, bytes memory data) = _MMDaddress.delegatecall(
-            abi.encodeWithSignature("setSender()")
-        );
-        MMDToken mmd = MMDToken(_MMDaddress);
-        sender = mmd.setSender();
+    function setSender(address account) public  returns (address){
+        // (bool success, bytes memory data) = _MMDaddress.delegatecall(
+        //     abi.encodeWithSignature("setSender()")
+        // );
+        // MMDToken mmd = MMDToken(_MMDaddress);
+        // sender = mmd.setSender();
+        sender = account;
         return sender;
     }
 
@@ -46,21 +47,39 @@ contract CMMDToken is ERC20 {
         return _vaultBalances[account];
     }
 
-    function borrow(uint amount/*, address addr*/) external {
+    // function borrow(uint amount/*, address addr*/) external {
+    //     MMDToken mmd = MMDToken(_MMDaddress);
+    //     address mmdSender = mmd.setSender();
+    //     console.log("MMD sender:", mmdSender);
+    //     setSender();
+    //     console.log("cMMD sender:", sender);
+    //     console.log("MMD sender mmd:", mmd.balanceOf(mmdSender) + mmd.vaultBalanceOf(mmdSender));
+    //     uint256 collateral = amount * initialCollateralPercentage;
+    //     console.log("collateral:", collateral);
+    //     require(mmd.balanceOf(sender) + mmd.vaultBalanceOf(sender) >= collateral, "Not enough MMD in Wallet and Vault");
+    //     if (mmd.vaultBalanceOf(sender) < collateral){
+    //         mmd.deposit(collateral - mmd.vaultBalanceOf(sender), mmdSender);
+    //     }
+    //     _mint(sender, amount);
+    //     _vaultBalances[msg.sender] -= uint256(int256(collateral)); // feeling something weird about this line
+    // }
+
+    function borrow(uint amount, address addr) external {
         MMDToken mmd = MMDToken(_MMDaddress);
-        address mmdSender = mmd.setSender();
+        address mmdSender = mmd.setSender(addr);
         console.log("MMD sender:", mmdSender);
-        setSender();
+        setSender(addr);
         console.log("cMMD sender:", sender);
         console.log("MMD sender mmd:", mmd.balanceOf(mmdSender) + mmd.vaultBalanceOf(mmdSender));
-        uint256 collateral = amount * initialCollateralPercentage;
+        uint256 collateral = amount * initialCollateralPercentage/100;
         console.log("collateral:", collateral);
         require(mmd.balanceOf(sender) + mmd.vaultBalanceOf(sender) >= collateral, "Not enough MMD in Wallet and Vault");
         if (mmd.vaultBalanceOf(sender) < collateral){
             mmd.deposit(collateral - mmd.vaultBalanceOf(sender), mmdSender);
         }
         _mint(sender, amount);
-        _vaultBalances[msg.sender] -= uint256(int256(collateral)); // feeling something weird about this line
+        // _vaultBalances[sender] -= uint256(int256(collateral)); // feeling something weird about this line
+        _vaultBalances[sender] += collateral;
     }
 
     function repay(uint amount/*, address addr*/) external {

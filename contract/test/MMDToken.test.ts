@@ -91,7 +91,8 @@ describe("MMD Test", function () {
     const MMD = await ethers.getContractFactory("MMDToken");
     const MMDContract = await MMD.deploy();
     await MMDContract.deployed();
-  await MMDContract.deposit(ethers.utils.parseEther('800'));
+  // await MMDContract.deposit(ethers.utils.parseEther('800'));
+  await MMDContract.deposit(ethers.utils.parseEther('800'), owner.address);
   const balanceAfterDeposit = await MMDContract.balanceOf(owner.address);
   expect(balanceAfterDeposit).to.equal(24200000000000000000000n);
 });
@@ -113,7 +114,8 @@ describe("MMD Test", function () {
       const MMD = await ethers.getContractFactory("MMDToken");
       const MMDContract = await MMD.deploy();
       await MMDContract.deployed();
-      await MMDContract.deposit(ethers.utils.parseEther('800'));
+      // await MMDContract.deposit(ethers.utils.parseEther('800'));
+      await MMDContract.deposit(ethers.utils.parseEther('800'), owner.address);
     await MMDContract.withdraw(ethers.utils.parseEther('400'));
     const balanceAfterWithdraw = await MMDContract.balanceOf(owner.address);
     expect(balanceAfterWithdraw).to.equal(24600000000000000000000n);
@@ -146,17 +148,18 @@ describe("MMD Test", function () {
       const MMDContract = await MMD.deploy();
       await MMDContract.deployed();
       const MMDaddress = await MMDContract.address;
-      await MMDContract.setSender();
-      await MMDContract.deposit(ethers.utils.parseEther('800'));
+      await MMDContract.setSender(owner.address);
+      await MMDContract.deposit(ethers.utils.parseEther('800'), owner.address);
 
     const CMMD = await ethers.getContractFactory("CMMDToken");
     const CMMDContract = await CMMD.deploy(MMDaddress)//(MMDContract.address);
     await CMMDContract.deployed();
-    const user = await CMMDContract.setSender();
-    await MMDContract.deposit(ethers.utils.parseEther('800'), user);
-    await CMMDContract.borrow(ethers.utils.parseEther('400'));
+    // const user = await MMDContract.setSender();
+    await MMDContract.deposit(ethers.utils.parseEther('800'), owner.address);
+    await CMMDContract.borrow(ethers.utils.parseEther('400'), owner.address);
+  
     const CMMDbalanceAfterWithdraw = await CMMDContract.balanceOf(owner.address);
-    expect(CMMDbalanceAfterWithdraw).to.equal(24600000000000000000000n);
+    expect(CMMDbalanceAfterWithdraw).to.equal(400000000000000000000n);
   });
 
 });

@@ -25,8 +25,14 @@ contract MMDToken is ERC20 {
         _mint(msg.sender, 25000*10**18);
     }
 
-    function setSender() public returns (address){
-        sender = msg.sender;
+    // function setSender() public returns (address){
+    //     sender = msg.sender;
+    //     return sender;
+    // }
+
+    function setSender(address account) public returns (address){
+        // sender = msg.sender;
+        sender = account;
         return sender;
     }
 
@@ -63,14 +69,14 @@ contract MMDToken is ERC20 {
 
     event Sold(uint256 amount);
 
-    function deposit(uint256 amount) external {
+    // function deposit(uint256 amount) external {
 
-        console.log("MMD sender in MMD:", sender);
-        require(_balances[msg.sender] >= amount, "Not enough MMD in Wallet");
-        _balances[msg.sender] -= amount;
-        _vaultBalances[msg.sender] += amount;
-        emit Deposited(amount);
-    }
+    //     console.log("MMD sender in MMD:", sender);
+    //     require(_balances[msg.sender] >= amount, "Not enough MMD in Wallet");
+    //     _balances[msg.sender] -= amount;
+    //     _vaultBalances[msg.sender] += amount;
+    //     emit Deposited(amount);
+    // }
  
 
     function deposit(uint256 amount, address user) external {
