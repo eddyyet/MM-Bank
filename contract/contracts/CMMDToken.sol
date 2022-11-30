@@ -16,6 +16,7 @@ contract CMMDToken is ERC20 {
     uint256 private _totalSupply;
     uint public constant initialCollateralPercentage = 150;
     uint public constant minCollateralPercentage = 110;
+    uint public constant initialCollateralRatio = 1;
 
     string private _name;
     string private _symbol;
@@ -34,24 +35,15 @@ contract CMMDToken is ERC20 {
         return _vaultBalances[account];
     }
 
-    function linkMMDContract() public {
-        // if (_MMDContract[msg.sender] != MMDToken(0)) {
-        //     _MMDContract[msg.sender] = new MMDToken(msg.sender);
-        // }
-        // if (_MMDContract.balanceOf(msg.sender) == 0) {
-        //     _MMDContract[msg.sender] = new MMDToken(msg.sender);
-        // }
-        // burn mmd tokens
-        // _MMDContract[msg.sender].withdraw(_MMDContract[msg.sender].balanceOf(msg.sender));
-    }
-
     function borrow(uint amount/*, address addr*/) external {
-        // linkMMDContract();
-        // _MMDContract[msg.sender].decreaseVault(amount);
-        console.log("msg.sender: %s", msg.sender);
         MMDToken mmd = MMDToken(_MMDaddress);
-        mmd.decreaseVault(amount);
-        _balances[msg.sender] += amount;    
+        uint256 collateral = amount * initialCollateralPercentage;
+        require(mmd.balanceOf(msg.sender) + mmd.vaultBalanceOf(msg.sender) >= collateral, "Not enough MMD in Wallet and Vault");
+        if (mmd.vaultBalanceOf(msg.sender) < collateral){
+            mmd.deposit(collateral - mmd.vaultBalanceOf(msg.sender)); // need add msg.sender address
+        }
+        _mint(msg.sender, amount);
+        _vaultBalances[msg.sender] -= uint256(int256(collateral)); // feeling something weird about this line
     }
 
     function repay(uint amount/*, address addr*/) external {
