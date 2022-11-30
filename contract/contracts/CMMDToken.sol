@@ -35,12 +35,12 @@ contract CMMDToken is ERC20 {
         return _vaultBalances[account];
     }
 
-    function borrow(uint amount/*, address addr*/) external {
+    function borrow(uint amount, address addr) external {
         MMDToken mmd = MMDToken(_MMDaddress);
         uint256 collateral = amount * initialCollateralPercentage;
         require(mmd.balanceOf(msg.sender) + mmd.vaultBalanceOf(msg.sender) >= collateral, "Not enough MMD in Wallet and Vault");
         if (mmd.vaultBalanceOf(msg.sender) < collateral){
-            mmd.deposit(collateral - mmd.vaultBalanceOf(msg.sender)); // need add msg.sender address
+            mmd.deposit(collateral - mmd.vaultBalanceOf(msg.sender)/*, addr*/); // need add msg.sender address
         }
         _mint(msg.sender, amount);
         _vaultBalances[msg.sender] -= uint256(int256(collateral)); // feeling something weird about this line
