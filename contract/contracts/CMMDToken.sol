@@ -55,9 +55,9 @@ contract CMMDToken is ERC20 {
         setSender(addr);
         console.log("cMMD sender:", sender);
         console.log("MMD sender mmd:", mmd.balanceOf(mmdSender) + mmd.vaultBalanceOf(mmdSender));
-        uint256 collateral = amount * initialCollateralPercentage/100;
+        uint256 collateral = (amount * initialCollateralPercentage)/100;
         console.log("collateral:", collateral);
-        require(mmd.balanceOf(sender) + mmd.vaultBalanceOf(sender) >= collateral, "Not enough MMD in Wallet and Vault");
+        require((mmd.balanceOf(sender) + mmd.vaultBalanceOf(sender)) >= collateral, "Not enough MMD in Wallet and Vault");
         if (mmd.vaultBalanceOf(sender) < collateral){
             mmd.deposit(collateral - mmd.vaultBalanceOf(sender), mmdSender);
         }
@@ -66,17 +66,19 @@ contract CMMDToken is ERC20 {
         _vaultBalances[sender] += collateral;
     }
 
-    function repay(uint amount/*, address addr*/) external {
+    function repay(uint amount, address addr) external {
         MMDToken mmd = MMDToken(_MMDaddress);
+        address mmdSender = mmd.setSender(addr);
+        setSender(addr);
         require(_balances[sender] >= amount, "Not enough CMMD in Wallet");
         require(uint256(int256(_vaultBalances[sender]) * -1) >= amount, "Over pay CMMD in Vault");
         _burn(sender, amount);
         _vaultBalances[sender] += amount;
-        if (_balances[sender] * initialCollateralPercentage <= mmd.vaultBalanceOf(sender)){
-            if (mmd.vaultBalanceOf(sender) >= amount * initialCollateralPercentage){
-                mmd.withdraw(amount * initialCollateralPercentage/*, addr*/);
-            } else if (mmd.vaultBalanceOf(sender) < amount * initialCollateralPercentage && mmd.vaultBalanceOf(sender) >= amount * minCollateralPercentage){
-                mmd.withdraw(mmd.vaultBalanceOf(sender)/*, addr*/);
+        if (_balances[sender] * initialCollateralPercentage <= mmd.vaultBalanceOf(mmdSender)*100){
+            if (mmd.vaultBalanceOf(mmdSender) >= amount * initialCollateralPercentage/100){
+                mmd.withdraw(amount * initialCollateralPercentage, mmdSender);
+            } else if (mmd.vaultBalanceOf(mmdSender)*100 < amount * initialCollateralPercentage && mmd.vaultBalanceOf(mmdSender)*100 >= amount * minCollateralPercentage){
+                mmd.withdraw(mmd.vaultBalanceOf(mmdSender), mmdSender);
             }
         }
     }

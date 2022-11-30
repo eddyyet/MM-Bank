@@ -106,7 +106,8 @@ describe("MMD Test", function () {
       await MMDContract.deployed();
       // await MMDContract.deposit(ethers.utils.parseEther('800'));
       await MMDContract.deposit(ethers.utils.parseEther('800'), owner.address);
-    await MMDContract.withdraw(ethers.utils.parseEther('400'));
+    // await MMDContract.withdraw(ethers.utils.parseEther('400'));
+    await MMDContract.withdraw(ethers.utils.parseEther('400'), owner.address);
     const balanceAfterWithdraw = await MMDContract.balanceOf(owner.address);
     expect(balanceAfterWithdraw).to.equal(24600000000000000000000n);
   });

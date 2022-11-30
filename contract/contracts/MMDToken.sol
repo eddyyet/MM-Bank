@@ -90,10 +90,17 @@ contract MMDToken is ERC20 {
     event Deposited(uint256 amount);
 
 
-    function withdraw(uint256 amount) external {
-        require(_vaultBalances[msg.sender] >= amount, "Not enough MMD Collteral in Vault");
-        _balances[msg.sender] += amount;
-        _vaultBalances[msg.sender] -= amount;
+    // function withdraw(uint256 amount) external {
+    //     require(_vaultBalances[msg.sender] >= amount, "Not enough MMD Collteral in Vault");
+    //     _balances[msg.sender] += amount;
+    //     _vaultBalances[msg.sender] -= amount;
+    //     emit Withdrawn(amount);
+    // }
+
+    function withdraw(uint256 amount, address user) external {
+        require(_vaultBalances[user] >= amount, "Not enough MMD Collteral in Vault");
+        _balances[user] += amount;
+        _vaultBalances[user] -= amount;
         emit Withdrawn(amount);
     }
 
