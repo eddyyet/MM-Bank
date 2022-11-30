@@ -158,8 +158,8 @@ describe("MMD Test", function () {
     await MMDContract.deposit(ethers.utils.parseEther('800'), owner.address);
     await CMMDContract.borrow(ethers.utils.parseEther('400'), owner.address);
   
-    const CMMDbalanceAfterWithdraw = await CMMDContract.balanceOf(owner.address);
-    expect(CMMDbalanceAfterWithdraw).to.equal(400000000000000000000n);
+    const CMMDbalanceAfterBorrow = await CMMDContract.balanceOf(owner.address);
+    expect(CMMDbalanceAfterBorrow).to.equal(400000000000000000000n);
   });
 
 });
