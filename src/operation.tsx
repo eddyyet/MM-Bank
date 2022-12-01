@@ -195,7 +195,7 @@ export function WithdrawMMD (): JSX.Element {
     } else if (InputValue > MMDinVault) {
       setMessage('Not enough MMD Collateral in Vault')
     } else if (InputValue <= MMDinVault && (MMDinVault - InputValue) * MMDtoCMMD < -CMMDinVault * MinCollateralRatio) {
-      setMessage('Minimal collateral ratio: 110%. Withdrawal will cause liquidation at 80% of the trading price.')
+      setMessage('Minimal collateral ratio: 110%. Withdrawal will cause liquidation with 5% discount charged to MMD in Wallet.')
     } else {
       setMessage('')
     }
@@ -255,9 +255,13 @@ export function WithdrawMMD (): JSX.Element {
 }
 
 export function TransferCMMD (): JSX.Element {
+  const metamask = useMetaMask()
+  const { account } = metamask
+  const { balance, setBalance } = useBalance()
   const [Address, setAddress] = useState<string>('')
   const [InputValue, setInputValue] = useState<number>(0)
   const [Message, setMessage] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(false)
   const CMMDinWallet = Number(useBalance().balance.CMMDinWallet)
 
   useEffect(() => {
@@ -267,6 +271,24 @@ export function TransferCMMD (): JSX.Element {
       setMessage('Not enough CMMD in Wallet')
     }
   }, [InputValue, CMMDinWallet])
+
+  async function Transfer (address: string, input: number): Promise<void> {
+    setLoading(true)
+
+    try {
+      const tx = await CMMDContract(metamask).transfer(address, ethers.utils.parseEther(String(input)), { gasLimit: 300000 })
+      await tx.wait()
+
+      const CMMDinWalletWei = await CMMDContract(metamask).balanceOf(account ?? '')
+      const CMMDinWalletEther = CMMDinWalletWei !== null ? +ethers.utils.formatEther(CMMDinWalletWei) : NaN
+      if (CMMDinWalletEther !== balance.CMMDinWallet) { setBalance(existingBalance => ({ ...existingBalance, MMDinWallet: CMMDinWalletEther })) };
+    } catch (error) {
+      console.log(error)
+    }
+
+    setInputValue(0)
+    setLoading(false)
+  }
 
   return (
         <Grid container>
@@ -297,7 +319,7 @@ export function TransferCMMD (): JSX.Element {
                             onChange={event => setInputValue(+event.target.value)} />
                     </Grid>
                     <Grid item xs={4} md={6}>
-                        <OperationButton onClick={() => TransferCMMDOperator(InputValue)}>
+                        <OperationButton loading={loading} onClick={async () => await Transfer(Address, InputValue)}>
                             Transfer
                         </OperationButton>
                     </Grid>
@@ -399,6 +421,7 @@ export function RepayCMMD (): JSX.Element {
   const [InputValue, setInputValue] = useState<number>(0)
   const [Message, setMessage] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
+  const MMDinVault = Number(useBalance().balance.MMDinVault)
   const CMMDinWallet = Number(useBalance().balance.CMMDinWallet)
   const CMMDinVault = Number(useBalance().balance.CMMDinVault)
 
@@ -410,9 +433,21 @@ export function RepayCMMD (): JSX.Element {
     } else if (InputValue >= CMMDinWallet) {
       setMessage('Not enough CMMD in Wallet')
     } else {
-      setMessage('Returns ' + String(InputValue / MMDtoCMMD) + ' MMD Collateral to Wallet')
+      const CollateralRequired = (-CMMDinVault - InputValue) * InitialCollateralRatio / MMDtoCMMD
+      const CollateralExcess = MMDinVault - CollateralRequired
+      if (CollateralExcess < 0) {
+        setMessage('The collateral ratio after repayment is still below 150%. All MMD Collateral in Vault will be kept unchanged.')
+      } else {
+        const CollateralOfRepaid = InputValue * InitialCollateralRatio / MMDtoCMMD
+        if (CollateralOfRepaid < CollateralExcess) {
+          const NewCollateralRatio = String(Math.round((MMDinVault - CollateralOfRepaid) * MMDtoCMMD / (-CMMDinVault - InputValue) * 10000) / 100)
+          setMessage('Returns ' + String(Math.round(CollateralOfRepaid * 100) / 100) + ' MMD Collateral to Wallet. Collateral ratio after repayment:' + NewCollateralRatio + '%.')
+        } else {
+          setMessage('Returns ' + String(Math.round(CollateralExcess * 100) / 100) + ' MMD Collateral to Wallet. Collateral ratio after repayment: 150%')
+        }
+      }
     }
-  }, [InputValue, CMMDinWallet, CMMDinVault])
+  }, [InputValue, MMDinVault, CMMDinWallet, CMMDinVault])
 
   async function Repay (input: number): Promise<void> {
     setLoading(true)
@@ -473,8 +508,4 @@ export function RepayCMMD (): JSX.Element {
             </Grid>
         </Grid>
   )
-}
-
-function TransferCMMDOperator (input: number): void {
-
 }
