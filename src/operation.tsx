@@ -4,7 +4,7 @@ import { LoadingButton } from '@mui/lab'
 import React, { useState, useEffect } from 'react'
 import { useMetaMask } from 'metamask-react'
 import { useBalance, ETDtoMMD, MMDtoCMMD, InitialCollateralRatio, MinCollateralRatio } from './tokenvalue'
-import { MMDContract } from './contractinstance'
+import { MMDContract, CMMDContract } from './contractinstance'
 import { ethers } from 'ethers'
 import './component.css'
 
@@ -214,9 +214,7 @@ export function WithdrawMMD (): JSX.Element {
 
       const MMDinVaultWei = await MMDContract(metamask).vaultBalanceOf(account ?? '')
       const MMDinVaultEther = MMDinVaultWei !== null ? +ethers.utils.formatEther(MMDinVaultWei) : NaN
-      if (MMDinVaultEther !== balance.MMDinVault) {
-        setBalance(existingBalance => ({ ...existingBalance, MMDinVault: MMDinVaultEther }))
-      }
+      if (MMDinVaultEther !== balance.MMDinVault) { setBalance(existingBalance => ({ ...existingBalance, MMDinVault: MMDinVaultEther })) }
     } catch (error) {
       console.log(error)
     }
@@ -310,8 +308,12 @@ export function TransferCMMD (): JSX.Element {
 }
 
 export function BorrowCMMD (): JSX.Element {
+  const metamask = useMetaMask()
+  const { account } = metamask
+  const { balance, setBalance } = useBalance()
   const [InputValue, setInputValue] = useState<number>(0)
   const [Message, setMessage] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(false)
   const MMDinWallet = Number(useBalance().balance.MMDinWallet)
   const MMDinVault = Number(useBalance().balance.MMDinVault)
 
@@ -328,6 +330,36 @@ export function BorrowCMMD (): JSX.Element {
       setMessage('Initial collateral ratio: 150%. Needs ' + String(InputValue * InitialCollateralRatio / MMDtoCMMD) + ' MMD Collateral in Vault. Not enough MMD from Wallet and Vault.')
     }
   }, [InputValue, MMDinWallet, MMDinVault])
+
+  async function Borrow (input: number): Promise<void> {
+    setLoading(true)
+
+    try {
+      const tx = await CMMDContract(metamask).borrow(ethers.utils.parseEther(String(input)), { gasLimit: 300000 })
+      await tx.wait()
+
+      const MMDinWalletWei = await MMDContract(metamask).balanceOf(account ?? '')
+      const MMDinWalletEther = MMDinWalletWei !== null ? +ethers.utils.formatEther(MMDinWalletWei) : NaN
+      if (MMDinWalletEther !== balance.MMDinWallet) { setBalance(existingBalance => ({ ...existingBalance, MMDinWallet: MMDinWalletEther })) }
+
+      const MMDinVaultWei = await MMDContract(metamask).vaultBalanceOf(account ?? '')
+      const MMDinVaultEther = MMDinVaultWei !== null ? +ethers.utils.formatEther(MMDinVaultWei) : NaN
+      if (MMDinVaultEther !== balance.MMDinVault) { setBalance(existingBalance => ({ ...existingBalance, MMDinVault: MMDinVaultEther })) }
+
+      const CMMDinWalletWei = await CMMDContract(metamask).balanceOf(account ?? '')
+      const CMMDinWalletEther = CMMDinWalletWei !== null ? +ethers.utils.formatEther(CMMDinWalletWei) : NaN
+      if (CMMDinWalletEther !== balance.CMMDinWallet) { setBalance(existingBalance => ({ ...existingBalance, CMMDinWallet: CMMDinWalletEther })) }
+
+      const CMMDinVaultWei = await CMMDContract(metamask).vaultBalanceOf(account ?? '')
+      const CMMDinVaultEther = CMMDinVaultWei !== null ? +ethers.utils.formatEther(CMMDinVaultWei) : NaN
+      if (CMMDinVaultEther !== balance.MMDinVault) { setBalance(existingBalance => ({ ...existingBalance, CMMDinVault: CMMDinVaultEther })) }
+    } catch (error) {
+      console.log(error)
+    }
+
+    setInputValue(0)
+    setLoading(false)
+  }
 
   return (
         <Grid container>
@@ -350,7 +382,7 @@ export function BorrowCMMD (): JSX.Element {
                             onChange={event => setInputValue(+event.target.value)} />
                     </Grid>
                     <Grid item xs={4} md={6}>
-                        <OperationButton onClick={() => BorrowCMMDOperator(InputValue)}>
+                        <OperationButton loading={loading} onClick={async () => await Borrow(InputValue)}>
                           Borrow
                         </OperationButton>
                     </Grid>
@@ -361,8 +393,12 @@ export function BorrowCMMD (): JSX.Element {
 }
 
 export function RepayCMMD (): JSX.Element {
+  const metamask = useMetaMask()
+  const { account } = metamask
+  const { balance, setBalance } = useBalance()
   const [InputValue, setInputValue] = useState<number>(0)
   const [Message, setMessage] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(false)
   const CMMDinWallet = Number(useBalance().balance.CMMDinWallet)
   const CMMDinVault = Number(useBalance().balance.CMMDinVault)
 
@@ -374,9 +410,39 @@ export function RepayCMMD (): JSX.Element {
     } else if (InputValue >= CMMDinWallet) {
       setMessage('Not enough CMMD in Wallet')
     } else {
-      setMessage('Returns ' + String(InputValue * MMDtoCMMD) + ' MMD Collateral to Wallet')
+      setMessage('Returns ' + String(InputValue / MMDtoCMMD) + ' MMD Collateral to Wallet')
     }
   }, [InputValue, CMMDinWallet, CMMDinVault])
+
+  async function Repay (input: number): Promise<void> {
+    setLoading(true)
+
+    try {
+      const tx = await CMMDContract(metamask).repay(ethers.utils.parseEther(String(input)), { gasLimit: 300000 })
+      await tx.wait()
+
+      const MMDinWalletWei = await MMDContract(metamask).balanceOf(account ?? '')
+      const MMDinWalletEther = MMDinWalletWei !== null ? +ethers.utils.formatEther(MMDinWalletWei) : NaN
+      if (MMDinWalletEther !== balance.MMDinWallet) { setBalance(existingBalance => ({ ...existingBalance, MMDinWallet: MMDinWalletEther })) }
+
+      const MMDinVaultWei = await MMDContract(metamask).vaultBalanceOf(account ?? '')
+      const MMDinVaultEther = MMDinVaultWei !== null ? +ethers.utils.formatEther(MMDinVaultWei) : NaN
+      if (MMDinVaultEther !== balance.MMDinVault) { setBalance(existingBalance => ({ ...existingBalance, MMDinVault: MMDinVaultEther })) }
+
+      const CMMDinWalletWei = await CMMDContract(metamask).balanceOf(account ?? '')
+      const CMMDinWalletEther = CMMDinWalletWei !== null ? +ethers.utils.formatEther(CMMDinWalletWei) : NaN
+      if (CMMDinWalletEther !== balance.CMMDinWallet) { setBalance(existingBalance => ({ ...existingBalance, CMMDinWallet: CMMDinWalletEther })) }
+
+      const CMMDinVaultWei = await CMMDContract(metamask).vaultBalanceOf(account ?? '')
+      const CMMDinVaultEther = CMMDinVaultWei !== null ? +ethers.utils.formatEther(CMMDinVaultWei) : NaN
+      if (CMMDinVaultEther !== balance.MMDinVault) { setBalance(existingBalance => ({ ...existingBalance, CMMDinVault: CMMDinVaultEther })) }
+    } catch (error) {
+      console.log(error)
+    }
+
+    setInputValue(0)
+    setLoading(false)
+  }
 
   return (
         <Grid container>
@@ -399,7 +465,7 @@ export function RepayCMMD (): JSX.Element {
                             onChange={event => setInputValue(+event.target.value)} />
                     </Grid>
                     <Grid item xs={4} md={6}>
-                        <OperationButton onClick={() => RepayCMMDOperator(InputValue)}>
+                        <OperationButton loading={loading} onClick={async () => await Repay(InputValue)}>
                             Repay
                         </OperationButton>
                     </Grid>
@@ -410,13 +476,5 @@ export function RepayCMMD (): JSX.Element {
 }
 
 function TransferCMMDOperator (input: number): void {
-
-}
-
-function BorrowCMMDOperator (input: number): void {
-
-}
-
-function RepayCMMDOperator (input: number): void {
 
 }
