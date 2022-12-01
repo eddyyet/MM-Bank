@@ -18,7 +18,7 @@ MMD Smart Contract `MMDToken`: `0x2497f4F5C4dE2744ad42B7Ab6D96C2cD1c90c01a`
 CMMD Smart Contract `CMMDToken`: `0x0fD706bc16981fba74497891a04D5EdA71528cb4`
 
 # Visit
-MM Bank demo website: https://mm-bank-demo.web.app/
+MM Bank demo website: https://mm-bank-six.vercel.app
 
 # Local installation 
 1. Clone the files down to your directory, `git clone https://github.com/eddyyet/test.git`
