@@ -10,7 +10,6 @@ contract CMMDToken is ERC20 {
     mapping(address => int256) private _vaultBalances;
     mapping(address => mapping(address => uint256)) private _allowances;
 
-    // mapping(address => MMDToken) _MMDContract;
     address private _owner;
     address private _MMDAddress;
     MMDToken private _MMDContract;
@@ -24,10 +23,6 @@ contract CMMDToken is ERC20 {
     string private _name;
     string private _symbol;
 
-    // address public sender;
-
-    // uint256 private _MMDContract = MMDToken.balanceOf(msg.sender);
-
     constructor(address MMDAddress_) ERC20("Consumer Meta Merchant Dot", "CMMD") {
         _owner = msg.sender;
         _MMDAddress = MMDAddress_;
@@ -37,16 +32,6 @@ contract CMMDToken is ERC20 {
     function MMDAddress() external view returns (address) {
         return _MMDAddress;
     }
-
-    // function setSender(address account) public  returns (address){
-    //     // (bool success, bytes memory data) = _MMDaddress.delegatecall(
-    //     //     abi.encodeWithSignature("setSender()")
-    //     // );
-    //     // MMDToken mmd = MMDToken(_MMDaddress);
-    //     // sender = mmd.setSender();
-    //     sender = account;
-    //     return sender;
-    // }
 
     function balanceOf(address account) public view override returns (uint256) {
         return _balances[account];
