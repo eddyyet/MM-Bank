@@ -1,6 +1,12 @@
-export const MMDABI = `[
+export const CMMDABI = `[
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "MMDAddress_",
+        "type": "address"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "constructor"
   },
@@ -39,7 +45,7 @@ export const MMDABI = `[
         "type": "uint256"
       }
     ],
-    "name": "Bought",
+    "name": "Borrowed",
     "type": "event"
   },
   {
@@ -52,7 +58,7 @@ export const MMDABI = `[
         "type": "uint256"
       }
     ],
-    "name": "Deposited",
+    "name": "Liquidated",
     "type": "event"
   },
   {
@@ -65,7 +71,7 @@ export const MMDABI = `[
         "type": "uint256"
       }
     ],
-    "name": "Sold",
+    "name": "Repaid",
     "type": "event"
   },
   {
@@ -94,39 +100,13 @@ export const MMDABI = `[
     "type": "event"
   },
   {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "Withdrawn",
-    "type": "event"
-  },
-  {
     "inputs": [],
-    "name": "CMMDAddress",
+    "name": "MMDAddress",
     "outputs": [
       {
         "internalType": "address",
         "name": "",
         "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "ETDtoMMD",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -213,10 +193,16 @@ export const MMDABI = `[
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "buy",
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "borrow",
     "outputs": [],
-    "stateMutability": "payable",
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -259,37 +245,6 @@ export const MMDABI = `[
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "deposit",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "realSender",
-        "type": "address"
-      }
-    ],
-    "name": "depositByCMMDContract",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "address",
         "name": "spender",
         "type": "address"
@@ -325,16 +280,21 @@ export const MMDABI = `[
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "liquidationDiscountPercentage",
-    "outputs": [
+    "inputs": [
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "amount",
         "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "realSender",
+        "type": "address"
       }
     ],
-    "stateMutability": "view",
+    "name": "liquidateByMMDContract",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -371,20 +331,7 @@ export const MMDABI = `[
         "type": "uint256"
       }
     ],
-    "name": "sell",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "CMMDAdress_",
-        "type": "address"
-      }
-    ],
-    "name": "setCMMDAddress",
+    "name": "repay",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -479,43 +426,12 @@ export const MMDABI = `[
     "name": "vaultBalanceOf",
     "outputs": [
       {
-        "internalType": "uint256",
+        "internalType": "int256",
         "name": "",
-        "type": "uint256"
+        "type": "int256"
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "withdraw",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "realSender",
-        "type": "address"
-      }
-    ],
-    "name": "withdrawByCMMDContract",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   }
 ]`
