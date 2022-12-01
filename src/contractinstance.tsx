@@ -29,4 +29,3 @@ export function CMMDContract (metamask: IMetaMaskContext): ethers.Contract {
   const contractSigned = contract.connect(signer)
   return contractSigned
 }
-
