@@ -6,20 +6,24 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./CMMDToken.sol";
 
 contract MMDToken is ERC20 {
+    address private _owner;
+    string private _name;
+    string private _symbol;
+
+    uint256 private _totalSupply;
     mapping(address => uint256) private _balances;
     mapping(address => uint256) private _vaultBalances;
     mapping(address => mapping(address => uint256)) private _allowances;
 
-    uint256 private _totalSupply;
-    uint public constant ETDtoMMD = 1000;
-
-    address private _owner;
     address private _CMMDAddress;
     CMMDToken private _CMMDContract;
 
-    string private _name;
-    string private _symbol;
-    
+    uint public constant ETDtoMMD = 1000;
+    uint public constant MMDtoCMMD = 5;
+    uint public constant initialCollateralPercentage = 150;
+    uint public constant minCollateralPercentage = 110;
+    uint public constant liquidationDiscountPercentage = 5;
+
     constructor() ERC20("Meta Merchant Dot", "MMD") {
         _owner = msg.sender;
         _mint(msg.sender, 25000*10**18);
@@ -27,7 +31,7 @@ contract MMDToken is ERC20 {
 
     function setCMMDAddress(address CMMDAdress_) external onlyOwner {
         _CMMDAddress = CMMDAdress_;
-        _CMMDContract = MMDToken(_CMMDAddress);
+        _CMMDContract = CMMDToken(_CMMDAddress);
     }
 
     function CMMDAddress() external view returns (address) {
@@ -78,8 +82,40 @@ contract MMDToken is ERC20 {
 
     function withdraw(uint256 amount) external {
         require(_vaultBalances[msg.sender] >= amount, "Not enough MMD Collteral in Vault");
-        _balances[msg.sender] += amount;
-        _vaultBalances[msg.sender] -= amount;
+
+        uint256 collateralCurrent = _vaultBalances[msg.sender];
+        uint256 collateralAfterWithdraw = collateralCurrent - amount;
+        uint256 debtCurrent = uint256(-_CMMDContract.vaultBalanceOf(msg.sender));
+        uint256 collateralMinimum = debtCurrent * minCollateralPercentage / 100 / MMDtoCMMD;
+        
+        if (collateralAfterWithdraw >= collateralMinimum) {
+            _balances[msg.sender] += amount;
+            _vaultBalances[msg.sender] -= amount;
+        } else {
+            uint256 CMMDAvailable = _CMMDContract.balanceOf(msg.sender);
+            uint256 CMMDtoLiquidate;
+            if (CMMDAvailable >= debtCurrent) {
+                CMMDtoLiquidate = debtCurrent;
+            } else {
+                CMMDtoLiquidate = CMMDAvailable;
+            }
+            console.log("CMMDtoLiquidate: %s", CMMDtoLiquidate);
+
+            _CMMDContract.liquidateByMMDContract(CMMDtoLiquidate, msg.sender);
+
+            uint256 collateralReleased = CMMDtoLiquidate / MMDtoCMMD;
+            uint256 liquidationDiscount = collateralReleased * liquidationDiscountPercentage / 100;
+
+            uint256 collateralToWithdraw;
+            if (collateralCurrent >= collateralReleased + amount) {
+                collateralToWithdraw = amount + collateralReleased;
+            } else {
+                collateralToWithdraw = collateralCurrent;
+            }
+
+            _balances[msg.sender] -= liquidationDiscount;
+        }
+
         emit Withdrawn(amount);
     }
 

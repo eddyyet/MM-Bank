@@ -6,21 +6,24 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./MMDToken.sol";
 
 contract CMMDToken is ERC20 {
+    address private _owner;
+    string private _name;
+    string private _symbol;
+    
+
+    uint256 private _totalSupply;
     mapping(address => uint256) private _balances;
     mapping(address => int256) private _vaultBalances;
     mapping(address => mapping(address => uint256)) private _allowances;
 
-    address private _owner;
     address private _MMDAddress;
     MMDToken private _MMDContract;
 
-    uint256 private _totalSupply;
+    uint public constant MMDtoCMMD = 5;
     uint public constant initialCollateralPercentage = 150;
     uint public constant minCollateralPercentage = 110;
-    uint public constant MMDtoCMMD = 5;
 
-    string private _name;
-    string private _symbol;
+
 
     constructor(address MMDAddress_) ERC20("Consumer Meta Merchant Dot", "CMMD") {
         _owner = msg.sender;
@@ -41,8 +44,8 @@ contract CMMDToken is ERC20 {
     }
 
     function borrow(uint256 amount) external {
-        uint256 totalDebtAfterBorrow = uint256(-_vaultBalances[msg.sender]) + amount;
-        uint256 collateralRequired = totalDebtAfterBorrow * initialCollateralPercentage / 100 / MMDtoCMMD;
+        uint256 debtAfterBorrow = uint256(-_vaultBalances[msg.sender]) + amount;
+        uint256 collateralRequired = debtAfterBorrow * initialCollateralPercentage / 100 / MMDtoCMMD;
 
         uint256 MMDWalletCurrent = _MMDContract.balanceOf(msg.sender);
         uint256 MMDCollateralCurrent = _MMDContract.vaultBalanceOf(msg.sender);
@@ -67,28 +70,41 @@ contract CMMDToken is ERC20 {
         require(amount <= _balances[msg.sender], "Not enough CMMD to repay");
         require(amount <= uint256(-_vaultBalances[msg.sender]), "Repay amount is larger than credited amount");
 
-        uint256 totalDebtAfterRepay = uint256(-_vaultBalances[msg.sender]) - amount;
-        uint256 collateralRequired = totalDebtAfterRepay * initialCollateralPercentage / 100 / MMDtoCMMD;
-
-        uint256 MMDCollateralCurrent = _MMDContract.vaultBalanceOf(msg.sender);
-
-        if (collateralRequired < MMDCollateralCurrent) {
-            uint256 collateralExcess = MMDCollateralCurrent - collateralRequired;
-            uint256 collateralOfRepaid = amount * initialCollateralPercentage / 100 / MMDtoCMMD;
-            if (collateralOfRepaid < collateralExcess) {
-                _MMDContract.withdrawByCMMDContract(collateralOfRepaid, msg.sender);
-            } else {
-                _MMDContract.withdrawByCMMDContract(collateralExcess, msg.sender);
-            }
-        }
-
-        _burn(msg.sender, amount);
-        _vaultBalances[msg.sender] += int256(amount);
+        _repay(amount, msg.sender);
 
         emit Repaid(amount);
     }
 
     event Repaid(uint256 amount);
+
+    function liquidateByMMDContract(uint256 amount, address realSender) external {
+        require(msg.sender == _MMDAddress, "Not called by MMD Contract");
+        require(amount <= _balances[realSender], "Not enough CMMD to liquidate");
+        require(amount <= uint256(-_vaultBalances[realSender]), "Liquidate amount is larger than credited amount");
+
+        _repay(amount, realSender);
+    }
+
+    event Liquidated(uint256 amount);
+
+    function _repay(uint256 amount, address realSender) private {
+        uint256 debtAfterRepay = uint256(-_vaultBalances[realSender]) - amount;
+        uint256 collateralRequired = debtAfterRepay * initialCollateralPercentage / 100 / MMDtoCMMD;
+        uint256 MMDCollateralCurrent = _MMDContract.vaultBalanceOf(realSender);
+
+        if (collateralRequired < MMDCollateralCurrent) {
+            uint256 collateralExcess = MMDCollateralCurrent - collateralRequired;
+            uint256 collateralOfRepaid = amount * initialCollateralPercentage / 100 / MMDtoCMMD;
+            if (collateralOfRepaid < collateralExcess) {
+                _MMDContract.withdrawByCMMDContract(collateralOfRepaid, realSender);
+            } else {
+                _MMDContract.withdrawByCMMDContract(collateralExcess, realSender);
+            }
+        }
+        
+        _burn(realSender, amount);
+        _vaultBalances[realSender] += int256(amount);
+    }
 
     function _transfer(
         address from,
