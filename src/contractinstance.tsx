@@ -25,7 +25,7 @@ export function CMMDContract (metamask: IMetaMaskContext): ethers.Contract {
   const { account } = metamask
   const provider = new ethers.providers.Web3Provider(window.ethereum)
   const signer = provider.getSigner(account ?? '')
-  const contract = new ethers.Contract(MMDAddress, CMMDABI, provider)
+  const contract = new ethers.Contract(CMMDAddress, CMMDABI, provider)
   const contractSigned = contract.connect(signer)
   return contractSigned
 }
