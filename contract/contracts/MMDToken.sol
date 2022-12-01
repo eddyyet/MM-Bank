@@ -30,11 +30,11 @@ contract MMDToken is ERC20 {
     //     return sender;
     // }
 
-    function setSender(address account) public returns (address){
-        // sender = msg.sender;
-        sender = account;
-        return sender;
-    }
+    // function setSender(address account) public returns (address){
+    //     // sender = msg.sender;
+    //     sender = account;
+    //     return sender;
+    // }
 
     function setCMMDAddress(address CMMDAdress_) external onlyOwner {
         _CMMDAddress = CMMDAdress_;
@@ -79,11 +79,26 @@ contract MMDToken is ERC20 {
     // }
  
 
-    function deposit(uint256 amount, address user) external {
-        console.log("MMD sender user in MMD:", user);
-        require(_balances[user] >= amount, "Not enough MMD in Wallet");
-        _balances[user] -= amount;
-        _vaultBalances[user] += amount;
+    // function deposit(uint256 amount, address user) external {
+    //     console.log("MMD sender user in MMD:", user);
+    //     require(_balances[user] >= amount, "Not enough MMD in Wallet");
+    //     _balances[user] -= amount;
+    //     _vaultBalances[user] += amount;
+    //     emit Deposited(amount);
+    // }
+
+    function deposit(uint256 amount) external {
+        require(_balances[msg.sender] >= amount, "Not enough MMD in Wallet");
+        _balances[msg.sender] -= amount;
+        _vaultBalances[msg.sender] += amount;
+        emit Deposited(amount);
+    }
+
+    function depositByCMMDContract(uint256 amount, address realSender) external {
+        require(msg.sender == _CMMDAddress, "Not called by CMMD Contract");
+        require(_balances[realSender] >= amount, "Not enough MMD in Wallet");
+        _balances[realSender] -= amount;
+        _vaultBalances[realSender] += amount;
         emit Deposited(amount);
     }
 
@@ -97,10 +112,25 @@ contract MMDToken is ERC20 {
     //     emit Withdrawn(amount);
     // }
 
-    function withdraw(uint256 amount, address user) external {
-        require(_vaultBalances[user] >= amount, "Not enough MMD Collteral in Vault");
-        _balances[user] += amount;
-        _vaultBalances[user] -= amount;
+    // function withdraw(uint256 amount, address user) external {
+    //     require(_vaultBalances[user] >= amount, "Not enough MMD Collteral in Vault");
+    //     _balances[user] += amount;
+    //     _vaultBalances[user] -= amount;
+    //     emit Withdrawn(amount);
+    // }
+
+    function withdraw(uint256 amount) external {
+        require(_vaultBalances[msg.sender] >= amount, "Not enough MMD Collteral in Vault");
+        _balances[msg.sender] += amount;
+        _vaultBalances[msg.sender] -= amount;
+        emit Withdrawn(amount);
+    }
+
+    function withdrawByCMMDContract(uint256 amount, address realSender) external {
+        require(msg.sender == _CMMDAddress, "Not called by CMMD Contract");
+        require(_vaultBalances[realSender] >= amount, "Not enough MMD Collteral in Vault");
+        _balances[realSender] += amount;
+        _vaultBalances[realSender] -= amount;
         emit Withdrawn(amount);
     }
 
