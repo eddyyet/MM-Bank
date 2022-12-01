@@ -63,42 +63,6 @@ contract CMMDToken is ERC20 {
 
     event Borrowed(uint256 amount);
 
-    // function borrow(uint amount, address addr) external {
-    //     MMDToken mmd = MMDToken(_MMDaddress);
-    //     address mmdSender = mmd.setSender(addr);
-    //     console.log("MMD sender:", mmdSender);
-    //     setSender(addr);
-    //     console.log("cMMD sender:", sender);
-    //     console.log("MMD sender mmd:", mmd.balanceOf(mmdSender) + mmd.vaultBalanceOf(mmdSender));
-    //     uint256 collateral = (amount * initialCollateralPercentage)/100;
-    //     console.log("collateral:", collateral);
-    //     require((mmd.balanceOf(sender) + mmd.vaultBalanceOf(sender)) >= collateral, "Not enough MMD in Wallet and Vault");
-    //     if (mmd.vaultBalanceOf(sender) < collateral){
-    //         mmd.deposit(collateral - mmd.vaultBalanceOf(sender), mmdSender);
-    //     }
-    //     _mint(sender, amount);
-    //     // _vaultBalances[sender] -= uint256(int256(collateral)); // feeling something weird about this line
-    //     _vaultBalances[sender] += collateral;
-    // }
-
-    // function repay(uint amount, address addr) external {
-    //     MMDToken mmd = MMDToken(_MMDaddress);
-    //     address mmdSender = mmd.setSender(addr);
-    //     setSender(addr);
-    //     require(_balances[sender] >= amount, "Not enough CMMD in Wallet");
-    //     require(uint256(int256(_vaultBalances[sender]) * -1) >= amount, "Over pay CMMD in Vault");
-    //     _burn(sender, amount);
-    //     // _vaultBalances[sender] += amount;
-    //     _vaultBalances[sender] -= amount;
-    //     if (_balances[sender] * initialCollateralPercentage <= mmd.vaultBalanceOf(mmdSender)*100){
-    //         if (mmd.vaultBalanceOf(mmdSender) >= (amount * initialCollateralPercentage)/100){
-    //             mmd.withdraw((amount * initialCollateralPercentage)/100, mmdSender);
-    //         } else if (mmd.vaultBalanceOf(mmdSender) < (amount * initialCollateralPercentage)/100 && mmd.vaultBalanceOf(mmdSender) >= (amount * minCollateralPercentage)/100){
-    //             mmd.withdraw(mmd.vaultBalanceOf(mmdSender), mmdSender);
-    //         }
-    //     }
-    // }
-
     function _transfer(
         address from,
         address to,
