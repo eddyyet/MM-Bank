@@ -1,30 +1,27 @@
-# Introduction
-This is a project of MSBD5017 Introduction to Blockchain Technology. 
+# MM Bank
+The **MM Bank** application provides one-stop shop decentralized financial services to both Merchants and Users with its distributed ledger and online teller.
 
-This "MM Bank" application provides one-stop shop services to Merchants to carry out operations of the two circulating currencies, MMD and CMMD. 
+Features:
+- Fully **decentralized** - both the application and ledger balances - for security
+- Support the **dual token system** (MMD and CMMD) with two smart contracts that interact with each other
+- **Deposit**, **withdrawal**, **borrow** and **transfer** for daily economic activities
+- **Collateral requirement** (lock MMD to borrow CMMD) and **liquidation** as credit risk control
 
-# Installation 
-1. Make sure that the latest NodeJS is in place:
-```
-> node -v
-v18.12.1
-```
+(This is a course project for MSBD5017 in HKUST in Fall 2022-23)
 
-2. To copy the project files down from GitHub to your project directory, enter: \
-`git clone https://github.com/eddyyet/test.git`
+# Blockchain information
+Etherdata Blockchain (Testnet) - 
+RPC URL: https://rpc.debugchain.net, Chain ID: `8348`
 
-3. The repo root directory contains 1 folder, `test`.
+MMD Smart Contract `MMDToken`: `0x2497f4F5C4dE2744ad42B7Ab6D96C2cD1c90c01a`
 
-4. Install all NPM modules under `test`:
-```
-cd test
-npm install
-```
+CMMD Smart Contract `CMMDToken`: `0x0fD706bc16981fba74497891a04D5EdA71528cb4`
 
-5. (Optional) To obtain the latest version, enter:\
-`git pull`
+# Visit
+MM Bank demo website: https://mm-bank-six.vercel.app
 
-6. Enter the following command to run the application in the development mode in the project directory:\
-`npm start`
-
-7. Your browser should be called up and open up [http://localhost:3000](http://localhost:3000) automatically.
+# Local installation 
+1. Clone the files down to your directory, `git clone https://github.com/eddyyet/test.git`
+2. The repo root directory contains 1 folder, `test`. Use `cd test` to enter the folder.
+3. Use `npm install` to install the dependencies.
+4. Use `npm start` to start the application in your browser.

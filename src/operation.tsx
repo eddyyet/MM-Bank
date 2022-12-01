@@ -30,9 +30,9 @@ const OperationButton = styled(LoadingButton)({
   marginLeft: '1rem',
   borderRadius: '2rem',
   border: '1px solid #999999',
-  backgroundColor: '#1C1B1F',
+  backgroundColor: '#0D1117',
   color: '#999999',
-  '&:hover': { backgroundColor: '#2B2C2F' },
+  '&:hover': { backgroundColor: '#1D2127' },
   '&:disabled': { border: '1px solid #666666', backgroundColor: '#2B2C2F' },
   '& .MuiLoadingButton-loadingIndicator': { color: '#666666' }
 })
@@ -187,6 +187,7 @@ export function WithdrawMMD (): JSX.Element {
   const [Message, setMessage] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
   const MMDinVault = Number(useBalance().balance.MMDinVault)
+  const CMMDinWallet = Number(useBalance().balance.CMMDinWallet)
   const CMMDinVault = Number(useBalance().balance.CMMDinVault)
 
   useEffect(() => {
@@ -195,11 +196,15 @@ export function WithdrawMMD (): JSX.Element {
     } else if (InputValue > MMDinVault) {
       setMessage('Not enough MMD Collateral in Vault')
     } else if (InputValue <= MMDinVault && (MMDinVault - InputValue) * MMDtoCMMD < -CMMDinVault * MinCollateralRatio) {
-      setMessage('Minimal collateral ratio: 110%. Withdrawal will cause liquidation with 5% discount charged to MMD in Wallet.')
+      if (CMMDinVault >= CMMDinWallet) {
+        setMessage('Minimal collateral ratio: 110%. Withdrawal will cause liquidation with 5% discount charged from MMD in Wallet.')
+      } else {
+        setMessage('Minimal collateral ratio: 110%. Not enough CMMD in Wallet for liquidation. Withdrawal will be cancelled.')
+      }
     } else {
       setMessage('')
     }
-  }, [InputValue, MMDinVault, CMMDinVault])
+  }, [InputValue, MMDinVault, CMMDinWallet, CMMDinVault])
 
   async function Withdraw (input: number): Promise<void> {
     setLoading(true)
@@ -286,6 +291,7 @@ export function TransferCMMD (): JSX.Element {
       console.log(error)
     }
 
+    setAddress('')
     setInputValue(0)
     setLoading(false)
   }
