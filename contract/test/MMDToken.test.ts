@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import {expect, jest, test} from '@jest/globals';
+import { jest, test} from '@jest/globals';
 
 describe("MMD Test", function () {
   // before(async function () {
@@ -14,29 +14,23 @@ describe("MMD Test", function () {
     // await CMMDContract.deployed();
   // });
 
-  // beforeEach("deploy contract for each tesst", async function () {
-  //   const [owner] = await ethers.getSigners();
-  //   const MMD = await ethers.getContractFactory("MMDToken");
-  //   const MMDContract = await MMD.deploy();
-  //   await MMDContract.deployed();
 
-  //   const CMMD = await ethers.getContractFactory("CMMDToken");
-  //   const CMMDContract = await CMMD.deploy(MMDContract);
-  //   await CMMDContract.deployed();
-  // });
-
-  it("Deploy MMD and CMMD", async function () {
-    const [owner] = await ethers.getSigners();
+    async function predeploy() {
+      const [owner] = await ethers.getSigners();
       const MMD = await ethers.getContractFactory("MMDToken");
       const MMDContract = await MMD.deploy();
       await MMDContract.deployed();
       const MMDaddress = await MMDContract.address;
 
       const CMMD = await ethers.getContractFactory("CMMDToken");
-      const CMMDContract = await CMMD.deploy(MMDaddress);//(MMDContract.address);
+      const CMMDContract = await CMMD.deploy(MMDaddress);
       await CMMDContract.deployed();
       const CMMDaddress = await CMMDContract.address;
+      return {owner, MMD, MMDContract, MMDaddress, CMMD, CMMDContract, CMMDaddress};
+  };
 
+  it("Deploy MMD and CMMD", async function () {
+    const {owner, MMD, MMDContract, MMDaddress, CMMD, CMMDContract, CMMDaddress} = await predeploy();
       await MMDContract.setCMMDAddress(CMMDaddress);
       const CMMDaddressInMMD = await MMDContract.CMMDAddress();
       expect(CMMDaddressInMMD).to.equal(CMMDaddress);
@@ -44,52 +38,32 @@ describe("MMD Test", function () {
 
 
   it("Token name is the same as declared in the constrcutor function", async function () {
-    
-      const [owner] = await ethers.getSigners();
-      const MMD = await ethers.getContractFactory("MMDToken");
-      const MMDContract = await MMD.deploy();
-      await MMDContract.deployed();
+    const {owner, MMD, MMDContract, MMDaddress, CMMD, CMMDContract, CMMDaddress} = await predeploy();
     const name = await MMDContract.name();
     expect(name).to.equal("Meta Merchant Dot");
   });
 
   it("Token symbol is the same as declared in the constrcutor function", async function () {
-    
-      const [owner] = await ethers.getSigners();
-      const MMD = await ethers.getContractFactory("MMDToken");
-      const MMDContract = await MMD.deploy();
-      await MMDContract.deployed();
+      const {owner, MMD, MMDContract, MMDaddress, CMMD, CMMDContract, CMMDaddress} = await predeploy();
     const symbol = await MMDContract.symbol();
     expect(symbol).to.equal("MMD");
   });
 
   it("Owner should get the initial supply", async function () {
-   
-    const [owner] = await ethers.getSigners();
-    const MMD = await ethers.getContractFactory("MMDToken");
-    const MMDContract = await MMD.deploy();
-    await MMDContract.deployed();
+    const {owner, MMD, MMDContract, MMDaddress, CMMD, CMMDContract, CMMDaddress} = await predeploy();
     const ownerBalance = await MMDContract.balanceOf(owner.address);
     expect(ownerBalance).to.equal(25000000000000000000000n);
   });
 
   it("Buy 1000 MMD with 1 Ether", async function () {
-    
-      const [owner] = await ethers.getSigners();
-      const MMD = await ethers.getContractFactory("MMDToken");
-      const MMDContract = await MMD.deploy();
-      await MMDContract.deployed();
+    const {owner, MMD, MMDContract, MMDaddress, CMMD, CMMDContract, CMMDaddress} = await predeploy();
     await MMDContract.buy({value: ethers.utils.parseEther('1')});
     const balanceAfterBuy = await MMDContract.balanceOf(owner.address);
     expect(balanceAfterBuy).to.equal(26000000000000000000000n);
   });
 
   it("Sell 500 MMD", async function () {
-   
-    const [owner] = await ethers.getSigners();
-    const MMD = await ethers.getContractFactory("MMDToken");
-    const MMDContract = await MMD.deploy();
-    await MMDContract.deployed();
+    const {owner, MMD, MMDContract, MMDaddress, CMMD, CMMDContract, CMMDaddress} = await predeploy();
     await MMDContract.buy({value: ethers.utils.parseEther('1')});
     await MMDContract.sell(ethers.utils.parseEther('500'));
     const balanceAfterSell = await MMDContract.balanceOf(owner.address);
@@ -97,11 +71,7 @@ describe("MMD Test", function () {
   });
 
   it("Deposit 800 MMD", async function () {
-    const [owner] = await ethers.getSigners();
-    const MMD = await ethers.getContractFactory("MMDToken");
-    const MMDContract = await MMD.deploy();
-    await MMDContract.deployed();
-    
+    const {owner, MMD, MMDContract, MMDaddress, CMMD, CMMDContract, CMMDaddress} = await predeploy();
     await MMDContract.deposit(ethers.utils.parseEther('800'));
     const balanceAfterDeposit = await MMDContract.balanceOf(owner.address);
     expect(balanceAfterDeposit).to.equal(24200000000000000000000n);
@@ -109,18 +79,8 @@ describe("MMD Test", function () {
 
 
   it("Withdraw 400 MMD after deposit 800 MMD", async function () {
-    const [owner] = await ethers.getSigners();
-    const MMD = await ethers.getContractFactory("MMDToken");
-    const MMDContract = await MMD.deploy();
-    await MMDContract.deployed();
-    const MMDAddress = await MMDContract.address;
-
-    const CMMD = await ethers.getContractFactory("CMMDToken");
-    const CMMDContract = await CMMD.deploy(MMDAddress);
-    await CMMDContract.deployed();
-    const CMMDAddress = await CMMDContract.address;
-
-    await MMDContract.setCMMDAddress(CMMDAddress);
+    const {owner, MMD, MMDContract, MMDaddress, CMMD, CMMDContract, CMMDaddress} = await predeploy();
+    await MMDContract.setCMMDAddress(CMMDaddress);
     
     await MMDContract.deposit(ethers.utils.parseEther('800'));
     await MMDContract.withdraw(ethers.utils.parseEther('400'));
@@ -129,18 +89,20 @@ describe("MMD Test", function () {
   });
 
   it("Borrow 1000 CMMD", async function () {
-    const [owner] = await ethers.getSigners();
-    const MMD = await ethers.getContractFactory("MMDToken");
-    const MMDContract = await MMD.deploy();
-    await MMDContract.deployed();
-    const MMDAddress = await MMDContract.address;
+    // const [owner] = await ethers.getSigners();
+    // const MMD = await ethers.getContractFactory("MMDToken");
+    // const MMDContract = await MMD.deploy();
+    // await MMDContract.deployed();
+    // const MMDAddress = await MMDContract.address;
 
-    const CMMD = await ethers.getContractFactory("CMMDToken");
-    const CMMDContract = await CMMD.deploy(MMDAddress);
-    await CMMDContract.deployed();
-    const CMMDAddress = await CMMDContract.address;
+    // const CMMD = await ethers.getContractFactory("CMMDToken");
+    // const CMMDContract = await CMMD.deploy(MMDAddress);
+    // await CMMDContract.deployed();
+    // const CMMDaddress = await CMMDContract.address;
 
-    await MMDContract.setCMMDAddress(CMMDAddress);
+    const {owner, MMD, MMDContract, MMDaddress, CMMD, CMMDContract, CMMDaddress} = await predeploy();
+
+    await MMDContract.setCMMDAddress(CMMDaddress);
 
     await MMDContract.deposit(ethers.utils.parseEther('800'));
     await MMDContract.withdraw(ethers.utils.parseEther('700'));
@@ -157,18 +119,9 @@ describe("MMD Test", function () {
   });
 
   it("Repay 500 CMMD (before repay, collateral is lower than 150%", async function () {
-    const [owner] = await ethers.getSigners();
-    const MMD = await ethers.getContractFactory("MMDToken");
-    const MMDContract = await MMD.deploy();
-    await MMDContract.deployed();
-    const MMDAddress = await MMDContract.address;
 
-    const CMMD = await ethers.getContractFactory("CMMDToken");
-    const CMMDContract = await CMMD.deploy(MMDAddress);
-    await CMMDContract.deployed();
-    const CMMDAddress = await CMMDContract.address;
-
-    await MMDContract.setCMMDAddress(CMMDAddress);
+    const {owner, MMD, MMDContract, MMDaddress, CMMD, CMMDContract, CMMDaddress} = await predeploy();
+    await MMDContract.setCMMDAddress(CMMDaddress);
 
     await MMDContract.deposit(ethers.utils.parseEther('800'));
     await MMDContract.withdraw(ethers.utils.parseEther('700'));
@@ -187,18 +140,9 @@ describe("MMD Test", function () {
   });
 
   it("Repay 500 CMMD (before repay, collateral is higher than 150%", async function () {
-    const [owner] = await ethers.getSigners();
-    const MMD = await ethers.getContractFactory("MMDToken");
-    const MMDContract = await MMD.deploy();
-    await MMDContract.deployed();
-    const MMDAddress = await MMDContract.address;
 
-    const CMMD = await ethers.getContractFactory("CMMDToken");
-    const CMMDContract = await CMMD.deploy(MMDAddress);
-    await CMMDContract.deployed();
-    const CMMDAddress = await CMMDContract.address;
-
-    await MMDContract.setCMMDAddress(CMMDAddress);
+    const {owner, MMD, MMDContract, MMDaddress, CMMD, CMMDContract, CMMDaddress} = await predeploy();
+    await MMDContract.setCMMDAddress(CMMDaddress);
 
     await MMDContract.deposit(ethers.utils.parseEther('800'));
     await MMDContract.withdraw(ethers.utils.parseEther('700'));
@@ -217,18 +161,10 @@ describe("MMD Test", function () {
   });
 
   it("Liquidate (Withdraw 81 from 300 MMD Colletaral when 220 is required (1000 CMMD Credired)", async function () {
-    const [owner] = await ethers.getSigners();
-    const MMD = await ethers.getContractFactory("MMDToken");
-    const MMDContract = await MMD.deploy();
-    await MMDContract.deployed();
-    const MMDAddress = await MMDContract.address;
 
-    const CMMD = await ethers.getContractFactory("CMMDToken");
-    const CMMDContract = await CMMD.deploy(MMDAddress);
-    await CMMDContract.deployed();
-    const CMMDAddress = await CMMDContract.address;
+    const {owner, MMD, MMDContract, MMDaddress, CMMD, CMMDContract, CMMDaddress} = await predeploy();
 
-    await MMDContract.setCMMDAddress(CMMDAddress);
+    await MMDContract.setCMMDAddress(CMMDaddress);
 
     await CMMDContract.borrow(ethers.utils.parseEther('1000'));
     await MMDContract.withdraw(ethers.utils.parseEther('81'));
