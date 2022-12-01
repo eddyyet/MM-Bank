@@ -10,8 +10,11 @@ Features:
 (This is a course project for MSBD5017 in HKUST in Fall 2022-23)
 
 # Blockchain information
-Etherdata Blockchain (Testnet) - RPC URL: https://rpc.debugchain.net, Chain ID: `8348`
+Etherdata Blockchain (Testnet) - 
+RPC URL: https://rpc.debugchain.net, Chain ID: `8348`
+
 MMD Smart Contract `MMDToken`: `0x2497f4F5C4dE2744ad42B7Ab6D96C2cD1c90c01a`
+
 CMMD Smart Contract `CMMDToken`: `0x0fD706bc16981fba74497891a04D5EdA71528cb4`
 
 # Visit
