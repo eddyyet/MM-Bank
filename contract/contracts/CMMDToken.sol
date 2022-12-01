@@ -17,7 +17,6 @@ contract CMMDToken is ERC20 {
     uint256 private _totalSupply;
     uint public constant initialCollateralPercentage = 150;
     uint public constant minCollateralPercentage = 110;
-    uint public constant initialCollateralRatio = 1;
     uint public constant MMDtoCMMD = 5;
 
     string private _name;
@@ -42,11 +41,12 @@ contract CMMDToken is ERC20 {
     }
 
     function borrow(uint256 amount) external {
+        uint256 totalDebtAfterBorrow = uint256(-_vaultBalances[msg.sender]) + amount;
+        uint256 collateralRequired = totalDebtAfterBorrow * initialCollateralPercentage / 100 / MMDtoCMMD;
+
         uint256 MMDWalletCurrent = _MMDContract.balanceOf(msg.sender);
         uint256 MMDCollateralCurrent = _MMDContract.vaultBalanceOf(msg.sender);
         uint256 MMDAvailable = MMDWalletCurrent + MMDCollateralCurrent;
-        uint256 totalDebtAfterBorrow = uint256(-_vaultBalances[msg.sender]) + amount;
-        uint256 collateralRequired = totalDebtAfterBorrow * initialCollateralPercentage / 100 / MMDtoCMMD;
 
         require(collateralRequired <= MMDAvailable, "Not enough MMD as collateral");
 
@@ -62,6 +62,33 @@ contract CMMDToken is ERC20 {
     }
 
     event Borrowed(uint256 amount);
+
+    function repay(uint256 amount) external {
+        require(amount <= _balances[msg.sender], "Not enough CMMD to repay");
+        require(amount <= uint256(-_vaultBalances[msg.sender]), "Repay amount is larger than credited amount");
+
+        uint256 totalDebtAfterRepay = uint256(-_vaultBalances[msg.sender]) - amount;
+        uint256 collateralRequired = totalDebtAfterRepay * initialCollateralPercentage / 100 / MMDtoCMMD;
+
+        uint256 MMDCollateralCurrent = _MMDContract.vaultBalanceOf(msg.sender);
+
+        if (collateralRequired < MMDCollateralCurrent) {
+            uint256 collateralExcess = MMDCollateralCurrent - collateralRequired;
+            uint256 collateralOfRepaid = amount * initialCollateralPercentage / 100 / MMDtoCMMD;
+            if (collateralOfRepaid < collateralExcess) {
+                _MMDContract.withdrawByCMMDContract(collateralOfRepaid, msg.sender);
+            } else {
+                _MMDContract.withdrawByCMMDContract(collateralExcess, msg.sender);
+            }
+        }
+
+        _burn(msg.sender, amount);
+        _vaultBalances[msg.sender] += int256(amount);
+
+        emit Repaid(amount);
+    }
+
+    event Repaid(uint256 amount);
 
     function _transfer(
         address from,

@@ -11,9 +11,11 @@ contract MMDToken is ERC20 {
     mapping(address => mapping(address => uint256)) private _allowances;
 
     uint256 private _totalSupply;
+    uint public constant ETDtoMMD = 1000;
 
     address private _owner;
     address private _CMMDAddress;
+    CMMDToken private _CMMDContract;
 
     string private _name;
     string private _symbol;
@@ -25,6 +27,7 @@ contract MMDToken is ERC20 {
 
     function setCMMDAddress(address CMMDAdress_) external onlyOwner {
         _CMMDAddress = CMMDAdress_;
+        _CMMDContract = MMDToken(_CMMDAddress);
     }
 
     function CMMDAddress() external view returns (address) {
@@ -40,7 +43,7 @@ contract MMDToken is ERC20 {
     }
 
     function buy() payable external {
-        uint256 amount = msg.value * 1000;
+        uint256 amount = msg.value * ETDtoMMD;
         _mint(msg.sender, amount);
         emit Bought(amount);
     }
@@ -50,7 +53,7 @@ contract MMDToken is ERC20 {
     function sell(uint256 amount) external {
         require(balanceOf(msg.sender) >= amount, "Not enough MMD in Wallet");
         _burn(msg.sender, amount);
-        payable(msg.sender).transfer(amount / 1000);
+        payable(msg.sender).transfer(amount / ETDtoMMD);
         emit Sold(amount);
     }
 
