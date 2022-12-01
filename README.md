@@ -10,9 +10,11 @@ This "MM Bank" application provides one-stop shop services to Merchants to carry
 v18.12.1
 ```
 
-2. The repo root directory contains 1 folder, `test`.
-3. To copy the project files down from GitHub to your project directory, enter: \
+2. To copy the project files down from GitHub to your project directory, enter: \
 `git clone https://github.com/eddyyet/test.git`
+
+3. The repo root directory contains 1 folder, `test`.
+
 4. Install all NPM modules under `test`:
 ```
 cd test
