@@ -3,8 +3,8 @@ import { MMDABI } from './MMD.abi'
 import { CMMDABI } from './CMMD.abi'
 import { IMetaMaskContext } from 'metamask-react/lib/metamask-context'
 
-const MMDAddress = '0x2497f4F5C4dE2744ad42B7Ab6D96C2cD1c90c01a'
-const CMMDAddress = '0x0fD706bc16981fba74497891a04D5EdA71528cb4'
+const MMDAddress = '0x0D1b6f0180620c7E8Cef155c2524C870887e1728'
+const CMMDAddress = '0x2C33779280B3D6C2201297e6C6de7b58108c4199'
 
 declare global {
   interface Window {
