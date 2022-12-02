@@ -1,7 +1,9 @@
 # Introduction
 This is a project of MSBD5017 Introduction to Blockchain Technology. 
 
-This "MM Bank" application provides one-stop shop services to Merchants to carry out operations of the two circulating currencies, MMD and CMMD. 
+This MM Bank application provides one-stop shop services to Merchants to carry out operations of the two circulating currencies, MMD and CMMD. 
+
+Our website is https://mm-bank-six.vercel.app/.
 
 # Installation 
 1. Make sure that the latest NodeJS is in place:
@@ -13,7 +15,7 @@ v18.12.1
 2. To copy the project files down from GitHub to your project directory, enter: \
 `git clone https://github.com/eddyyet/test.git`
 
-3. The repo root directory contains 1 folder, `test`.
+3. The repo root directory contains one folder, `test`.
 
 4. Install all NPM modules under `test`:
 ```
