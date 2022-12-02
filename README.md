@@ -9,7 +9,7 @@ Features:
 
 (This is a course project for MSBD5017 in HKUST in Fall 2022-23)
 
-# Blockchain information
+## Blockchain information
 
 Etherdata Blockchain (Testnet) - 
 RPC URL: https://rpc.debugchain.net, Chain ID: `8348`
@@ -18,10 +18,10 @@ MMD Smart Contract `MMDToken`: `0x0D1b6f0180620c7E8Cef155c2524C870887e1728`
 
 CMMD Smart Contract `CMMDToken`: `0x2C33779280B3D6C2201297e6C6de7b58108c4199`
 
-# Visit
+## Visit
 MM Bank demo website: https://mm-bank-six.vercel.app
 
-# Contract files
+## Contract files
 
 MMD: `./contract/contracts/MMDToken.sol`
 
@@ -29,7 +29,7 @@ CMMD: `./contract/contracts/CMMDToken.sol`
 
 Test to MMD and CMMD operations: `./contract/test/MMDToken.test.ts`
 
-# Local installation 
+## Local installation 
 1. Clone the files down to your directory, `git clone https://github.com/eddyyet/test.git`
 2. The repo root directory contains 1 folder, `MM-bank`. Use `cd MM-bank` to enter the folder.
 3. Use `npm install` to install the dependencies.
