@@ -31,6 +31,6 @@ Test to MMD and CMMD operations: `./contract/test/MMDToken.test.ts`
 
 # Local installation 
 1. Clone the files down to your directory, `git clone https://github.com/eddyyet/test.git`
-2. The repo root directory contains 1 folder, `test`. Use `cd test` to enter the folder.
+2. The repo root directory contains 1 folder, `MM-bank`. Use `cd MM-bank` to enter the folder.
 3. Use `npm install` to install the dependencies.
 4. Use `npm start` to start the application in your browser.
