@@ -1,181 +1,278 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import { jest, test} from '@jest/globals';
 
-describe("MMD Test", function () {
-  // before(async function () {
-  //   const [owner] = await ethers.getSigners();
-  //   const MMD = await ethers.getContractFactory("MMDToken");
-  //   const MMDContract = await MMD.deploy();
-  //   await MMDContract.deployed();
+describe("MMD and CMMD smart contract testing", function () {
+  async function cleanDeploy() {
+    const [owner, receiver] = await ethers.getSigners();
+    const MMD = await ethers.getContractFactory("MMDToken");
+    const MMDContract = await MMD.deploy();
+    await MMDContract.deployed();
+    const MMDaddress = await MMDContract.address;
 
-    // const CMMD = await ethers.getContractFactory("CMMDToken");
-    // const CMMDContract = await CMMD.deploy(MMDContract.address);
-    // await CMMDContract.deployed();
-  // });
-
-
-    async function predeploy() {
-      const [owner] = await ethers.getSigners();
-      const MMD = await ethers.getContractFactory("MMDToken");
-      const MMDContract = await MMD.deploy();
-      await MMDContract.deployed();
-      const MMDaddress = await MMDContract.address;
-
-      const CMMD = await ethers.getContractFactory("CMMDToken");
-      const CMMDContract = await CMMD.deploy(MMDaddress);
-      await CMMDContract.deployed();
-      const CMMDaddress = await CMMDContract.address;
-      return {owner, MMD, MMDContract, MMDaddress, CMMD, CMMDContract, CMMDaddress};
-  };
-
-  it("Deploy MMD and CMMD", async function () {
-    const {owner, MMD, MMDContract, MMDaddress, CMMD, CMMDContract, CMMDaddress} = await predeploy();
-      await MMDContract.setCMMDAddress(CMMDaddress);
-      const CMMDaddressInMMD = await MMDContract.CMMDAddress();
-      expect(CMMDaddressInMMD).to.equal(CMMDaddress);
-  });
-
-
-  it("Token name is the same as declared in the constrcutor function", async function () {
-    const {owner, MMD, MMDContract, MMDaddress, CMMD, CMMDContract, CMMDaddress} = await predeploy();
-    const name = await MMDContract.name();
-    expect(name).to.equal("Meta Merchant Dot");
-  });
-
-  it("Token symbol is the same as declared in the constrcutor function", async function () {
-      const {owner, MMD, MMDContract, MMDaddress, CMMD, CMMDContract, CMMDaddress} = await predeploy();
-    const symbol = await MMDContract.symbol();
-    expect(symbol).to.equal("MMD");
-  });
-
-  it("Owner should get the initial supply", async function () {
-    const {owner, MMD, MMDContract, MMDaddress, CMMD, CMMDContract, CMMDaddress} = await predeploy();
-    const ownerBalance = await MMDContract.balanceOf(owner.address);
-    expect(ownerBalance).to.equal(25000000000000000000000n);
-  });
-
-  it("Buy 1000 MMD with 1 Ether", async function () {
-    const {owner, MMD, MMDContract, MMDaddress, CMMD, CMMDContract, CMMDaddress} = await predeploy();
-    await MMDContract.buy({value: ethers.utils.parseEther('1')});
-    const balanceAfterBuy = await MMDContract.balanceOf(owner.address);
-    expect(balanceAfterBuy).to.equal(26000000000000000000000n);
-  });
-
-  it("Sell 500 MMD", async function () {
-    const {owner, MMD, MMDContract, MMDaddress, CMMD, CMMDContract, CMMDaddress} = await predeploy();
-    await MMDContract.buy({value: ethers.utils.parseEther('1')});
-    await MMDContract.sell(ethers.utils.parseEther('500'));
-    const balanceAfterSell = await MMDContract.balanceOf(owner.address);
-    expect(balanceAfterSell).to.equal(25500000000000000000000n);
-  });
-
-  it("Deposit 800 MMD", async function () {
-    const {owner, MMD, MMDContract, MMDaddress, CMMD, CMMDContract, CMMDaddress} = await predeploy();
-    await MMDContract.deposit(ethers.utils.parseEther('800'));
-    const balanceAfterDeposit = await MMDContract.balanceOf(owner.address);
-    expect(balanceAfterDeposit).to.equal(24200000000000000000000n);
-  });
-
-
-  it("Withdraw 400 MMD after deposit 800 MMD", async function () {
-    const {owner, MMD, MMDContract, MMDaddress, CMMD, CMMDContract, CMMDaddress} = await predeploy();
-    await MMDContract.setCMMDAddress(CMMDaddress);
-    
-    await MMDContract.deposit(ethers.utils.parseEther('800'));
-    await MMDContract.withdraw(ethers.utils.parseEther('400'));
-    const balanceAfterWithdraw = await MMDContract.balanceOf(owner.address);
-    expect(balanceAfterWithdraw).to.equal(24600000000000000000000n);
-  });
-
-  it("Borrow 1000 CMMD", async function () {
-    // const [owner] = await ethers.getSigners();
-    // const MMD = await ethers.getContractFactory("MMDToken");
-    // const MMDContract = await MMD.deploy();
-    // await MMDContract.deployed();
-    // const MMDAddress = await MMDContract.address;
-
-    // const CMMD = await ethers.getContractFactory("CMMDToken");
-    // const CMMDContract = await CMMD.deploy(MMDAddress);
-    // await CMMDContract.deployed();
-    // const CMMDaddress = await CMMDContract.address;
-
-    const {owner, MMD, MMDContract, MMDaddress, CMMD, CMMDContract, CMMDaddress} = await predeploy();
+    const CMMD = await ethers.getContractFactory("CMMDToken");
+    const CMMDContract = await CMMD.deploy(MMDaddress);
+    await CMMDContract.deployed();
+    const CMMDaddress = await CMMDContract.address;
 
     await MMDContract.setCMMDAddress(CMMDaddress);
 
-    await MMDContract.deposit(ethers.utils.parseEther('800'));
-    await MMDContract.withdraw(ethers.utils.parseEther('700'));
-    await CMMDContract.borrow(ethers.utils.parseEther('1000'));
+    return {owner, receiver, MMDContract, CMMDContract};
+  }
 
-    const finalMMDBalance = await MMDContract.balanceOf(owner.address);
-    const finalMMDVaultBalance = await MMDContract.vaultBalanceOf(owner.address);
-    const finalCMMDBalance = await CMMDContract.balanceOf(owner.address);
-    const finalCMMDVaultBalance = await CMMDContract.vaultBalanceOf(owner.address);
-    expect(finalMMDBalance).to.equal(ethers.utils.parseEther('24700'));
-    expect(finalMMDVaultBalance).to.equal(ethers.utils.parseEther('300'));
-    expect(finalCMMDBalance).to.equal(ethers.utils.parseEther('1000'));
-    expect(finalCMMDVaultBalance).to.equal(ethers.utils.parseEther('-1000'));
+  describe("Basic set up", function () {
+    describe("Names and symbol", function () {
+      it("MMD: Token name declared in constructor (Meta Merchant Dot)", async function () {
+        const {MMDContract} = await cleanDeploy();
+        const name = await MMDContract.name();
+        expect(name).to.equal("Meta Merchant Dot");
+      });
+
+      it("CMMD: Token name declared in constructor (Consumer Meta Merchant Dot)", async function () {
+        const {CMMDContract} = await cleanDeploy();
+        
+        const name = await CMMDContract.name();
+        expect(name).to.equal("Consumer Meta Merchant Dot");
+      });
+
+      it("MMD: Token symbol declared in constructor (MMD)", async function () {
+        const {MMDContract} = await cleanDeploy();
+        
+        const symbol = await MMDContract.symbol();
+        expect(symbol).to.equal("MMD");
+      });
+
+      it("CMMD: Token symbol declared in constructor (CMMD)", async function () {
+        const {CMMDContract} = await cleanDeploy();
+        
+        const symbol = await CMMDContract.symbol();
+        expect(symbol).to.equal("CMMD");
+      });
+    });
+
+    describe("Cross-contract relationship", function () {
+      it("MMD: Contains CMMD contract address", async function () {
+        const {MMDContract, CMMDContract} = await cleanDeploy();
+        
+        const CMMDAddressInMMD = await MMDContract.CMMDAddress();
+        const CMMDAddress = await CMMDContract.address;
+        expect(CMMDAddressInMMD).to.equal(CMMDAddress);
+      });
+
+      it("CMMD: Contains MMD contract address", async function () {
+        const {MMDContract, CMMDContract} = await cleanDeploy();
+        
+        const MMDAddressInCMMD = await CMMDContract.MMDAddress();
+        const MMDAddress = await MMDContract.address;
+        expect(MMDAddressInCMMD).to.equal(MMDAddress);
+      });
+    });
+
+    describe("Initial balances", function () {
+      it("MMD: Owner's initial balance minted in constructor (25000)", async function () {
+        const {owner, MMDContract} = await cleanDeploy();
+        
+        const ownerBalance = await MMDContract.balanceOf(owner.address);
+        expect(ownerBalance).to.equal(ethers.utils.parseEther('25000'));
+      });
+
+      it("CMMD: Owner's initial balance minted in constructor (10000)", async function () {
+        const {owner, CMMDContract} = await cleanDeploy();
+        
+        const ownerBalance = await CMMDContract.balanceOf(owner.address);
+        expect(ownerBalance).to.equal(ethers.utils.parseEther('10000'));
+      });
+
+      it("MMD: Owner's initial vault balance is zero", async function () {
+        const {owner, MMDContract} = await cleanDeploy();
+        
+        const ownerBalance = await MMDContract.vaultBalanceOf(owner.address);
+        expect(ownerBalance).to.equal(ethers.utils.parseEther('0'));
+      });
+
+      it("CMMD: Owner's initial vault balance is zero", async function () {
+        const {owner, CMMDContract} = await cleanDeploy();
+        
+        const ownerBalance = await CMMDContract.vaultBalanceOf(owner.address);
+        expect(ownerBalance).to.equal(ethers.utils.parseEther('0'));
+      });
+    });
   });
 
-  it("Repay 500 CMMD (before repay, collateral is lower than 150%", async function () {
+  describe("MMD operations", function () {
+    describe("Top Up MMD", function () {
+      it("Top up 1000 MMD with 1 ETD", async function () {
+        const {owner, MMDContract} = await cleanDeploy();
 
-    const {owner, MMD, MMDContract, MMDaddress, CMMD, CMMDContract, CMMDaddress} = await predeploy();
-    await MMDContract.setCMMDAddress(CMMDaddress);
+        await MMDContract.buy({value: ethers.utils.parseEther('1')});
+        const balanceAfterBuy = await MMDContract.balanceOf(owner.address);
+        expect(balanceAfterBuy).to.equal(ethers.utils.parseEther('26000'));
+      });
 
-    await MMDContract.deposit(ethers.utils.parseEther('800'));
-    await MMDContract.withdraw(ethers.utils.parseEther('700'));
-    await CMMDContract.borrow(ethers.utils.parseEther('1000'));
-    await MMDContract.withdraw(ethers.utils.parseEther('50'));
-    await CMMDContract.repay(ethers.utils.parseEther('500'));
+      it("Error when topping up 999999 MMD with insufficient balance", async function () {
+        const {owner, MMDContract} = await cleanDeploy();
 
-    const finalMMDBalance = await MMDContract.balanceOf(owner.address);
-    const finalMMDVaultBalance = await MMDContract.vaultBalanceOf(owner.address);
-    const finalCMMDBalance = await CMMDContract.balanceOf(owner.address);
-    const finalCMMDVaultBalance = await CMMDContract.vaultBalanceOf(owner.address);
-    expect(finalMMDBalance).to.equal(ethers.utils.parseEther('24850'));
-    expect(finalMMDVaultBalance).to.equal(ethers.utils.parseEther('150'));
-    expect(finalCMMDBalance).to.equal(ethers.utils.parseEther('500'));
-    expect(finalCMMDVaultBalance).to.equal(ethers.utils.parseEther('-500'));
+        let erorr;
+        try {await MMDContract.buy({value: ethers.utils.parseEther('999999')})}
+        catch (e) {erorr = e};
+        expect(erorr).to.not.be.undefined;
+      });
+    });
+
+    describe("Deposit MMD", function () {
+      it("Deposit 800 MMD", async function () {
+        const {owner, MMDContract} = await cleanDeploy();
+
+        await MMDContract.deposit(ethers.utils.parseEther('800'));
+        const balanceAfterDeposit = await MMDContract.balanceOf(owner.address);
+        const vaultBalanceAfterDeposit = await MMDContract.vaultBalanceOf(owner.address);
+        expect(balanceAfterDeposit).to.equal(ethers.utils.parseEther('24200'));
+        expect(vaultBalanceAfterDeposit).to.equal(ethers.utils.parseEther('800'));
+      });
+
+      it("Error when depositing 999999 MMD with insufficient balance", async function () {
+        const {MMDContract} = await cleanDeploy();
+
+        let erorr;
+        try {await MMDContract.deposit(ethers.utils.parseEther('999999'))}
+        catch (e) {erorr = e};
+        expect(erorr).to.not.be.undefined;
+      });
+    });
+
+    describe("Withdraw MMD", function () {
+      it("Withdraw 400 MMD when there is 800 MMD deposited", async function () {
+        const {owner, MMDContract} = await cleanDeploy();
+
+        await MMDContract.deposit(ethers.utils.parseEther('800'));
+        await MMDContract.withdraw(ethers.utils.parseEther('400'));
+        const balanceAfterWithdraw = await MMDContract.balanceOf(owner.address);
+        const vaultBalanceAfterWithdraw = await MMDContract.vaultBalanceOf(owner.address);
+        expect(balanceAfterWithdraw).to.equal(ethers.utils.parseEther('24600'));
+        expect(vaultBalanceAfterWithdraw).to.equal(ethers.utils.parseEther('400'));
+      });
+
+      it("Error when withdrawing up 999999 MMD with insufficient deposit", async function () {
+        const {MMDContract} = await cleanDeploy();
+
+        let erorr;
+        try {
+          await MMDContract.deposit(ethers.utils.parseEther('800'));
+          await MMDContract.withdraw(ethers.utils.parseEther('999999'));
+        }
+        catch (e) {erorr = e};
+        expect(erorr).to.not.be.undefined;
+      });
+    });
   });
 
-  it("Repay 500 CMMD (before repay, collateral is higher than 150%", async function () {
+  describe("CMMD operations", function () {
+    describe("Transfer CMMD", function () {
+      it("Transfer 6000 CMMD", async function () {
+        const {owner, receiver, CMMDContract} = await cleanDeploy();
 
-    const {owner, MMD, MMDContract, MMDaddress, CMMD, CMMDContract, CMMDaddress} = await predeploy();
-    await MMDContract.setCMMDAddress(CMMDaddress);
+        await CMMDContract.transfer(receiver.address, ethers.utils.parseEther('6000'));
+        const ownerCMMDbalance = await CMMDContract.balanceOf(owner.address);
+        const receiverCMMDbalance = await CMMDContract.balanceOf(receiver.address);
 
-    await MMDContract.deposit(ethers.utils.parseEther('800'));
-    await MMDContract.withdraw(ethers.utils.parseEther('700'));
-    await CMMDContract.borrow(ethers.utils.parseEther('1000'));
-    await MMDContract.deposit(ethers.utils.parseEther('4700'));
-    await CMMDContract.repay(ethers.utils.parseEther('500'));
+        expect(ownerCMMDbalance).to.equal(ethers.utils.parseEther('4000'));
+        expect(receiverCMMDbalance).to.equal(ethers.utils.parseEther('6000'));
+      });
 
-    const finalMMDBalance = await MMDContract.balanceOf(owner.address);
-    const finalMMDVaultBalance = await MMDContract.vaultBalanceOf(owner.address);
-    const finalCMMDBalance = await CMMDContract.balanceOf(owner.address);
-    const finalCMMDVaultBalance = await CMMDContract.vaultBalanceOf(owner.address);
-    expect(finalMMDBalance).to.equal(ethers.utils.parseEther('20150'));
-    expect(finalMMDVaultBalance).to.equal(ethers.utils.parseEther('4850'));
-    expect(finalCMMDBalance).to.equal(ethers.utils.parseEther('500'));
-    expect(finalCMMDVaultBalance).to.equal(ethers.utils.parseEther('-500'));
+      it("Error when transferring 999999 CMMD with insufficient balance", async function () {
+        const {owner, receiver, CMMDContract} = await cleanDeploy();
+
+        let erorr;
+        try { await CMMDContract.transfer(receiver.address, ethers.utils.parseEther('999999')); }
+        catch (e) {erorr = e};
+        expect(erorr).to.not.be.undefined;
+      });
+    });
+
+    describe("Borrow CMMD", function () {
+      it("Borrow 10000 CMMD (CMMD Credited amount adjusted and MMD Collateral deposited)", async function () {
+        const {owner, MMDContract, CMMDContract} = await cleanDeploy();
+
+        await CMMDContract.borrow(ethers.utils.parseEther('10000'));
+        const MMDbalanceAfterBorrow = await MMDContract.balanceOf(owner.address);
+        const MMDvaultBalanceAfterBorrow = await MMDContract.vaultBalanceOf(owner.address);
+        const CMMDbalanceAfterBorrow = await CMMDContract.balanceOf(owner.address);
+        const CMMDvaultBalanceAfterBorrow = await CMMDContract.vaultBalanceOf(owner.address);
+
+        expect(MMDbalanceAfterBorrow).to.equal(ethers.utils.parseEther('22000'));
+        expect(MMDvaultBalanceAfterBorrow).to.equal(ethers.utils.parseEther('3000'));
+        expect(CMMDbalanceAfterBorrow).to.equal(ethers.utils.parseEther('20000')); //initial 10000 + borrow 10000
+        expect(CMMDvaultBalanceAfterBorrow).to.equal(ethers.utils.parseEther('-10000'));
+      });
+
+      it("Error when borrowing 999999 CMMD with insufficient balance", async function () {
+        const {CMMDContract} = await cleanDeploy();
+
+        let erorr;
+        try { await CMMDContract.borrow(ethers.utils.parseEther('999999')); }
+        catch (e) {erorr = e};
+        expect(erorr).to.not.be.undefined;
+      });
+    });
+
+    describe("Repay CMMD", function () {
+      it("Repay 5000 CMMD after borrowing 10000 (CMMD Credited amount adjusted and MMD Collateral deposited)", async function () {
+        const {owner, MMDContract, CMMDContract} = await cleanDeploy();
+
+        await CMMDContract.borrow(ethers.utils.parseEther('10000'));
+        await CMMDContract.repay(ethers.utils.parseEther('5000'));
+        const MMDbalanceAfterBorrow = await MMDContract.balanceOf(owner.address);
+        const MMDvaultBalanceAfterBorrow = await MMDContract.vaultBalanceOf(owner.address);
+        const CMMDbalanceAfterBorrow = await CMMDContract.balanceOf(owner.address);
+        const CMMDvaultBalanceAfterBorrow = await CMMDContract.vaultBalanceOf(owner.address);
+
+        expect(MMDbalanceAfterBorrow).to.equal(ethers.utils.parseEther('23500'));
+        expect(MMDvaultBalanceAfterBorrow).to.equal(ethers.utils.parseEther('1500'));
+        expect(CMMDbalanceAfterBorrow).to.equal(ethers.utils.parseEther('15000')); //initial 10000 + borrow 10000 - repay 5000
+        expect(CMMDvaultBalanceAfterBorrow).to.equal(ethers.utils.parseEther('-5000'));
+      });
+
+      it("Error when repaying 999999 CMMD which exceeds borrowing", async function () {
+        const {CMMDContract} = await cleanDeploy();
+
+        let erorr;
+        try { await CMMDContract.borrow(ethers.utils.parseEther('999999')); }
+        catch (e) {erorr = e};
+        expect(erorr).to.not.be.undefined;
+      });
+    });
   });
 
-  it("Liquidate (Withdraw 81 from 300 MMD Colletaral when 220 is required (1000 CMMD Credired)", async function () {
+  describe("Liquidate CMMD", function () {
+    it("Withdraw causing insufficient collateral: Liquidate all CMMD borrowing with discount charged from MMD in Wallet (all balances adjusted)", async function () {
+      const {owner, MMDContract, CMMDContract} = await cleanDeploy();
 
-    const {owner, MMD, MMDContract, MMDaddress, CMMD, CMMDContract, CMMDaddress} = await predeploy();
+      await CMMDContract.borrow(ethers.utils.parseEther('10000'));
+      await MMDContract.withdraw(ethers.utils.parseEther('801'));
+      const MMDbalanceAfterBorrow = await MMDContract.balanceOf(owner.address);
+      const MMDvaultBalanceAfterBorrow = await MMDContract.vaultBalanceOf(owner.address);
+      const CMMDbalanceAfterBorrow = await CMMDContract.balanceOf(owner.address);
+      const CMMDvaultBalanceAfterBorrow = await CMMDContract.vaultBalanceOf(owner.address);
 
-    await MMDContract.setCMMDAddress(CMMDaddress);
+      expect(MMDbalanceAfterBorrow).to.equal(ethers.utils.parseEther('24900'));
+      expect(MMDvaultBalanceAfterBorrow).to.equal(ethers.utils.parseEther('0'));
+      expect(CMMDbalanceAfterBorrow).to.equal(ethers.utils.parseEther('10000')); //initial 10000
+      expect(CMMDvaultBalanceAfterBorrow).to.equal(ethers.utils.parseEther('0'));
+    });
 
-    await CMMDContract.borrow(ethers.utils.parseEther('1000'));
-    await MMDContract.withdraw(ethers.utils.parseEther('81'));
+    it("Withdraw but collateral still meet requirement: no liquidation, just a normal withdrawal (all balances adjusted)", async function () {
+      const {owner, MMDContract, CMMDContract} = await cleanDeploy();
 
-    const finalMMDBalance = await MMDContract.balanceOf(owner.address);
-    const finalMMDVaultBalance = await MMDContract.vaultBalanceOf(owner.address);
-    const finalCMMDBalance = await CMMDContract.balanceOf(owner.address);
-    const finalCMMDVaultBalance = await CMMDContract.vaultBalanceOf(owner.address);
-    expect(finalMMDBalance).to.equal(ethers.utils.parseEther('24990'));
-    expect(finalMMDVaultBalance).to.equal(ethers.utils.parseEther('0'));
-    expect(finalCMMDBalance).to.equal(ethers.utils.parseEther('0'));
-    expect(finalCMMDVaultBalance).to.equal(ethers.utils.parseEther('0'));
+      await CMMDContract.borrow(ethers.utils.parseEther('10000'));
+      await MMDContract.withdraw(ethers.utils.parseEther('800'));
+      const MMDbalanceAfterBorrow = await MMDContract.balanceOf(owner.address);
+      const MMDvaultBalanceAfterBorrow = await MMDContract.vaultBalanceOf(owner.address);
+      const CMMDbalanceAfterBorrow = await CMMDContract.balanceOf(owner.address);
+      const CMMDvaultBalanceAfterBorrow = await CMMDContract.vaultBalanceOf(owner.address);
+
+      expect(MMDbalanceAfterBorrow).to.equal(ethers.utils.parseEther('22800'));
+      expect(MMDvaultBalanceAfterBorrow).to.equal(ethers.utils.parseEther('2200'));
+      expect(CMMDbalanceAfterBorrow).to.equal(ethers.utils.parseEther('20000')); //initial 10000
+      expect(CMMDvaultBalanceAfterBorrow).to.equal(ethers.utils.parseEther('-10000'));
+    });
   });
 });
