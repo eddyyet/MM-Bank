@@ -27,6 +27,7 @@ contract CMMDToken is ERC20 {
 
     constructor(address MMDAddress_) ERC20("Consumer Meta Merchant Dot", "CMMD") {
         _owner = msg.sender;
+        _mint(msg.sender, 10000*10**18);
         _MMDAddress = MMDAddress_;
         _MMDContract = MMDToken(_MMDAddress);
     }

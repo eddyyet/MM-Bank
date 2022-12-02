@@ -6,9 +6,9 @@
     vertical-align:middle;
 }
 
-.button2 {
-    border-radius: 100px;
-    border-color:FFFFFF;
+.AccountInfo {
+    font-size: 0.8rem;
+    font-weight: 200;
 }
 
 .BalanceHeading {
@@ -41,11 +41,11 @@
 }
 
 .MMD-color {
-    color: #FFFF99;
+    color: #FFFF88;
 }
 
 .CMMD-color {
-    color: #AAFFAA;
+    color: #99FF99;
 }
 
 .Note {

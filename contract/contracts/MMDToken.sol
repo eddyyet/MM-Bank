@@ -99,7 +99,6 @@ contract MMDToken is ERC20 {
             } else {
                 CMMDtoLiquidate = CMMDAvailable;
             }
-            console.log("CMMDtoLiquidate: %s", CMMDtoLiquidate);
 
             _CMMDContract.liquidateByMMDContract(CMMDtoLiquidate, msg.sender);
 
