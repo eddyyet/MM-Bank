@@ -10,6 +10,7 @@ Features:
 (This is a course project for MSBD5017 in HKUST in Fall 2022-23)
 
 # Blockchain information
+
 Etherdata Blockchain (Testnet) - 
 RPC URL: https://rpc.debugchain.net, Chain ID: `8348`
 
@@ -19,6 +20,14 @@ CMMD Smart Contract `CMMDToken`: `0x2C33779280B3D6C2201297e6C6de7b58108c4199`
 
 # Visit
 MM Bank demo website: https://mm-bank-six.vercel.app
+
+# Contract files
+
+MMD: `./contract/contracts/MMDToken.sol`
+
+CMMD: `./contract/contracts/CMMDToken.sol`
+
+Test to MMD and CMMD operations: `./contract/test/MMDToken.test.ts`
 
 # Local installation 
 1. Clone the files down to your directory, `git clone https://github.com/eddyyet/test.git`
