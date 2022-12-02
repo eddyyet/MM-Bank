@@ -30,9 +30,9 @@ const OperationButton = styled(LoadingButton)({
   marginLeft: '1rem',
   borderRadius: '2rem',
   border: '1px solid #999999',
-  backgroundColor: '#0D1117',
+  backgroundColor: '#10141C',
   color: '#999999',
-  '&:hover': { backgroundColor: '#1D2127' },
+  '&:hover': { backgroundColor: '#20242C' },
   '&:disabled': { border: '1px solid #666666', backgroundColor: '#2B2C2F' },
   '& .MuiLoadingButton-loadingIndicator': { color: '#666666' }
 })

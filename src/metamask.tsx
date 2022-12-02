@@ -24,7 +24,7 @@ export default function MetaMaskConnection (): JSX.Element {
 
   if (status === 'initializing') return <div>Synchronisation with MetaMask ongoing...</div>
   if (status === 'unavailable') return <div><b>[ MetaMask not available, please install or use another browser :( ]</b></div>
-  if (status === 'notConnected') return <Button onClick={ () => ConnectMetaMask() } sx={{ borderRadius: '2rem', border: '1px solid #DDDDDD', backgroundColor: '#DDDDDD', color: '#0D1117', '&:hover': { backgroundColor: '#1D2127', color: '#FFFFFF' } }}>Connect to MetaMask</Button>
+  if (status === 'notConnected') return <Button onClick={ () => ConnectMetaMask() } sx={{ borderRadius: '2rem', border: '1px solid #DDDDDD', backgroundColor: '#DDDDDD', color: '#10141C', '&:hover': { backgroundColor: '#20242C', color: '#FFFFFF' } }}>Connect to MetaMask</Button>
   if (status === 'connecting') return <LoadingButton loading sx={{ borderRadius: '2rem', border: '1px solid #AAAAAA', background: 'none', '& .MuiLoadingButton-loadingIndicator': { color: '#999999' } }}>Connnecting</LoadingButton>
   if (status === 'connected') return <div className="AccountInfo"><div>Account: {account} | Chain ID: {chainId} | ETD balance: {balance.ETD}</div><div>Exchange Rates -  ETD/MMD: 1000, MMD/CMMD: 5</div></div>
   return <div />
