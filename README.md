@@ -7,7 +7,9 @@ Features:
 - **Deposit**, **withdrawal**, **borrow** and **transfer** for daily economic activities
 - **Collateral requirement** (lock MMD to borrow CMMD) and **liquidation** as credit risk control
 
-> This is a course project for MSBD5017 in The Hong Kong University of Science and Technology (HKUST) in Fall 2022-23. The project demostrates the possibility of using blockchain technology to build a decentralized financial application like a centralized bank. The front-end elements are developed for quick demostration only and may not follow best practices. Comments are welcomed.
+
+> This is a course project for MSBD5017 in The Hong Kong University of Science and Technology (HKUST) in Fall 2022-23. The project demostrates the possibility of using blockchain technology to build a decentralized financial application like a centralized bank. The blockchain data is dependent on the maintenance of the Etherdata Blockchain (Testnet). The front-end elements are developed for quick demostration only and may not follow best practices. Comments are welcomed.
+
 
 ## Blockchain information
 
