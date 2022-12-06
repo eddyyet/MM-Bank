@@ -26,7 +26,7 @@ root {
 
 .wallet {
   margin: 0rem !important;
-  padding: 0.2rem 8rem 1.8rem;
+  padding: 0.2rem 1rem 1.8rem;
   background-attachment: fixed;
   background-position: center 80%;
   background-image: linear-gradient(rgba(16, 21, 25, 0.84), rgba(13, 18, 22, 0.92)), url(../public/hk_background.jpg);
@@ -34,6 +34,6 @@ root {
 
 .operation {
   margin: 0rem !important;
-  padding: 2.4rem 8rem;
+  padding: 2.4rem 1rem;
 }
 
