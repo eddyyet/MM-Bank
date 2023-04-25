@@ -14,6 +14,7 @@ Features:
 ## Blockchain information
 
 Etherdata Blockchain (Testnet) - 
+> The below locations are no longer accessible as the temporary blockchain is no longer maintained.
 RPC URL: https://rpc.debugchain.net, Chain ID: `8348`
 
 MMD Smart Contract `MMDToken`: `0x0D1b6f0180620c7E8Cef155c2524C870887e1728`
@@ -21,6 +22,7 @@ MMD Smart Contract `MMDToken`: `0x0D1b6f0180620c7E8Cef155c2524C870887e1728`
 CMMD Smart Contract `CMMDToken`: `0x2C33779280B3D6C2201297e6C6de7b58108c4199`
 
 ## Visit
+> The demo is ended as the temporary blockchain is no longer maintained.
 MM Bank demo website: https://mm-bank-six.vercel.app
 
 ## Contract files
